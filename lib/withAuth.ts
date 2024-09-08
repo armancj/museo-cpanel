@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 // Definimos la interfaz del payload del JWT
@@ -12,11 +12,11 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
     const ComponentWithAuth: React.FC<P> = (props: P) => {
         const router = useRouter();
 
-        useEffect(() => {
-            const authUser = localStorage.getItem('authUser'); // Obtenemos el token JWT
+        const checkAuth = useCallback(() => {
+            const authUser = localStorage.getItem('authUser');
 
             if (!authUser) {
-                router.push('/auth/login');
+                router.replace('/auth/login');
                 return;
             }
 
@@ -25,13 +25,17 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
 
                 if (decodedToken.exp < Date.now() / 1000) {
                     localStorage.removeItem('authUser');
-                    router.push('/auth/login');
+                    router.replace('/auth/login');
                 }
             } catch (error) {
                 localStorage.removeItem('authUser');
-                router.push('/auth/login');
+                router.replace('/auth/login');
             }
         }, [router]);
+
+        useEffect(() => {
+            checkAuth();
+        }, [checkAuth]);
 
         return React.createElement(WrappedComponent, props);
     };
