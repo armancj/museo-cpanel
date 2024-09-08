@@ -20,7 +20,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
                 return;
             }
 
-            try {
+            /*try {
                 const decodedToken: JwtPayload = jwtDecode<JwtPayload>(authUser);
 
                 if (decodedToken.exp < Date.now() / 1000) {
@@ -30,7 +30,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
             } catch (error) {
                 localStorage.removeItem('authUser');
                 router.replace('/auth/login');
-            }
+            }*/
         }, [router]);
 
         useEffect(() => {

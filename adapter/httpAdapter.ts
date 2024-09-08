@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const httpAdapter = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -36,27 +36,27 @@ httpAdapter.interceptors.response.use(
     }
 );
 
-export const get = async <T>(url: string, config?: InternalAxiosRequestConfig): Promise<T> => {
+export const get = async <T>(url: string, config?: axios.AxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.get<T>(url, config);
     return response.data;
 };
 
-export const post = async <T>(url: string, data?: any, config?: InternalAxiosRequestConfig): Promise<T> => {
+export const post = async <T>(url: string, data?: any, config?: axios.AxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.post<T>(url, data, config);
     return response.data;
 };
 
-export const put = async <T>(url: string, data?: any, config?: InternalAxiosRequestConfig): Promise<T> => {
+export const put = async <T>(url: string, data?: any, config?: axios.AxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.put<T>(url, data, config);
     return response.data;
 };
 
-export const patch = async <T>(url: string, data?: any, config?: InternalAxiosRequestConfig): Promise<T> => {
+export const patch = async <T>(url: string, data?: any, config?: axios.AxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.patch<T>(url, data, config);
     return response.data;
 };
 
-export const del = async <T>(url: string, config?: InternalAxiosRequestConfig): Promise<T> => {
+export const del = async <T>(url: string, config?: axios.AxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.delete<T>(url, config);
     return response.data;
 };
