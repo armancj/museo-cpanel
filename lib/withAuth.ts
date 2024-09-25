@@ -1,10 +1,17 @@
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 
 // Definimos la interfaz del payload del JWT
 interface JwtPayload {
-    exp: number;
+    roles:    string;
+    uuid:     string;
+    email:    string;
+    name:     string;
+    lastName: string;
+    iat:      number;
+    exp:      number;
 }
 
 // HOC que protege rutas con autenticación
@@ -20,8 +27,10 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
                 return;
             }
 
-            /*try {
-                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(authUser);
+            const parsedAuthUser: AuthResponse = JSON.parse(authUser);
+
+            try {
+                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(parsedAuthUser.access_token);
 
                 if (decodedToken.exp < Date.now() / 1000) {
                     localStorage.removeItem('authUser');
@@ -30,7 +39,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
             } catch (error) {
                 localStorage.removeItem('authUser');
                 router.replace('/auth/login');
-            }*/
+            }
         }, [router]);
 
         useEffect(() => {

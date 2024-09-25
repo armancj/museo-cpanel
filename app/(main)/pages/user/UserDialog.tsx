@@ -1,13 +1,18 @@
-import { UsersDatum, UsersResponse } from '@/app/(main)/pages/user/UserService';
-import React, { ChangeEvent, useState } from 'react';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { InputText } from 'primereact/inputtext';
+import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import React, { useState } from 'react';
+import { Dialog } from 'primereact/dialog';
+import { UserForm } from '@/app/(main)/pages/user/UserForm';
+import { Button } from 'primereact/button';
+import { ImageBodyTemplate } from '@/app/(main)/pages/user/imageBodyTemplate';
 
 interface UserDialogProps {
-    setUsers: React.Dispatch<React.SetStateAction<UsersResponse>>;
+    dialogVisible: boolean;
+    setDialogVisible: (visible: boolean) => void;
+    setUsers: React.Dispatch<React.SetStateAction<UsersDatum[]>>;
 }
 
-export const UserDialog = ({ setUsers }: UserDialogProps) => {
+const UserDialog: React.FC<UserDialogProps> = ({dialogVisible, setDialogVisible, setUsers }) => {
+
     const [user, setUser] = useState<Omit<UsersDatum, 'uuid' | 'deleted' | 'active'>>({
         mobile: '',
         municipal: '',
@@ -21,18 +26,8 @@ export const UserDialog = ({ setUsers }: UserDialogProps) => {
         roles: '',
     });
 
-    const onInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
-    };
-
-    const saveUser = () => {
-        const newUser = { ...user } as UsersDatum;
-        setUsers((prevUsers: UsersResponse) => ({
-            ...prevUsers,
-            usersData: [...prevUsers.usersData, newUser],
-            totalElement: prevUsers.totalElement + 1,
-        }));
-
+    const hideDialog = () => {
+        setDialogVisible(false);
         setUser({
             mobile: '',
             municipal: '',
@@ -47,101 +42,45 @@ export const UserDialog = ({ setUsers }: UserDialogProps) => {
         });
     };
 
+    const saveUser = () => {
+        const newUser: UsersDatum = {
+            ...user,
+            uuid: Date.now().toString(),
+            active: true,
+            deleted: false
+        };
+
+        setUsers((prevUsers) => [
+            ...prevUsers,
+            newUser
+        ]);
+
+        hideDialog();
+    };
+
+    const userDialogFooter = (
+        <>
+            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" text onClick={saveUser} />
+        </>
+    );
+
+    const userData = user as UsersDatum;
     return (
-        <div>
-            <div className="field">
-                <label htmlFor="name">Nombre</label>
-                <InputText
-                    id="name"
-                    name="name"
-                    value={user.name}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="lastName">Apellidos</label>
-                <InputText
-                    id="lastName"
-                    name="lastName"
-                    value={user.lastName}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="mobile">Teléfono</label>
-                <InputText
-                    id="mobile"
-                    name="mobile"
-                    value={user.mobile}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="municipal">Municipio</label>
-                <InputText
-                    id="municipal"
-                    name="municipal"
-                    value={user.municipal}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="province">Provincia</label>
-                <InputText
-                    id="province"
-                    name="province"
-                    value={user.province}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="nationality">País</label>
-                <InputText
-                    id="nationality"
-                    name="nationality"
-                    value={user.nationality}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="email">Correo</label>
-                <InputText
-                    id="email"
-                    name="email"
-                    value={user.email}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="address">Dirección</label>
-                <InputTextarea
-                    id="address"
-                    name="address"
-                    value={user.address}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="roles">Rol</label>
-                <InputText
-                    id="roles"
-                    name="roles"
-                    value={user.roles}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <button onClick={saveUser} className="p-button p-component">
-                Guardar Usuario
-            </button>
-        </div>
+        <Dialog
+            visible={dialogVisible}
+            style={{ width: '450px' }}
+            header="User Details"
+            modal
+            className="p-fluid"
+            footer={userDialogFooter}
+            onHide={hideDialog}
+        >
+            {user.avatar && ImageBodyTemplate({...userData }  ) }
+            <UserForm user={user} setUser={setUser} />
+        </Dialog>
     );
 };
+
+
+export default UserDialog;

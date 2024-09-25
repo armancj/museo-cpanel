@@ -23,6 +23,9 @@ importers:
       chart.js:
         specifier: 4.2.1
         version: 4.2.1
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
       next:
         specifier: 13.4.20-canary.13
         version: 13.4.20-canary.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.79.3)
@@ -44,6 +47,9 @@ importers:
       typescript:
         specifier: 5.1.3
         version: 5.1.3
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       eslint:
         specifier: 8.43.0
@@ -121,24 +127,28 @@ packages:
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-arm64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-dASaggPDUpQYkQ7oUSKOIx9DEvmH8JBRcUwOZ8J/LF1yJp1hmGkNIGBlqsirV3LP0/9Su4MgNRV5FXjfVNEUzQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-linux-x64-gnu@13.4.20-canary.13':
     resolution: {integrity: sha512-dD6/hHkkeiM3Mjz6kDkd7ydtMdAECpcF8gUpwFoBjFrDFc4v5Bf45px56FC95I2R3vUMNzuRfus7U9QsQWdi7w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-x64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-eHgzJobusbRfBLbR1jcgEMO2qsU+L9prDWQsOY1uBrmlqn9qjii4rmMAWQ7bj8G4F+TpCUv/uKN2S2W5aREeVw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-win32-arm64-msvc@13.4.20-canary.13':
     resolution: {integrity: sha512-eq+XM3nDNxKasQI874uspQ9EbzkssgcnqXN4CQ5f+vOVvVXFA0o82YmqrSx+amBd310MdKdBnwiGWTEhjClsHw==}
@@ -906,6 +916,10 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
+  jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -1380,6 +1394,9 @@ packages:
 
   zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -2424,6 +2441,8 @@ snapshots:
       object.assign: 4.1.5
       object.values: 1.2.0
 
+  jwt-decode@4.0.0: {}
+
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -2946,3 +2965,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.21.4: {}
+
+  zod@3.23.8: {}

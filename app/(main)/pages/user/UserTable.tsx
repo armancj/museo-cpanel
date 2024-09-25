@@ -7,13 +7,14 @@ import { Demo } from '@/types';
 import { ImageBodyTemplate } from '@/app/(main)/pages/user/imageBodyTemplate';
 
 interface UserTableProps {
-    users: UsersResponse | undefined,
+    users: UsersResponse | null,
     selectedUsers: any,
     globalFilter: string,
-    setGlobalFilter: (value: (((prevState: string) => string) | string)) => void
+    setGlobalFilter: (value: (((prevState: string) => string) | string)) => void,
+    setSelectedUsers: (value: (((prevState: UsersDatum[]) => UsersDatum[]) | UsersDatum[])) => void
 }
 
-export const UserTable = ({ users, selectedUsers, globalFilter, setGlobalFilter }: UserTableProps) => {
+export const UserTable = ({ users, selectedUsers, globalFilter, setGlobalFilter, setSelectedUsers }: UserTableProps) => {
     const dt = useRef<DataTable<UsersDatum[]>>(null);
 
     const nameBodyTemplate = (rowData: UsersDatum) => {
@@ -50,7 +51,7 @@ export const UserTable = ({ users, selectedUsers, globalFilter, setGlobalFilter 
                 ref={dt}
                 value={users?.usersData}
                 selection={selectedUsers}
-                onSelectionChange={(e) => selectedUsers(e.value as any)}
+                onSelectionChange={(e) => setSelectedUsers(e.value as any)}
                 dataKey="uuid"
                 paginator
                 rows={10}

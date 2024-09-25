@@ -30,7 +30,6 @@ export interface Avatar {
 
 export const UserService  =   {
     getUsers: async () => {
-
         return await post<UsersResponse>(WebEnvConst.user.getAll, {});
     }
 };
