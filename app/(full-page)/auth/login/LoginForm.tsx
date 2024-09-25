@@ -8,6 +8,7 @@ import { EmailInput } from './EmailInput';
 import { PasswordInput } from './PasswordInput';
 import { RememberMeCheckbox } from './RememberMeCheckbox';
 import { WebEnvConst } from '@/app/webEnvConst';
+import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -46,11 +47,11 @@ const LoginForm = () => {
         }
 
         try {
-            const response = await post<any>(WebEnvConst.auth.login, {
+            const response = await post<AuthResponse>(WebEnvConst.auth.login, {
                 email,
                 password
             });
-            localStorage.setItem('authUser', JSON.stringify(response.data));
+            localStorage.setItem('authUser', JSON.stringify(response));
             console.log('Login successful:', response);
             router.push('/');
         } catch (error) {
