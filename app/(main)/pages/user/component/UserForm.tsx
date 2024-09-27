@@ -9,6 +9,7 @@ import { classNames } from 'primereact/utils';
 import { Fieldset } from 'primereact/fieldset';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
+import { Password } from 'primereact/password';
 
 interface UserFormProps {
     user: UsersDatum;
@@ -16,6 +17,7 @@ interface UserFormProps {
     submitted: boolean;
     onImageUpload: (file: File) => void; // Nueva prop para manejar la carga de imágenes
 }
+
 
 export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitted, onImageUpload }) => {
     const {
@@ -34,7 +36,14 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
         reader.readAsDataURL(file);
     };
 
-    const dropdownFields = ['municipal', 'province', 'nationality'];
+    const dropdownFields = ['municipal', 'province', 'nationality', 'roles'];
+
+    const roles = [
+        { name: 'Super Administrador', value: 'super Administrador' },
+        { name: 'Administrador', value: 'Administrador' },
+        { name: 'Especialista', value: 'Especialista' },
+        { name: 'Técnico', value: 'Técnico' },
+    ];
 
     return (
         <div className="flex">
@@ -57,7 +66,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                                     id={field}
                                     name={field}
                                     value={user[field]}
-                                    options={field === dropdownFields[2] ? countries : field === dropdownFields[1] ? provinces : municipalities}
+                                    options={field === dropdownFields[2] ? countries : field === dropdownFields[1] ? provinces : field === dropdownFields[3] ? roles : municipalities}
                                     onChange={field === dropdownFields[2] ?
                                         (e) => handleCountryChange(e.target.value, onInputChange) :
                                         field === dropdownFields[1] ?
@@ -66,7 +75,10 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                                     optionLabel="name"
                                     placeholder={`Seleccionar ${label}`}
                                     submitted={submitted}
-                                    disabled={field === dropdownFields[2] ? false : field === dropdownFields[1] ? isProvinceDisabled : isMunicipalityDisabled}
+                                    disabled={field === dropdownFields[2] ? false:
+                                        field === dropdownFields[1] ? isProvinceDisabled:
+                                            field === dropdownFields[3] ? false:
+                                                isMunicipalityDisabled}
                                 />
                             ) : (
                                 <InputText
@@ -82,6 +94,18 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                                 <small className="p-invalid">{`${label} es requerido.`}</small>}
                         </div>
                     ))}
+                    <div className="field col-3">
+                        <label htmlFor="password">Password</label>
+                        <Password
+                            id={'password'}
+                            name={'password'}
+                            value={user.password}
+                            onChange={(e) => onInputChange(e, 'password')}
+                            required
+                            className={classNames({ 'p-invalid': submitted && !user.password })}
+                            toggleMask />
+                        {submitted && !user.password && <small className="p-invalid">Contraseña es requerida.</small>}
+                    </div>
                     <div className="field col-12">
                         <label htmlFor="address">Dirección</label>
                         <InputTextarea

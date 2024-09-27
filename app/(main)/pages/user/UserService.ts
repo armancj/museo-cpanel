@@ -17,6 +17,7 @@ export interface UsersDatum {
     lastName:    string;
     name:        string;
     nationality: string;
+    password:    string;
     province:    string;
     avatar?:     Avatar;
     roles:       string;
@@ -36,7 +37,14 @@ export interface addressResponse {
 export const UserService  =   {
     getUsers: async () => {
         return await post<UsersResponse>(WebEnvConst.user.getAll, {});
-    }
+    },
+
+    createUser: async (user: UsersDatum) => {
+        const {uuid, active, deleted, avatar, ...rest} = user;
+        const response = await post<UsersDatum>(WebEnvConst.user.post, {...rest});
+        console.log({ response })
+        return response;
+    },
 };
 
 export const ProvinceService  =   {

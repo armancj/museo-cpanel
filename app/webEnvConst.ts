@@ -7,6 +7,7 @@ export const WebEnvConst = {
     },
     user:{
         getAll: '/users/all?page=1&perPage=10',
+        post: '/users'
     },
     province: '/province',
     country: '/country',

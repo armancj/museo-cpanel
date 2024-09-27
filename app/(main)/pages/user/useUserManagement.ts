@@ -2,21 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/(main)/pages/user/UserService';
 
-   export const emptyUser: UsersDatum = {
-            active: false, deleted: false, uuid: '',
-            mobile: '',
-            municipal: '',
-            email: '',
-            address: '',
-            lastName: '',
-            name: '',
-            nationality: '',
-            province: '',
-            avatar: {
-                id: '', nameFile: ''
-            },
-            roles: '',
-    };
+export const emptyUser: UsersDatum = {
+    password: '',
+    active: false, deleted: false, uuid: '',
+    mobile: '',
+    municipal: '',
+    email: '',
+    address: '',
+    lastName: '',
+    name: '',
+    nationality: '',
+    province: '',
+    avatar: {
+        id: '', nameFile: ''
+    },
+    roles: ''
+};
 export const useUserManagement = () => {
 
     const [usersResponse, setUsersResponse] = useState<UsersResponse | null>(null);
@@ -29,7 +30,7 @@ export const useUserManagement = () => {
         UserService.getUsers().then((data) => setUsersResponse(data));
     }, []);
 
-    const saveUser = () => {
+    const saveUser = async () => {
         setSubmitted(true);
         if (user.name.trim()) {
             let _usersData = [...(usersResponse?.usersData || [])];
@@ -42,17 +43,24 @@ export const useUserManagement = () => {
                 }
 
             } else {
-                user.uuid = createId();
-                _usersData.push(user);
-                toast.current?.show({ severity: 'success', summary: 'User Created', life: 3000 });
+                try {
+                    const createdUser = await UserService.createUser(user);
+                    _usersData.push(createdUser);
+                    toast.current?.show({ severity: 'success', summary: 'User Created', life: 3000 });
+                } catch (error) {
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to create user',
+                        life: 3000
+                    });
+                }
             }
             setUsersResponse({ ...usersResponse, usersData: _usersData } as UsersResponse);
             setUserDialog(false);
             setUser(emptyUser);
         }
     };
-
-    const createId = () => Math.random().toString(36).substring(2, 9);
 
     return {
         users: usersResponse?.usersData || [],
@@ -65,6 +73,6 @@ export const useUserManagement = () => {
         setSubmitted,
         toast,
         totalPage: usersResponse?.totalPage || 0,
-        totalElement: usersResponse?.totalElement || 0,
+        totalElement: usersResponse?.totalElement || 0
     };
 };

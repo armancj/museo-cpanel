@@ -12,7 +12,18 @@ import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
 import * as XLSX from 'xlsx';
 
 export const UserList = () => {
-    const { users, userDialog, setUserDialog, saveUser, user, totalPage, totalElement, setUser, submitted, setSubmitted, toast,  } = useUserManagement();
+    const {
+        users,
+        userDialog,
+        setUserDialog,
+        saveUser,
+        user,
+        totalPage,
+        totalElement,
+        setUser,
+        submitted,
+        setSubmitted,
+        toast,  } = useUserManagement();
 
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
@@ -31,7 +42,7 @@ export const UserList = () => {
     };
 
 
-    const confirmDeleteSelected = (user: UsersDatum) => {
+    const confirmDeleteSelected = () => {
         setDeleteUserDialog(true);
     };
 
@@ -76,6 +87,7 @@ export const UserList = () => {
                         setUserDialog={setUserDialog}
                         confirmDeleteSelected={confirmDeleteSelected}
                         exportExcel={exportCSV}
+                        openNew={ openNew }
                     />
 
                     <UserTable
@@ -89,7 +101,12 @@ export const UserList = () => {
                         totalElement={{totalElement}}
                     />
                     <Dialog visible={userDialog} header="User Details" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
-                        <UserForm onImageUpload={handleImageUpload} user={user} onInputChange={(e, field) => setUser({ ...user, [field]: e.target.value })}  submitted={submitted} />
+                        <UserForm
+                            onImageUpload={handleImageUpload}
+                            user={user}
+                            onInputChange={(e, field) => setUser({ ...user, [field]: e.target.value })}
+                            submitted={submitted}
+                        />
                     </Dialog>
                     <Dialog visible={deleteUserDialog} header="Confirm" modal footer={userDialogFooter} onHide={() => setDeleteUserDialog(false)}>
                         <div className="flex align-items-center justify-content-center">

@@ -5,18 +5,14 @@ import React from 'react';
 import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 
 interface UserToolbarProps {
-    selectedUsers: any;
-    setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void;
-    confirmDeleteSelected: (user: UsersDatum) => void;
-    exportExcel: () => void;
+    selectedUsers: any,
+    setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    confirmDeleteSelected: (user: UsersDatum) => void,
+    exportExcel: () => void,
+    openNew: () => void
 }
 
-export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelected, exportExcel }: UserToolbarProps) => {
-
-    const openNew = () => {
-        setUserDialog(true);
-    };
-
+export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelected, exportExcel, openNew }: UserToolbarProps) => {
     const handleDelete = () => {
         if (selectedUsers.length) {
             confirmDeleteSelected(selectedUsers[0]);
