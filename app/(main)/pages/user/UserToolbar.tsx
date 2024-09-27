@@ -2,25 +2,25 @@ import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import React from 'react';
+import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 
 interface UserToolbarProps {
-    selectedUsers: any,
-    setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void
+    selectedUsers: any;
+    setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void;
+    confirmDeleteSelected: (user: UsersDatum) => void;
+    exportExcel: () => void;
 }
 
-export const UserToolbar = ({ selectedUsers, setUserDialog }: UserToolbarProps) => {
+export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelected, exportExcel }: UserToolbarProps) => {
 
     const openNew = () => {
         setUserDialog(true);
     };
 
-    const confirmDeleteSelected = () => {
-        setUser(product);
-        setDeleteProductDialog(true);
-    };
-
-    const exportCSV = () => {
-        // Exportar productos
+    const handleDelete = () => {
+        if (selectedUsers.length) {
+            confirmDeleteSelected(selectedUsers[0]);
+        }
     };
 
     const leftToolbarTemplate = () => {
@@ -28,7 +28,7 @@ export const UserToolbar = ({ selectedUsers, setUserDialog }: UserToolbarProps) 
             <React.Fragment>
                 <div className="my-2">
                     <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !(selectedProducts as any).length} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selectedUsers  || !selectedUsers.length} />
                 </div>
             </React.Fragment>
         );
@@ -38,12 +38,12 @@ export const UserToolbar = ({ selectedUsers, setUserDialog }: UserToolbarProps) 
         return (
             <React.Fragment>
                 <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} chooseLabel="Import" className="mr-2 inline-block" />
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
+                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportExcel} />
             </React.Fragment>
         );
     };
 
     return (
-        <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+        <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
     );
 };

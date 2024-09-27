@@ -1,112 +1,87 @@
-import React, { useState } from 'react';
-import { UsersDatum, UsersResponse } from '@/app/(main)/pages/user/UserService';
+import React, { useRef, useState } from 'react';
+import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { FileUpload } from 'primereact/fileupload';
+import { classNames } from 'primereact/utils';
+import { Fieldset } from 'primereact/fieldset';
 
 interface UserFormProps {
-    user: Omit<UsersDatum, 'uuid' | 'deleted' | 'active'>;
-    setUser: React.Dispatch<React.SetStateAction<UsersDatum>;
+    user: UsersDatum;
+    onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
+    submitted: boolean;
+    onImageUpload: (file: File) => void; // Nueva prop para manejar la carga de imágenes
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ user, setUser }) => {
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
-        const val = (e.target && e.target.value) || '';
-        setUser({ ...user, [name]: val });
+export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitted, onImageUpload }) => {
+
+    const handleImageUpload = (file: File) => {
+        onImageUpload(file);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
     };
 
-    return (
-        <div>
-            <div className="field">
-                <label htmlFor="name">Nombre</label>
-                <InputText
-                    id="name"
-                    name="name"
-                    value={user.name}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="lastName">Apellidos</label>
-                <InputText
-                    id="lastName"
-                    name="lastName"
-                    value={user.lastName}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="mobile">Teléfono</label>
-                <InputText
-                    id="mobile"
-                    name="mobile"
-                    value={user.mobile}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="municipal">Municipio</label>
-                <InputText
-                    id="municipal"
-                    name="municipal"
-                    value={user.municipal}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="province">Provincia</label>
-                <InputText
-                    id="province"
-                    name="province"
-                    value={user.province}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="nationality">País</label>
-                <InputText
-                    id="nationality"
-                    name="nationality"
-                    value={user.nationality}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="email">Correo</label>
-                <InputText
-                    id="email"
-                    name="email"
-                    value={user.email}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="address">Dirección</label>
-                <InputTextarea
-                    id="address"
-                    name="address"
-                    value={user.address}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-            <div className="field">
-                <label htmlFor="roles">Rol</label>
-                <InputText
-                    id="roles"
-                    name="roles"
-                    value={user.roles}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-        </div>
 
+    return (
+        <div className="flex">
+            <Fieldset legend="Detalles del Usuario" className="p-4 flex-grow-1">
+                <div className="grid">
+                    {[
+                        { field: 'name', label: 'Nombre', required: true },
+                        { field: 'lastName', label: 'Apellidos', required: false },
+                        { field: 'mobile', label: 'Teléfono', required: true },
+                        { field: 'municipal', label: 'Municipio', required: true },
+                        { field: 'province', label: 'Provincia', required: true },
+                        { field: 'nationality', label: 'País', required: true },
+                        { field: 'email', label: 'Correo', required: true },
+                        { field: 'roles', label: 'Rol', required: true },
+                    ].map(({ field, label, required }) => (
+                        <div className="field col-12 md:col-6" key={field}>
+                            <label htmlFor={field}>{label}</label>
+                            <InputText
+                                id={field}
+                                name={field}
+                                value={user[field]}
+                                onChange={(e) => onInputChange(e, field)}
+                                required={required}
+                                className={classNames({ 'p-invalid': submitted && !user[field] })}
+                            />
+                            {submitted && !user[field] &&
+                                <small className="p-invalid">{`${label} es requerido.`}</small>}
+                        </div>
+                    ))}
+                    <div className="field col-12">
+                        <label htmlFor="address">Dirección</label>
+                        <InputTextarea
+                            id="address"
+                            name="address"
+                            value={user.address}
+                            onChange={(e) => onInputChange(e, 'address')}
+                            required
+                            className={classNames({ 'p-invalid': submitted && !user.address })}
+                        />
+                        {submitted && !user.address && <small className="p-invalid">Dirección es requerida.</small>}
+                    </div>
+                </div>
+
+                <div className="avatar-upload">
+                    <label htmlFor="avatar">Avatar</label>
+                    <FileUpload
+                        id="avatar"
+                        name="avatar"
+                        mode="advanced"
+                        accept="image/*"
+                        maxFileSize={1000000}
+                        onUpload={(e) => handleImageUpload(e.files[0])}
+                        chooseLabel="Seleccionar Imagen"
+                        uploadLabel={"Subir imagen"}
+                        cancelLabel={"Cancelar"}
+                        multiple={false}
+                    >
+                    </FileUpload>
+            </div>
+            </Fieldset>
+
+        </div>
     );
 };

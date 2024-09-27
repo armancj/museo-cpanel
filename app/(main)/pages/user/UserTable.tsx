@@ -2,21 +2,30 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import React, { useRef } from 'react';
-import { UsersDatum, UsersResponse } from '@/app/(main)/pages/user/UserService';
-import { Demo } from '@/types';
+import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 import { ImageBodyTemplate } from '@/app/(main)/pages/user/imageBodyTemplate';
 
 interface UserTableProps {
-    users: UsersResponse | null,
+    users: UsersDatum[] | null,
     selectedUsers: any,
     globalFilter: string,
     setGlobalFilter: (value: (((prevState: string) => string) | string)) => void,
-    setSelectedUsers: (value: (((prevState: UsersDatum[]) => UsersDatum[]) | UsersDatum[])) => void
+    setSelectedUsers: (value: (((prevState: UsersDatum[]) => UsersDatum[]) | UsersDatum[])) => void,
+    totalPage: number,
+    totalElement: { totalElement: any },
+    dt: React.RefObject<DataTable<UsersDatum[]>>
 }
 
-export const UserTable = ({ users, selectedUsers, globalFilter, setGlobalFilter, setSelectedUsers }: UserTableProps) => {
-    const dt = useRef<DataTable<UsersDatum[]>>(null);
-
+export const UserTable = ({
+                              users,
+                              selectedUsers,
+                              globalFilter,
+                              setGlobalFilter,
+                              setSelectedUsers,
+                              dt,
+                              totalPage,
+                              totalElement,
+                          }: UserTableProps) => {
     const nameBodyTemplate = (rowData: UsersDatum) => {
         return (
             <>
@@ -49,7 +58,7 @@ export const UserTable = ({ users, selectedUsers, globalFilter, setGlobalFilter,
             </span>
             <DataTable
                 ref={dt}
-                value={users?.usersData}
+                value={users || []}
                 selection={selectedUsers}
                 onSelectionChange={(e) => setSelectedUsers(e.value as any)}
                 dataKey="uuid"
