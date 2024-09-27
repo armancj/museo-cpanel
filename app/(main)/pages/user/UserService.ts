@@ -46,11 +46,7 @@ export const UserService  =   {
         const nationality = (nationalityData as unknown as addressResponse)?.name || 'Cuba'
         const municipal = (municipalData as unknown as addressResponse)?.name || ''
 
-        console.log({nationality, municipal, province, ...rest})
-
-        const response = await post<UsersDatum>(WebEnvConst.user.post, {nationality, municipal, province, ...rest});
-        console.log({ response })
-        return response;
+        return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, ...rest });
     },
 };
 
