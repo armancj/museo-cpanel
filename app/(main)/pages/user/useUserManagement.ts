@@ -71,8 +71,8 @@ export const useUserManagement = () => {
                             const conflictFields = Object.keys(conflictData);
 
                             conflictFields.forEach(field => {
-                                const fieldData = field === 'email'
-                                show.detail =`El ${field}: ${conflictData[field]} ya se encuentra en el sistema.`;
+                                const fieldData = field === 'email'? 'Correo': 'Teléfono'
+                                show.detail =`El ${fieldData}: ${conflictData[field]} ya se encuentra en el sistema.`;
                             });
                         }
                     }
