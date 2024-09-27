@@ -41,6 +41,7 @@ export const UserService  =   {
 
 export const ProvinceService  =   {
     getProvinces: async ({name}: addressResponse) => {
+        console.log({here: name })
         return await get<addressResponse[]>(`${WebEnvConst.province}?country=${name}`);
     },
 }

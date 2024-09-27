@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-    addressResponse,
-    CountryService, MunicipalityService,
-    ProvinceService,
     UsersDatum
 } from '@/app/(main)/pages/user/UserService';
 import { InputText } from 'primereact/inputtext';
@@ -11,6 +8,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { classNames } from 'primereact/utils';
 import { Fieldset } from 'primereact/fieldset';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
+import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 
 interface UserFormProps {
     user: UsersDatum;
@@ -20,37 +18,15 @@ interface UserFormProps {
 }
 
 export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitted, onImageUpload }) => {
-
-    const [countries, setCountries] = useState<addressResponse[]>([{
-        name: "Cuba",
-    }]);
-    const [provinces, setProvinces] = useState<addressResponse[]>([{
-        name: "Las Tunas"
-    }]);
-    const [municipalities, setMunicipalities] = useState<addressResponse[]>([]);
-    const [isProvinceDisabled, setIsProvinceDisabled] = useState(true);
-    const [isMunicipalityDisabled, setIsMunicipalityDisabled] = useState(true);
-
-    useEffect(() => {
-        CountryService.getCountries().then(data => {
-            setCountries(data);
-        });
-    }, []);
-
-    const handleCountryChange = (e: any) => {
-        onInputChange(e, 'nationality');
-        ProvinceService.getProvinces(e.target.value).then(provincesData => setProvinces(provincesData));
-        setMunicipalities([]);
-        setIsProvinceDisabled(false); // Enable province dropdown
-        setIsMunicipalityDisabled(true); // Disable municipality dropdown
-    };
-
-    const handleProvinceChange = (e: any) => {
-        onInputChange(e, 'province');
-        MunicipalityService.getMunicipalities(e.target.value).then(municipalitiesData => setMunicipalities(municipalitiesData));
-        setIsMunicipalityDisabled(false); // Enable municipality dropdown
-
-    };
+    const {
+        countries,
+        provinces,
+        municipalities,
+        isProvinceDisabled,
+        isMunicipalityDisabled,
+        handleCountryChange,
+        handleProvinceChange
+    } = useAddressData();
 
     const handleImageUpload = (file: File) => {
         onImageUpload(file);
@@ -58,7 +34,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
         reader.readAsDataURL(file);
     };
 
-    const dropdownFields = ['province', 'municipal', 'nationality'];
+    const dropdownFields = ['municipal', 'province', 'nationality'];
 
     return (
         <div className="flex">
@@ -76,40 +52,21 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                     ].map(({ field, label, required }) => (
                         <div className="field col-12 md:col-6" key={field}>
                             <label htmlFor={field}>{label}</label>
-                            {field === 'nationality' ? (
+                            {dropdownFields.includes(field) ? (
                                 <DropdownField
                                     id={field}
                                     name={field}
                                     value={user[field]}
-                                    options={countries}
-                                    onChange={handleCountryChange}
+                                    options={field === dropdownFields[2] ? countries : field === dropdownFields[1] ? provinces : municipalities}
+                                    onChange={field === dropdownFields[2] ?
+                                        (e) => handleCountryChange(e.target.value, onInputChange) :
+                                        field === dropdownFields[1] ?
+                                            (e) => handleProvinceChange(e.target.value, onInputChange) :
+                                            (e) => onInputChange(e, field)}
                                     optionLabel="name"
-                                    placeholder="Seleccionar País"
+                                    placeholder={`Seleccionar ${label}`}
                                     submitted={submitted}
-                                />
-                            ) : field === 'province' ? (
-                                <DropdownField
-                                    id={field}
-                                    name={field}
-                                    value={user[field]}
-                                    options={provinces}
-                                    onChange={handleProvinceChange}
-                                    optionLabel="name"
-                                    placeholder="Seleccionar Provincia"
-                                    submitted={submitted}
-                                    disabled={isProvinceDisabled}
-                                />
-                            ) : field === 'municipal' ? (
-                                <DropdownField
-                                    id={field}
-                                    name={field}
-                                    value={user[field]}
-                                    options={municipalities}
-                                    onChange={(e) => onInputChange(e, field)}
-                                    optionLabel="name"
-                                    placeholder="Seleccionar Municipio"
-                                    submitted={submitted}
-                                    disabled={isMunicipalityDisabled}
+                                    disabled={field === dropdownFields[2] ? false : field === dropdownFields[1] ? isProvinceDisabled : isMunicipalityDisabled}
                                 />
                             ) : (
                                 <InputText
