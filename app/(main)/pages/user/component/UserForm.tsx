@@ -38,6 +38,16 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
 
     const dropdownFields = ['municipal', 'province', 'nationality', 'roles'];
 
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validateMobile = (mobile: string) => {
+        const re = /^\+?[1-9]\d{1,14}$/;
+        return re.test(String(mobile));
+    };
+
     const roles = [
         { name: 'Super Administrador', value: 'super Administrador' },
         { name: 'Administrador', value: 'Administrador' },
@@ -87,11 +97,15 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                                     value={user[field]}
                                     onChange={(e) => onInputChange(e, field)}
                                     required={required}
-                                    className={classNames({ 'p-invalid': submitted && !user[field] })}
+                                    className={classNames({ 'p-invalid': submitted && !user[field], 'p-invalid': field === 'email' && !validateEmail(user[field]), 'p-invalid': field === 'mobile' && !validateMobile(user[field]) })}
                                 />
                             )}
                             {submitted && !user[field] &&
                                 <small className="p-invalid">{`${label} es requerido.`}</small>}
+                            {submitted && field === 'email' && !validateEmail(user[field]) &&
+                                <small className="p-invalid">Correo no es válido.</small>}
+                            {submitted && field === 'mobile' && !validateMobile(user[field]) &&
+                                <small className="p-invalid">Teléfono no es válido.</small>}
                         </div>
                     ))}
                     <div className="field col-3">

@@ -40,8 +40,15 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
-        const {uuid, active, deleted, avatar, ...rest} = user;
-        const response = await post<UsersDatum>(WebEnvConst.user.post, {...rest});
+        const {uuid, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
+
+        const province = (provinceData as unknown as addressResponse)?.name || 'Las Tunas'
+        const nationality = (nationalityData as unknown as addressResponse)?.name || 'Cuba'
+        const municipal = (municipalData as unknown as addressResponse)?.name || ''
+
+        console.log({nationality, municipal, province, ...rest})
+
+        const response = await post<UsersDatum>(WebEnvConst.user.post, {nationality, municipal, province, ...rest});
         console.log({ response })
         return response;
     },
@@ -49,7 +56,6 @@ export const UserService  =   {
 
 export const ProvinceService  =   {
     getProvinces: async ({name}: addressResponse) => {
-        console.log({here: name })
         return await get<addressResponse[]>(`${WebEnvConst.province}?country=${name}`);
     },
 }
@@ -60,8 +66,6 @@ export const MunicipalityService  =   {
 }
 export const CountryService  =   {
     getCountries: async () => {
-        const response = await get<addressResponse[]>(WebEnvConst.country);
-        console.log({ country: response })
-        return response;
+        return await get<addressResponse[]>(WebEnvConst.country);
     },
 }
