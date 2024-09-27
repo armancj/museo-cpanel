@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Toast } from 'primereact/toast';
+import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/(main)/pages/user/UserService';
+import { AxiosError } from 'axios';
 
 export const emptyUser: UsersDatum = {
     password: '',
@@ -39,26 +40,48 @@ export const useUserManagement = () => {
 
                 if (index !== -1) {
                     _usersData[index] = user;
-                    toast.current?.show({ severity: 'success', summary: 'User Updated', life: 3000 });
+                    toast.current?.show({ severity: 'success', summary: 'Usuario Actualizado', life: 5000 });
+                    setUserDialog(false);
                 }
 
             } else {
                 try {
                     const createdUser = await UserService.createUser(user);
                     _usersData.push(createdUser);
-                    toast.current?.show({ severity: 'success', summary: 'User Created', life: 3000 });
+                    toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
+                    setUserDialog(false);
+                    setUser(emptyUser);
                 } catch (error) {
-                    toast.current?.show({
+                    const show: ToastMessage ={
                         severity: 'error',
                         summary: 'Error',
                         detail: 'Failed to create user',
-                        life: 3000
-                    });
+                        life: 5000
+                    }
+                    if(error instanceof AxiosError){
+                        const errorMessage = (error.response)?.data?.message || 'failed axio';
+                        if(error.status === 400 )
+                            show.detail = errorMessage
+                        if(error.status === 401)
+                            show.detail = errorMessage
+                        if(error.status === 404)
+                            show.detail = 'La provincia, el municipio o el pais, no se encuentra en la aplicación'
+                        if(error.status === 409) {
+                            const conflictData = JSON.parse(errorMessage.replace('Conflict: ', ''));
+                            const conflictFields = Object.keys(conflictData);
+
+                            conflictFields.forEach(field => {
+                                const fieldData = field === 'email'
+                                show.detail =`El ${field}: ${conflictData[field]} ya se encuentra en el sistema.`;
+                            });
+                        }
+                    }
+                    toast.current?.show(show);
+                    setUserDialog(true);
+                    console.log(error);
                 }
             }
             setUsersResponse({ ...usersResponse, usersData: _usersData } as UsersResponse);
-            setUserDialog(false);
-            setUser(emptyUser);
         }
     };
 
