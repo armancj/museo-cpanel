@@ -7,5 +7,8 @@ export const WebEnvConst = {
     },
     user:{
         getAll: '/users/all?page=1&perPage=10',
-    }
+    },
+    province: '/province',
+    country: '/country',
+    municipality: '/municipality',
 }
