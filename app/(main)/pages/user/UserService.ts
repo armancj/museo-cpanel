@@ -1,4 +1,4 @@
-import { get, post } from '@/adapter/httpAdapter';
+import { get, post, patch } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 
 export interface UsersResponse {
@@ -33,10 +33,20 @@ export interface Avatar {
 export interface addressResponse {
     name:      string;
 }
+export interface UserActive {
+    uuid:      string;
+    active:      boolean;
+}
 
 export const UserService  =   {
     getUsers: async () => {
         return await post<UsersResponse>(WebEnvConst.user.getAll, {});
+    },
+
+    changeActivateUser: async (userActive: UserActive) => {
+        const {uuid, active} = userActive;
+        const url = WebEnvConst.user.changeActivate(uuid);
+        return await patch<boolean>(url, { active });
     },
 
     createUser: async (user: UsersDatum) => {

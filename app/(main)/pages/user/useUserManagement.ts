@@ -85,6 +85,21 @@ export const useUserManagement = () => {
         }
     };
 
+    const toggleUserActivation = async (uuid: string, active: boolean) => {
+        try {
+            await UserService.changeActivateUser({ uuid, active });
+                const updatedUsers = usersResponse?.usersData.map(user =>
+                    user.uuid === uuid ? { ...user, active } : user
+                );
+                setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
+                toast.current?.show({ severity: 'success', summary: 'Estado del usuario actualizado', life: 5000 });
+
+        } catch (error) {
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el estado del usuario', life: 5000 });
+            console.error('Error al cambiar el estado del usuario:', error);
+        }
+    };
+
     return {
         users: usersResponse?.usersData || [],
         userDialog,
@@ -96,6 +111,7 @@ export const useUserManagement = () => {
         setSubmitted,
         toast,
         totalPage: usersResponse?.totalPage || 0,
-        totalElement: usersResponse?.totalElement || 0
+        totalElement: usersResponse?.totalElement || 0,
+        toggleUserActivation
     };
 };

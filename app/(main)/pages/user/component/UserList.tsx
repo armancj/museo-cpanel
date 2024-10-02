@@ -23,7 +23,9 @@ export const UserList = () => {
         setUser,
         submitted,
         setSubmitted,
-        toast,  } = useUserManagement();
+        toast,
+        toggleUserActivation
+    } = useUserManagement();
 
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
@@ -99,6 +101,7 @@ export const UserList = () => {
                         setGlobalFilter = {setGlobalFilter}
                         totalPage={totalPage}
                         totalElement={{totalElement}}
+                        toggleUserActivation={toggleUserActivation}
                     />
                     <Dialog visible={userDialog} header="User Details" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
                         <UserForm

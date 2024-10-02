@@ -1,9 +1,11 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
-import React, { useRef } from 'react';
+import React from 'react';
 import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 import { ImageBodyTemplate } from '@/app/(main)/pages/user/component/imageBodyTemplate';
+import { TableBodyFunction } from '@/app/(main)/pages/user/component/util/tableBodyFunction';
+import styles from './UserTable.module.css';
 
 interface UserTableProps {
     users: UsersDatum[] | null,
@@ -13,7 +15,8 @@ interface UserTableProps {
     setSelectedUsers: (value: (((prevState: UsersDatum[]) => UsersDatum[]) | UsersDatum[])) => void,
     totalPage: number,
     totalElement: { totalElement: any },
-    dt: React.RefObject<DataTable<UsersDatum[]>>
+    dt: React.RefObject<DataTable<UsersDatum[]>>,
+    toggleUserActivation: (uuid: string, active: boolean) => Promise<void>
 }
 
 export const UserTable = ({
@@ -25,26 +28,11 @@ export const UserTable = ({
                               dt,
                               totalPage,
                               totalElement,
+                              toggleUserActivation
                           }: UserTableProps) => {
-    const nameBodyTemplate = (rowData: UsersDatum) => {
-        return (
-            <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
-            </>
-        );
-    };
 
-    const statusBodyTemplate = (rowData: UsersDatum) => {
-        const status = rowData.active ? 'ACTIVADO' : 'DESACTIVADO';
-        const statusCss =  rowData.active? 'status-instock' : 'status-outofstock'
-        return (
-            <>
-                <span className="p-column-title">Status</span>
-                <span className={`product-badge ${statusCss}`}>{status}</span>
-            </>
-        );
-    };
+    const { nameBodyTemplate, actionBodyTemplate, statusBodyTemplate } = TableBodyFunction(toggleUserActivation);
+
 
     return (
         <>
@@ -53,7 +41,7 @@ export const UserTable = ({
                 <InputText
                     type="search"
                     onInput={(e) => setGlobalFilter(e.currentTarget.value)}
-                    placeholder="Search..."
+                    placeholder="Buscar..."
                 />
             </span>
             <DataTable
@@ -70,20 +58,21 @@ export const UserTable = ({
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
                 globalFilter={globalFilter}
                 emptyMessage="No hay usuarios agregados."
-                style={{tableLayout: 'auto'}}
+                style={{ tableLayout: 'auto' }}
             >
                 <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
                 <Column field="name" sortable body={nameBodyTemplate} header="Nombre" headerStyle={{ minWidth: '5rem' }} />
                 <Column field="lastName" sortable header="Apellidos" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }} />
                 <Column field="municipal" header="Municipio" sortable />
-                <Column field="province" header="Provincia" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }}  />
+                <Column field="province" header="Provincia" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }} />
                 <Column field="nationality" header="Pais" headerStyle={{ minWidth: '5rem' }} />
                 <Column field="mobile" header="Teléfono" headerStyle={{ minWidth: '5rem' }} />
                 <Column field="email" header="Correo" sortable headerStyle={{ minWidth: '5rem' }} />
                 <Column field="address" header="Dirección" headerStyle={{ minWidth: '20rem', width: 'auto' }} style={{ whiteSpace: 'normal' }} />
                 <Column field="active" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '5rem' }} />
                 <Column field="roles" header="Rol" sortable />
-                <Column field="avatar"  body={ImageBodyTemplate} header="Avatar" />
+                <Column field="avatar" body={ImageBodyTemplate} header="Avatar" />
+                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
         </>
     );
