@@ -48,7 +48,7 @@ export const get = async <T>(url: string, config?: InternalAxiosRequestConfig): 
 
 export const post = async <T>(url: string, data?: any, config?: InternalAxiosRequestConfig): Promise<T> => {
     const response = await httpAdapter.post<T>(url, data, config);
-    return response.data;
+    return response?.data;
 };
 
 export const put = async <T>(url: string, data?: any, config?: InternalAxiosRequestConfig): Promise<T> => {

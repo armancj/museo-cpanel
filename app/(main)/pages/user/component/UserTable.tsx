@@ -70,17 +70,17 @@ export const UserTable = ({
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
                 globalFilter={globalFilter}
                 emptyMessage="No hay usuarios agregados."
-                responsiveLayout="scroll"
+                style={{tableLayout: 'auto'}}
             >
                 <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
                 <Column field="name" sortable body={nameBodyTemplate} header="Nombre" headerStyle={{ minWidth: '5rem' }} />
-                <Column field="lastName" sortable header="Apellidos" headerStyle={{ minWidth: '5rem' }} />
-                <Column field="municipal" header="Municipio" sortable headerStyle={{ minWidth: '5rem' }} />
-                <Column field="province" header="Provincia" headerStyle={{ minWidth: '5rem' }} />
+                <Column field="lastName" sortable header="Apellidos" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }} />
+                <Column field="municipal" header="Municipio" sortable />
+                <Column field="province" header="Provincia" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }}  />
                 <Column field="nationality" header="Pais" headerStyle={{ minWidth: '5rem' }} />
                 <Column field="mobile" header="Teléfono" headerStyle={{ minWidth: '5rem' }} />
                 <Column field="email" header="Correo" sortable headerStyle={{ minWidth: '5rem' }} />
-                <Column field="address" header="Dirección" headerStyle={{ minWidth: '5rem' }} />
+                <Column field="address" header="Dirección" headerStyle={{ minWidth: '20rem', width: 'auto' }} style={{ whiteSpace: 'normal' }} />
                 <Column field="active" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '5rem' }} />
                 <Column field="roles" header="Rol" sortable />
                 <Column field="avatar"  body={ImageBodyTemplate} header="Avatar" />
