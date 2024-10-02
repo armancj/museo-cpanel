@@ -1,5 +1,6 @@
 import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 import { Button } from 'primereact/button';
+import styles from './ButtonStyles.module.css';
 import React from 'react';
 
 export function TableBodyFunction(toggleUserActivation: (uuid: string, active: boolean) => Promise<void>) {
@@ -7,21 +8,21 @@ export function TableBodyFunction(toggleUserActivation: (uuid: string, active: b
         return (
             <>
                 <span className="p-column-title">Name</span>
-        {rowData.name}
-        </>
-    );
+                {rowData.name}
+            </>
+        );
     };
 
     const actionBodyTemplate = (rowData: UsersDatum) => {
         return (
             <Button
                 icon={rowData.active ? 'pi pi-times' : 'pi pi-check'}
-        className={`p-button-rounded p-button-text ${rowData.active ? 'p-button-danger' : 'p-button-success'}`}
-        tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
-        tooltipOptions={{ position: 'top' }}
-        onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
-        />
-    );
+                className={`p-button-rounded p-button-text ${rowData.active ? `p-button-danger` : `p-button-success`}`}
+                tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
+                tooltipOptions={{ position: 'top' }}
+                onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
+            />
+        );
     };
 
     const statusBodyTemplate = (rowData: UsersDatum) => {
@@ -31,8 +32,8 @@ export function TableBodyFunction(toggleUserActivation: (uuid: string, active: b
             <>
                 <span className="p-column-title">Status</span>
                 <span className={`product-badge ${statusCss}`}>{status}</span>
-        </>
-    );
+            </>
+        );
     };
     return { nameBodyTemplate, actionBodyTemplate, statusBodyTemplate };
 }
