@@ -1,0 +1,11 @@
+.layoutMenu {
+    /* Estilos generales del menú */
+}
+
+.layoutMenuCollapsed .layoutMenuitemText {
+    display: none;
+}
+
+.layoutMenuCollapsed .layoutMenuitemIcon {
+    margin-right: 0;
+}
