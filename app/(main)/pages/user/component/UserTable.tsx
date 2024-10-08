@@ -16,7 +16,9 @@ interface UserTableProps {
     totalPage: number,
     totalElement: { totalElement: any },
     dt: React.RefObject<DataTable<UsersDatum[]>>,
-    toggleUserActivation: (uuid: string, active: boolean) => Promise<void>
+    toggleUserActivation: (uuid: string, active: boolean) => Promise<void>,
+    deleteUser: (uuid: string) => void,
+    editUser: (updatedUser: Partial<UsersDatum>) => Promise<void>
 }
 
 export const UserTable = ({
@@ -26,12 +28,12 @@ export const UserTable = ({
                               setGlobalFilter,
                               setSelectedUsers,
                               dt,
-                              totalPage,
-                              totalElement,
-                              toggleUserActivation
+                              toggleUserActivation,
+                              deleteUser,
+                              editUser
                           }: UserTableProps) => {
 
-    const { nameBodyTemplate, actionBodyTemplate, statusBodyTemplate } = TableBodyFunction(toggleUserActivation);
+    const { nameBodyTemplate, actionBodyTemplate, statusBodyTemplate } = TableBodyFunction({toggleUserActivation, deleteUser, editUser});
 
 
     return (

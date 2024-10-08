@@ -22,11 +22,10 @@ export const UserList = () => {
         totalElement,
         setUser,
         submitted,
-        setSubmitted,
         toast,
         toggleUserActivation
+        , deleteUser, editUser
     } = useUserManagement();
-
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<UsersDatum[]>([]);
@@ -42,7 +41,6 @@ export const UserList = () => {
     const hideDialog = () => {
         setUserDialog(false);
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteUserDialog(true);
@@ -102,6 +100,8 @@ export const UserList = () => {
                         totalPage={totalPage}
                         totalElement={{totalElement}}
                         toggleUserActivation={toggleUserActivation}
+                        deleteUser={deleteUser}
+                        editUser={editUser}
                     />
                     <Dialog visible={userDialog} header="User Details" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
                         <UserForm
@@ -114,7 +114,7 @@ export const UserList = () => {
                     <Dialog visible={deleteUserDialog} header="Confirm" modal footer={userDialogFooter} onHide={() => setDeleteUserDialog(false)}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {user && <span>Are you sure you want to delete <b>{user.name}</b>?</span>}
+                            {user && <span>¿Estás seguro de que deseas eliminar a <b>{user.name}</b>?</span>}
                         </div>
                     </Dialog>
                 </div>

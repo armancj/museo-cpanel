@@ -1,9 +1,14 @@
 import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 import { Button } from 'primereact/button';
-import styles from './ButtonStyles.module.css';
 import React from 'react';
 
-export function TableBodyFunction(toggleUserActivation: (uuid: string, active: boolean) => Promise<void>) {
+interface TableBodyFunctionProps {
+    toggleUserActivation: (uuid: string, active: boolean) => Promise<void>;
+    editUser: (updatedUser: Partial<UsersDatum>) => Promise<void>
+    deleteUser: (uuid: string) => void;
+}
+
+export function TableBodyFunction({ toggleUserActivation, editUser, deleteUser }: TableBodyFunctionProps) {
     const nameBodyTemplate = (rowData: UsersDatum) => {
         return (
             <>
@@ -15,13 +20,29 @@ export function TableBodyFunction(toggleUserActivation: (uuid: string, active: b
 
     const actionBodyTemplate = (rowData: UsersDatum) => {
         return (
-            <Button
-                icon={rowData.active ? 'pi pi-times' : 'pi pi-check'}
-                className={`p-button-rounded p-button-text ${rowData.active ? `p-button-danger` : `p-button-success`}`}
-                tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
-                tooltipOptions={{ position: 'top' }}
-                onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
-            />
+            <div>
+                <Button
+                    icon="pi pi-pencil"
+                    className="p-button-rounded p-button-text p-button-warning"
+                    tooltip="Editar Usuario"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => editUser(rowData)}
+                />
+                <Button
+                    icon="pi pi-trash"
+                    className="p-button-rounded p-button-text p-button-danger"
+                    tooltip="Eliminar Usuario"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => deleteUser(rowData.uuid)}
+                />
+                <Button
+                    icon={rowData.active ? 'pi pi-times' : 'pi pi-check'}
+                    className={`p-button-rounded p-button-text ${rowData.active ? `p-button-danger` : `p-button-success`}`}
+                    tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
+                />
+            </div>
         );
     };
 

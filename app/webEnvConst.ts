@@ -8,6 +8,7 @@ export const WebEnvConst = {
     user:{
         getAll: '/users/all?page=1&perPage=10',
         post: '/users',
+        getOne: (uuid: string) => `/users/${uuid}`,
         changeActivate: (uuid: string) => `/users/${uuid}/change-activate`
     },
     province: '/province',

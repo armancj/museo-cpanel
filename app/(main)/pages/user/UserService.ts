@@ -1,4 +1,4 @@
-import { get, post, patch } from '@/adapter/httpAdapter';
+import { get, post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 
 export interface UsersResponse {
@@ -30,7 +30,7 @@ export interface Avatar {
     nameFile: string;
 }
 
-export interface addressResponse {
+export interface AddressResponse {
     name:      string;
 }
 export interface UserActive {
@@ -50,28 +50,40 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
-        const {uuid, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
+        const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
 
-        const province = (provinceData as unknown as addressResponse)?.name || 'Las Tunas'
-        const nationality = (nationalityData as unknown as addressResponse)?.name || 'Cuba'
-        const municipal = (municipalData as unknown as addressResponse)?.name || ''
+        const province = (provinceData as unknown as AddressResponse)?.name || 'Las Tunas'
+        const nationality = (nationalityData as unknown as AddressResponse)?.name || 'Cuba'
+        const municipal = (municipalData as unknown as AddressResponse)?.name || ''
 
         return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, ...rest });
     },
+
+    updateUser: async (uuid: string, user: Partial<UsersDatum>) => {
+
+        const url = WebEnvConst.user.getOne(uuid);
+
+        return await patch<UsersDatum>(url, user);
+    },
+    deleteUser: async (uuid: string) =>  {
+        const url = WebEnvConst.user.getOne(uuid);
+        return await del<UsersDatum>(url);
+
+    }
 };
 
 export const ProvinceService  =   {
-    getProvinces: async ({name}: addressResponse) => {
-        return await get<addressResponse[]>(`${WebEnvConst.province}?country=${name}`);
+    getProvinces: async ({name}: AddressResponse) => {
+        return await get<AddressResponse[]>(`${WebEnvConst.province}?country=${name}`);
     },
 }
 export const MunicipalityService  =   {
-    getMunicipalities: async ({name}: addressResponse) => {
-        return await get<addressResponse[]>(`${WebEnvConst.municipality}?province=${name}`);
+    getMunicipalities: async ({name}: AddressResponse) => {
+        return await get<AddressResponse[]>(`${WebEnvConst.municipality}?province=${name}`);
     },
-}
+};
 export const CountryService  =   {
     getCountries: async () => {
-        return await get<addressResponse[]>(WebEnvConst.country);
+        return await get<AddressResponse[]>(WebEnvConst.country);
     },
-}
+};
