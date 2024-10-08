@@ -1,20 +1,64 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/types';
+import { UsersDatum } from '@/app/(main)/pages/user/UserService';
 
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
+    const [userRole, setUserRole] = useState('');
+
+    useEffect(() => {
+
+        const authUser = JSON.parse(localStorage.getItem('authUser') as string) as UsersDatum;
+        if (authUser && authUser.roles) {
+            setUserRole(authUser.roles);
+        }
+    }, []);
+
 
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
+            label: 'Inicio',
             items: [
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+            ]
+        },
+        {
+            label: 'Nomencladores',
+            items: [
+                {
+                    label: 'Direcciones',
+                    icon: 'pi pi-fw pi-truck',
+                    items: [
+                        {
+                            label: 'País',
+                            icon: 'pi pi-fw pi-flag',
+                        },
+                        {
+                            label: 'Provincia',
+                            icon: 'pi pi-fw pi-bookmark',
+                        },
+                        {
+                            label: 'Municipio',
+                            icon: 'pi pi-fw pi-bookmark',
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            label: '',
+            items: [
+                {
+                    label: 'Recursos Humanos',
+                    icon: 'pi pi-users',
+                    to: '/pages/user'
+                },
             ]
         },
         {
@@ -176,29 +220,33 @@ const AppMenu = () => {
                     target: '_blank'
                 }
             ]
-        },
-        {
-            label: '',
-            items: [
-                {
-                    label: 'Recursos Humanos',
-                    icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/user'
-                },
-            ]
-        },
+        }
     ];
+
+    const getFilteredModel = () => {
+        if (userRole === 'super Administrador') {
+            return model;
+        } else if (userRole === 'Administrador' || userRole === 'Especialista') {
+            return model.filter(item => item.label === 'Inicio' || item.label === 'Nomencladores' || item.label === 'Recursos Humanos');
+        } else if (userRole === 'Técnico') {
+            return model.filter(item => item.label === 'Inicio');
+        }
+        return [];
+    };
+
+    const filteredModel = getFilteredModel();
 
     return (
         <MenuProvider>
             <ul className="layout-menu">
-                {model.map((item, i) => {
+                {filteredModel.map((item, i) => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
 
-                <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                    <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link>
+                { (userRole === 'super Administrador') ?? <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
+                    <img alt="Prime Blocks" className="w-full mt-3"
+                         src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
+                </Link>}
             </ul>
         </MenuProvider>
     );
