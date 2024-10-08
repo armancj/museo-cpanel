@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { UserForm } from '@/app/(main)/pages/user/component/UserForm';
 import { Button } from 'primereact/button';
 import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
-import { emptyUser, useUserManagement } from '@/app/(main)/pages/user/useUserManagement';
+import { emptyUser, useManagement } from '@/app/(main)/pages/user/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
 import * as XLSX from 'xlsx';
@@ -25,7 +25,7 @@ export const UserList = () => {
         toast,
         toggleUserActivation
         , deleteUser, editUser
-    } = useUserManagement();
+    } = useManagement();
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<UsersDatum[]>([]);

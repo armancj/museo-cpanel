@@ -19,7 +19,7 @@ export const emptyUser: UsersDatum = {
     },
     roles: ''
 };
-export const useUserManagement = () => {
+export const useManagement = () => {
 
     const [usersResponse, setUsersResponse] = useState<UsersResponse | null>(null);
     const [user, setUser] = useState<UsersDatum>(emptyUser);
