@@ -11,7 +11,6 @@ interface UserDetailsProps  {
 }
 export function UserDetails({ user, onInputChange, submitted }: UserDetailsProps ) {
     const { countries, provinces, municipalities, isProvinceDisabled, isMunicipalityDisabled, handleCountryChange, handleProvinceChange } = useAddressData();
-    console.log({ countries, provinces, municipalities, user})
     const dropdownFields = ['municipal', 'province', 'nationality', 'roles'];
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
     const validateMobile = (mobile: string) => /^\+?[1-9]\d{1,14}$/.test(String(mobile));

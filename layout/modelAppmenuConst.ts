@@ -16,7 +16,8 @@ export const model: AppMenuItem[] = [
                 items: [
                     {
                         label: 'País',
-                        icon: 'pi pi-fw pi-flag'
+                        icon: 'pi pi-fw pi-flag',
+                        to: '/pages/country'
                     },
                     {
                         label: 'Provincia',

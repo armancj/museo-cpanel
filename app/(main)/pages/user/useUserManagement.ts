@@ -38,7 +38,8 @@ export const useUserManagement = () => {
             if (user.uuid) {
                 // Actualizar usuario existente
                 try {
-                    const updatedUserData = await UserService.updateUser(user.uuid, user);
+                    const {active, uuid, deleted, ...userUpdated}=user;
+                    const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
                     const index = _usersData.findIndex((u) => u.uuid === user.uuid);
                     if (index !== -1) {
                         _usersData[index] = updatedUserData;
@@ -127,17 +128,8 @@ export const useUserManagement = () => {
     }
     const editUser = async (updatedUser: Partial<UsersDatum>) => {
 
-        const {municipal:municipalData, nationality:nationalityData, province:provinceData, ...user } = updatedUser;
-
-            const nationality = addressResponse(provinceData)
-            const province = addressResponse(updatedUser.province)
-            const municipal = addressResponse(municipalData)
-
         const transformedUser = {
-            ...user,
-            nationality,
-            province,
-            municipal,
+            ...updatedUser,
         }
         console.log({transformedUser});
         setUser({ ...transformedUser } as unknown as  UsersDatum);
