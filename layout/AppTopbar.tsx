@@ -5,6 +5,7 @@ import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { AppTopbarRef } from '@/types';
 import { LayoutContext } from './context/layoutcontext';
+import { Tooltip } from 'primereact/tooltip';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
@@ -24,10 +25,13 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     };
 
     const LogoutButton = () => (
-        <button type="button" className="p-link layout-topbar-button" onClick={handleLogout}>
-            <i className="pi pi-sign-out"></i>
-            <span>Salir</span>
-        </button>
+        <>
+            <button type="button" className="p-link layout-topbar-button" onClick={handleLogout} data-pr-tooltip="Salir" data-pr-position="bottom">
+                <i className="pi pi-sign-out"></i>
+                <span>Salir</span>
+            </button>
+            <Tooltip target=".layout-topbar-button" />
+        </>
     );
 
     return (
