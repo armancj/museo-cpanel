@@ -25,7 +25,7 @@ const AppMenu = () => {
         {
             label: 'Inicio',
             items: [
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }
             ]
         },
         {
@@ -37,28 +37,28 @@ const AppMenu = () => {
                     items: [
                         {
                             label: 'País',
-                            icon: 'pi pi-fw pi-flag',
+                            icon: 'pi pi-fw pi-flag'
                         },
                         {
                             label: 'Provincia',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-bookmark'
                         },
                         {
                             label: 'Municipio',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-bookmark'
                         }
                     ]
-                },
+                }
             ]
         },
         {
-            label: '',
+            label: 'Aplicación',
             items: [
                 {
                     label: 'Recursos Humanos',
                     icon: 'pi pi-users',
                     to: '/pages/user'
-                },
+                }
             ]
         },
         {
@@ -87,7 +87,12 @@ const AppMenu = () => {
             label: 'Prime Blocks',
             items: [
                 { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
-                { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: 'https://blocks.primereact.org', target: '_blank' }
+                {
+                    label: 'All Blocks',
+                    icon: 'pi pi-fw pi-globe',
+                    url: 'https://blocks.primereact.org',
+                    target: '_blank'
+                }
             ]
         },
         {
@@ -224,12 +229,16 @@ const AppMenu = () => {
     ];
 
     const getFilteredModel = () => {
+        if (userRole === 'Administrador' || userRole === 'Especialista') {
+            return model.filter(item => item.label === 'Inicio' || item.label === 'Nomencladores' || item.label === 'Aplicación');
+        }
+
+        if (userRole === 'Técnico') {
+            return model.filter(item => item.label === 'Inicio');
+        }
+
         if (userRole === 'super Administrador') {
             return model;
-        } else if (userRole === 'Administrador' || userRole === 'Especialista') {
-            return model.filter(item => item.label === 'Inicio' || item.label === 'Nomencladores' || item.label === 'Recursos Humanos');
-        } else if (userRole === 'Técnico') {
-            return model.filter(item => item.label === 'Inicio');
         }
         return [];
     };
@@ -240,13 +249,15 @@ const AppMenu = () => {
         <MenuProvider>
             <ul className="layout-menu">
                 {filteredModel.map((item, i) => {
-                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
+                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> :
+                        <li className="menu-separator"></li>;
                 })}
 
-                { (userRole === 'super Administrador') ?? <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                    <img alt="Prime Blocks" className="w-full mt-3"
-                         src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link>}
+                {(userRole === 'super Administrador') ??
+                    <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
+                        <img alt="Prime Blocks" className="w-full mt-3"
+                             src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
+                    </Link>}
             </ul>
         </MenuProvider>
     );
