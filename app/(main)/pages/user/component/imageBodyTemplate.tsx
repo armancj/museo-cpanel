@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 
 
 export const ImageBodyTemplate = (rowData: UsersDatum) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     UsersDatum
-} from '@/app/(main)/pages/user/UserService';
+} from '@/app/service/UserService';
 import { Fieldset } from 'primereact/fieldset';
 import { UserDetails } from '@/app/(main)/pages/user/component/UserDetails';
 import UserPassword from '@/app/(main)/pages/user/component/UserPassword';

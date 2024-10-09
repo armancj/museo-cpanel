@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 
 import { Toast } from 'primereact/toast';
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 import { Dialog } from 'primereact/dialog';
 import { UserForm } from '@/app/(main)/pages/user/component/UserForm';
 import { Button } from 'primereact/button';
@@ -9,7 +9,8 @@ import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
 import { emptyUser, useManagement } from '@/app/(main)/pages/user/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
-import * as XLSX from 'xlsx';
+import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
+
 
 export const UserList = () => {
     const {
@@ -46,25 +47,7 @@ export const UserList = () => {
         setDeleteUserDialog(true);
     };
 
-    const exportCSV = () => {
-        const table = dt.current?.getTable();
-        const worksheet = XLSX.utils.table_to_sheet(table);
-
-        // Ajustar el ancho de las columnas automáticamente
-        const colWidths: any = [];
-        const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        data.forEach((row: any) => {
-            row.forEach((cell: any, index: number) => {
-                const cellLength = cell ? cell.toString().length : 10;
-                colWidths[index] = Math.max(colWidths[index] || 10, cellLength);
-            });
-        });
-        worksheet['!cols'] = colWidths.map((width: any) => ({ wch: width }));
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        XLSX.writeFile(workbook, 'data.xlsx');
-    };
+    const exportCSV = createdExportExcel(dt);
 
     const userDialogFooter = (
         <>

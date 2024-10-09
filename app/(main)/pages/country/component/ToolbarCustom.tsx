@@ -1,21 +1,21 @@
+import React from 'react';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
-import React from 'react';
-import { UsersDatum } from '@/app/service/UserService';
 
-interface UserToolbarProps {
-    selectedUsers: any,
-    setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    confirmDeleteSelected: (user: UsersDatum) => void,
+interface ToolbarProps {
+    selects: any[],
+    setDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    confirmDeleteSelected: (select: any) => void,
     exportExcel: () => void,
     openNew: () => void
 }
 
-export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelected, exportExcel, openNew }: UserToolbarProps) => {
+export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, exportExcel, openNew }: ToolbarProps) {
+
     const handleDelete = () => {
-        if (selectedUsers.length) {
-            confirmDeleteSelected(selectedUsers[0]);
+        if (selects.length) {
+            confirmDeleteSelected(selects[0]);
         }
     };
 
@@ -24,7 +24,7 @@ export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelecte
             <React.Fragment>
                 <div className="my-2">
                     <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selectedUsers  || !selectedUsers.length} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
                 </div>
             </React.Fragment>
         );
@@ -42,4 +42,4 @@ export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelecte
     return (
         <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
     );
-};
+}

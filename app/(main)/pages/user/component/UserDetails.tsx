@@ -1,5 +1,5 @@
 import React from 'react';
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 import { InputText } from 'primereact/inputtext';

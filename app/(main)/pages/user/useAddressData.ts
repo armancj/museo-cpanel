@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     AddressResponse,
-    CountryService,
-    MunicipalityService,
-    ProvinceService
-} from '@/app/(main)/pages/user/UserService';
+} from '@/app/service/UserService';
+import { CountryService } from '@/app/service/CountryService';
+import { ProvinceService } from '@/app/service/ProvinceService';
+import { MunicipalityService } from '@/app/service/MunicipalityService';
 
 export const useAddressData = () => {
     const [countries, setCountries] = useState<AddressResponse[]>([]);

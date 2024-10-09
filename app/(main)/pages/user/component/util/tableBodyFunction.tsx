@@ -1,4 +1,4 @@
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 import { Button } from 'primereact/button';
 import React from 'react';
 

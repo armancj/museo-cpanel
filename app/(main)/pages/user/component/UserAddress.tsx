@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { classNames } from 'primereact/utils';
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 
 interface UserAddressProps  {
     submitted: boolean,

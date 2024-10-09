@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
-import { UsersDatum } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum } from '@/app/service/UserService';
 import { ImageBodyTemplate } from '@/app/(main)/pages/user/component/imageBodyTemplate';
 import { TableBodyFunction } from '@/app/(main)/pages/user/component/util/tableBodyFunction';
 import styles from './UserTable.module.css';

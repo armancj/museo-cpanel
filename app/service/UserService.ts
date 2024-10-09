@@ -30,14 +30,15 @@ export interface Avatar {
     nameFile: string;
 }
 
-export interface AddressResponse {
-    name:      string;
-}
+
 export interface UserActive {
     uuid:      string;
     active:      boolean;
 }
 
+export interface AddressResponse {
+    name:      string;
+}
 export const UserService  =   {
     getUsers: async () => {
         return await post<UsersResponse>(WebEnvConst.user.getAll, {});
@@ -72,18 +73,3 @@ export const UserService  =   {
     }
 };
 
-export const ProvinceService  =   {
-    getProvinces: async ({name}: AddressResponse) => {
-        return await get<AddressResponse[]>(`${WebEnvConst.province}?country=${name}`);
-    },
-}
-export const MunicipalityService  =   {
-    getMunicipalities: async ({name}: AddressResponse) => {
-        return await get<AddressResponse[]>(`${WebEnvConst.municipality}?province=${name}`);
-    },
-};
-export const CountryService  =   {
-    getCountries: async () => {
-        return await get<AddressResponse[]>(WebEnvConst.country);
-    },
-};

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
-import { AddressResponse, UsersDatum, UserService, UsersResponse } from '@/app/(main)/pages/user/UserService';
+import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
 import { AxiosError } from 'axios';
 
 export const emptyUser: UsersDatum = {
@@ -119,13 +119,6 @@ export const useManagement = () => {
             console.error('Error al eliminar el usuario:', error);
         }
     };
-
-    const addressResponse = (name?: string): AddressResponse => {
-        if(!name)
-        return { name: '' }
-
-        return { name }
-    }
     const editUser = async (updatedUser: Partial<UsersDatum>) => {
 
         const transformedUser = {
