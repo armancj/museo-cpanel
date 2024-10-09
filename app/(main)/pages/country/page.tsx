@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import { CountryList } from '@/app/(main)/pages/country/CountryList';
 
 const Country = () => {
