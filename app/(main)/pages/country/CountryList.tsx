@@ -6,12 +6,17 @@ import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ToolbarCustom } from './component/ToolbarCustom';
+import { TableCustom } from '@/app/(main)/pages/country/component/TableCustom';
+import { Dialog } from 'primereact/dialog';
+import { DataForm } from '@/app/(main)/pages/country/component/DataForm';
 
 
 export function CountryList() {
 
+    const [selects, setSelects] = useState<CountryResponse[]>([]);
+
     const {
-        selects,
+        datum,
         dialog,
         setDialog,
         save,
@@ -20,8 +25,9 @@ export function CountryList() {
         submitted,
         setSubmitted,
         toast,
-        deleteCountry,
-        editCountry
+        editData,
+        deleteData
+
     } = useHookCountry();
 
     const [deleteDialog, setDeleteDialog] = useState(false);
@@ -61,8 +67,25 @@ export function CountryList() {
                         setDialog={setDialog}
                         confirmDeleteSelected={confirmDeleteSelected}
                         exportExcel={exportExcel}
-                        openNew={ openNew }
+                        openNew={openNew}
                     />
+                    <TableCustom
+                        dt={dt}
+                        datum={Array.isArray(datum) ? datum : []}
+                        selects={selects}
+                        setSelects={setSelects}
+                        globalFilter={globalFilter}
+                        setGlobalFilter={setGlobalFilter}
+                        editData={editData}
+                        deleteData={deleteData}
+                    />
+                    <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter} onHide={hideDialog}>
+                        <DataForm
+                            data={data}
+                            onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
+                            submitted={submitted}
+                        />
+                    </Dialog>
                 </div>
             </div>
         </div>

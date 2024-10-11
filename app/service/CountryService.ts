@@ -3,6 +3,7 @@ import { WebEnvConst } from '@/app/webEnvConst';
 
 
 export interface CountryResponse {
+    [key: string]: any;
     createdAt: Date;
     deleted: boolean;
     updatedAt: Date;
@@ -23,13 +24,16 @@ export const CountryService = {
     },
     async updateCountry(uuid: string, countryUpdated: Omit<CountryResponse, 'uuid' | 'deleted'>) {
         const url = WebEnvConst.country.getOne(uuid);
+        const { name } = countryUpdated;
 
-        return await patch<CountryResponse>(url, countryUpdated);
+        return await patch<boolean>(url, { name });
     },
+
     async createCountry(data: CountryResponse) {
-        const { uuid: string, deleted, ...rest } = data;
-        return await post<CountryResponse>(WebEnvConst.country.post, { ...rest });
+        const { name } = data;
+        return await post<CountryResponse>(WebEnvConst.country.post, { name });
     },
+
     async deleteCountry(uuid: string) {
         const url = WebEnvConst.country.getOne(uuid);
         return await del<CountryResponse>(url);

@@ -22,3 +22,8 @@ export function createdExportExcel(dt: React.RefObject<DataTable<any[]>>) {
         XLSX.writeFile(workbook, 'data.xlsx');
     };
 }
+
+export const capitalize = (str: unknown) => {
+    if (typeof str !== 'string') return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};

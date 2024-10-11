@@ -2,6 +2,7 @@ import { useEffect,  useState, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { AxiosError } from 'axios';
 import { CountryResponse, CountryService, emptyCountry } from '@/app/service/CountryService';
+import { capitalize } from '@/app/(main)/pages/util/export.functions';
 
 
 export const useHookCountry = () => {
@@ -22,14 +23,15 @@ export const useHookCountry = () => {
         setSubmitted(true);
         if (data.name.trim()) {
             let _data = [...selects];
+            data.name = capitalize(data.name);
             if (data.uuid) {
 
                 try {
                     const {uuid, deleted, ...countryUpdated}=data;
-                    const updatedData = await CountryService.updateCountry(data.uuid, countryUpdated);
+                    await CountryService.updateCountry(data.uuid, countryUpdated);
                     const index = _data.findIndex((u) => u.uuid === data.uuid);
                     if (index !== -1) {
-                        _data[index] = updatedData;
+                        _data[index] = data;
                         toast.current?.show({ severity: 'success', summary: 'País Actualizado', life: 5000 });
                     }
                     setDialog(false);
@@ -48,7 +50,7 @@ export const useHookCountry = () => {
                     handleError(error, 'No se pudo crear el usuario');
                 }
             }
-            setSelects({ ..._data } );
+            setSelects(_data );
         }
     };
 
@@ -77,18 +79,18 @@ export const useHookCountry = () => {
     };
 
 
-    const deleteCountry = async (uuid: string) => {
+    const deleteData = async (uuid: string) => {
         try {
             await CountryService.deleteCountry(uuid);
             const updatedCountries = selects.filter(country => country.uuid !== uuid);
-            setSelects({ ...updatedCountries });
+            setSelects(updatedCountries);
             toast.current?.show({ severity: 'success', summary: 'País Eliminado', life: 5000 });
         } catch (error) {
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el País', life: 5000 });
             console.error('Error al eliminar el País:', error);
         }
     };
-    const editCountry = async (updatedCountry: Partial<CountryResponse>) => {
+    const editData = async (updatedCountry: Partial<CountryResponse>) => {
 
         const updated: CountryResponse ={
             deleted: false,
@@ -103,7 +105,8 @@ export const useHookCountry = () => {
 
 
     return {
-        selects,
+        datum: selects,
+        setDatum: setSelects,
         dialog,
         setDialog,
         save,
@@ -112,7 +115,7 @@ export const useHookCountry = () => {
         submitted,
         setSubmitted,
         toast,
-        deleteCountry,
-        editCountry
+        deleteData,
+        editData
     };
 }

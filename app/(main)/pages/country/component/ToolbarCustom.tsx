@@ -23,8 +23,8 @@ export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, expor
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
+                    <Button label="Agregar País" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
+                    <Button label="Eliminar País" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
                 </div>
             </React.Fragment>
         );
@@ -33,7 +33,6 @@ export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, expor
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} chooseLabel="Import" className="mr-2 inline-block" />
                 <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportExcel} />
             </React.Fragment>
         );

@@ -86,7 +86,7 @@ export const UserList = () => {
                         deleteUser={deleteUser}
                         editUser={editUser}
                     />
-                    <Dialog visible={userDialog} header="User Details" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={userDialog} header="Detalles de usuarios" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
                         <UserForm
                             onImageUpload={handleImageUpload}
                             user={user}

@@ -23,6 +23,9 @@ importers:
       chart.js:
         specifier: 4.2.1
         version: 4.2.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -130,24 +133,28 @@ packages:
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-arm64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-dASaggPDUpQYkQ7oUSKOIx9DEvmH8JBRcUwOZ8J/LF1yJp1hmGkNIGBlqsirV3LP0/9Su4MgNRV5FXjfVNEUzQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-linux-x64-gnu@13.4.20-canary.13':
     resolution: {integrity: sha512-dD6/hHkkeiM3Mjz6kDkd7ydtMdAECpcF8gUpwFoBjFrDFc4v5Bf45px56FC95I2R3vUMNzuRfus7U9QsQWdi7w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-x64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-eHgzJobusbRfBLbR1jcgEMO2qsU+L9prDWQsOY1uBrmlqn9qjii4rmMAWQ7bj8G4F+TpCUv/uKN2S2W5aREeVw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-win32-arm64-msvc@13.4.20-canary.13':
     resolution: {integrity: sha512-eq+XM3nDNxKasQI874uspQ9EbzkssgcnqXN4CQ5f+vOVvVXFA0o82YmqrSx+amBd310MdKdBnwiGWTEhjClsHw==}
@@ -420,6 +427,9 @@ packages:
   data-view-byte-offset@1.0.0:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
@@ -1797,6 +1807,8 @@ snapshots:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
+
+  date-fns@4.1.0: {}
 
   debug@3.2.7:
     dependencies:
