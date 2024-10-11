@@ -37,7 +37,7 @@ export function TableCustom({ dt, selects, globalFilter, setGlobalFilter, editDa
             </span>
             <DataTable
                 ref={dt}
-                value={datum || []}
+                value={Array.isArray(datum) ? datum : []}
                 selection={selects}
                 onSelectionChange={(e) => setSelects(e.value as any)}
                 dataKey="uuid"
@@ -47,7 +47,7 @@ export function TableCustom({ dt, selects, globalFilter, setGlobalFilter, editDa
                 className="datatable-responsive"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
-                globalFilter={globalFilter}
+                globalFilter={globalFilter || ''}
                 emptyMessage="No hay paises agregados."
                 style={{ tableLayout: 'auto' }}
                 selectionMode="multiple"

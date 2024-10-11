@@ -31,7 +31,7 @@ export function CountryList() {
     } = useHookCountry();
 
     const [deleteDialog, setDeleteDialog] = useState(false);
-    const [globalFilter, setGlobalFilter] = useState('');
+    const [globalFilter, setGlobalFilter] = useState<string>('');
 
     const dt = useRef<DataTable<CountryResponse[]>>(null);
 
