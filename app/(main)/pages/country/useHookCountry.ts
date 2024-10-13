@@ -32,7 +32,7 @@ export const useHookCountry = () => {
                     const index = _data.findIndex((u) => u.uuid === data.uuid);
                     if (index !== -1) {
                         _data[index] = data;
-                        toast.current?.show({ severity: 'success', summary: 'País Actualizado', life: 5000 });
+                        toast.current?.show({ severity: 'success', summary: 'País editado satisfactoriamente', life: 5000 });
                     }
                     setDialog(false);
                 } catch (error) {
@@ -43,7 +43,7 @@ export const useHookCountry = () => {
                 try {
                     const createdCountry = await CountryService.createCountry(data);
                     _data.push(createdCountry);
-                    toast.current?.show({ severity: 'success', summary: 'Country Creado', life: 5000 });
+                    toast.current?.show({ severity: 'success', summary: 'País creado satisfactoriamente', life: 5000 });
                     setDialog(false);
                     setData(emptyCountry);
                 } catch (error) {

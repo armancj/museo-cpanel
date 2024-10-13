@@ -1,8 +1,10 @@
-import { format, isValid  } from 'date-fns';
+import { format, isValid } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Button } from 'primereact/button';
 import React from 'react';
 import { CountryResponse } from '@/app/service/CountryService';
 import { ColumnProps } from 'primereact/column';
+import styles from './ButtonStyles.module.css';
 
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
@@ -48,7 +50,13 @@ export function TableBodyFunction({
         return (
             <>
                 <span className="p-column-title">{field}</span>
-                {isValid(date) ? format(date, 'dd/MM/yyyy') : 'Fecha inválida'}
+                {isValid(date) ? (
+                    <span className={styles.formattedDate}>
+          {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
+        </span>
+                ) : (
+                    'Invalid Date'
+                )}
             </>
         );
     };

@@ -46,7 +46,7 @@ export function TableCustom({ dt, selects, globalFilter, setGlobalFilter, editDa
                 rowsPerPageOptions={[5, 10, 25]}
                 className="datatable-responsive"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} paises"
                 globalFilter={globalFilter || ''}
                 emptyMessage="No hay paises agregados."
                 style={{ tableLayout: 'auto' }}

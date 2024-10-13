@@ -44,6 +44,10 @@ export function CountryList() {
         setDialog(false);
     };
 
+    const hideDeleteDialog = () => {
+        setDeleteDialog(false);
+    };
+
     const confirmDeleteSelected = () => {
         setDeleteDialog(true);
     };
@@ -52,8 +56,15 @@ export function CountryList() {
 
     const dialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDialog} />
             <Button label="Guardar" icon="pi pi-check" text onClick={() => save()} />
+            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDialog} />
+        </>
+    );
+
+    const deleteDialogFooter = (
+        <>
+            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDeleteDialog} />
+            <Button label="Aceptar" icon="pi pi-check" text onClick={() => deleteData(data.uuid)} />
         </>
     );
 
@@ -79,13 +90,31 @@ export function CountryList() {
                         editData={editData}
                         deleteData={deleteData}
                     />
-                    <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter} onHide={hideDialog}>
+                    <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
+                            onHide={hideDialog}>
                         <DataForm
                             data={data}
                             onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
                             submitted={submitted}
                         />
                     </Dialog>
+                    <Dialog
+                        visible={deleteDialog}
+                        header="Confirm"
+                        modal
+                        footer={deleteDialogFooter}
+                        onHide={hideDeleteDialog}
+                    >
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {data && (
+                                <span>
+                  ¿Estás seguro de que deseas eliminar a <b>{data.name}</b>?
+                </span>
+                            )}
+                        </div>
+                    </Dialog>
+
                 </div>
             </div>
         </div>
