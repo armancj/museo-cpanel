@@ -8,12 +8,13 @@ import styles from './ButtonStyles.module.css';
 
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
-    deleteData: (uuid: string) => Promise<void>;
+    confirmDeleteSelected: () => void
+    deleteData: (uuid: string) => Promise<void>,
 }
 
 export function TableBodyFunction({
                                       editData,
-                                      deleteData
+                                      confirmDeleteSelected
                                   }: TableBodyFunctionProps) {
     const nameBodyTemplate = (rowData: CountryResponse) => {
         return (
@@ -39,7 +40,7 @@ export function TableBodyFunction({
                     className="p-button-rounded p-button-text p-button-danger"
                     tooltip="Eliminar País"
                     tooltipOptions={{ position: 'top' }}
-                    onClick={() => deleteData(rowData.uuid)}
+                    onClick={confirmDeleteSelected}
                 />
             </div>
         );
@@ -60,6 +61,7 @@ export function TableBodyFunction({
             </>
         );
     };
+
 
 
     const columns: ColumnProps[] = [

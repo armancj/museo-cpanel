@@ -9,6 +9,7 @@ import { ToolbarCustom } from './component/ToolbarCustom';
 import { TableCustom } from '@/app/(main)/pages/country/component/TableCustom';
 import { Dialog } from 'primereact/dialog';
 import { DataForm } from '@/app/(main)/pages/country/component/DataForm';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 
 
 export function CountryList() {
@@ -26,11 +27,14 @@ export function CountryList() {
         setSubmitted,
         toast,
         editData,
-        deleteData
-
+        deleteData,
+        deleteDialog,
+        setDeleteDialog
     } = useHookCountry();
 
-    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
     const dt = useRef<DataTable<CountryResponse[]>>(null);
@@ -68,6 +72,16 @@ export function CountryList() {
         </>
     );
 
+    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
+
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilter(value);
+    };
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -86,9 +100,11 @@ export function CountryList() {
                         selects={selects}
                         setSelects={setSelects}
                         globalFilter={globalFilter}
-                        setGlobalFilter={setGlobalFilter}
+                        filters={filters}
                         editData={editData}
+                        onGlobalFilterChange={ onGlobalFilterChange}
                         deleteData={deleteData}
+                        setDelete={setDeleteDialog}
                     />
                     <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>

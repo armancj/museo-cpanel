@@ -8,6 +8,7 @@ import { capitalize } from '@/app/(main)/pages/util/export.functions';
 export const useHookCountry = () => {
 
 
+    const [deleteDialog, setDeleteDialog] = useState(false);
     const [data, setData] = useState<CountryResponse>(emptyCountry);
     const [selects, setSelects] = useState<CountryResponse[]>([]);
 
@@ -116,6 +117,8 @@ export const useHookCountry = () => {
         setSubmitted,
         toast,
         deleteData,
-        editData
+        editData,
+        deleteDialog,
+        setDeleteDialog
     };
 }
