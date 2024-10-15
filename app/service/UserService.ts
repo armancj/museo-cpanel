@@ -37,7 +37,7 @@ export interface UserActive {
 }
 
 export interface AddressResponse {
-    name:      string;
+    name?:      string;
 }
 export const UserService  =   {
     getUsers: async () => {
