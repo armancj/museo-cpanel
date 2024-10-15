@@ -21,7 +21,8 @@ export const model: AppMenuItem[] = [
                     },
                     {
                         label: 'Provincia',
-                        icon: 'pi pi-fw pi-map'
+                        icon: 'pi pi-fw pi-map',
+                        to: '/pages/province'
                     },
                     {
                         label: 'Municipio',

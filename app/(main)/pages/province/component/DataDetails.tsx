@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { ProvinceResponse } from '@/app/service/ProvinceService';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 
 interface DataDetailsProps {
@@ -14,7 +14,9 @@ interface DataDetailsProps {
 
 export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps) {
     const validateName = (name: string) => name.trim().length > 0;
-    const { countries, handleCountryChange } = useAddressData();
+    const { countries } = useAddressData();
+
+    const [selectedCity, setSelectedCity] = useState(null);
 
 
     return (
@@ -33,14 +35,15 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
             {submitted && !validateName(data.name) && <small className="p-invalid">El nombre es requerido.</small>}
             <label htmlFor={'country'}>Nombre del País</label>
             <Dropdown
-                id="country"
-                name="country"
+                id={data.uuid}
+                name={data.country}
                 value={data.country}
                 options={countries}
-                onChange={(e) => handleCountryChange(e.target.value, onInputChange)}
+                onChange={(e) => setSelectedCity(e.value)}
                 optionLabel="name"
                 placeholder={`Seleccionar País`}
-                className={classNames({ 'p-invalid': submitted && !data.country })}
+                className="w-full md:w-14rem"
+                /*className={classNames({ 'p-invalid': submitted && !data.country })}*/
             />
         </div>
     );
