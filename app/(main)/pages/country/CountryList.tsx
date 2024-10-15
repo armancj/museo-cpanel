@@ -9,7 +9,7 @@ import { ToolbarCustom } from './component/ToolbarCustom';
 import { TableCustom } from '@/app/(main)/pages/country/component/TableCustom';
 import { Dialog } from 'primereact/dialog';
 import { DataForm } from '@/app/(main)/pages/country/component/DataForm';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 
 
 export function CountryList() {

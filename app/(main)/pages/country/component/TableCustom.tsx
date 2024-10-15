@@ -18,7 +18,6 @@ interface TableCustomProps {
     datum: CountryResponse[],
     onGlobalFilterChange: (e: { target: { value: any } }) => void,
     filters: { global: { value: null, matchMode: FilterMatchMode } },
-    setDelete: (value: (((prevState: boolean) => boolean) | boolean)) => void
 }
 
 export function TableCustom({
@@ -30,13 +29,12 @@ export function TableCustom({
                                 datum,
                                 onGlobalFilterChange,
                                 filters,
-                                setDelete
                             }: TableCustomProps) {
 
     const {
         columns,
         actionBodyTemplate
-    } = TableBodyFunction({  editData, deleteData, setDelete });
+    } = TableBodyFunction({  editData, deleteData });
 
     return (
         <>

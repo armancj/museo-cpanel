@@ -14,7 +14,7 @@ interface TableBodyFunctionProps {
 
 export function TableBodyFunction({
                                       editData,
-                                      confirmDeleteSelected
+                                      deleteData
                                   }: TableBodyFunctionProps) {
     const nameBodyTemplate = (rowData: CountryResponse) => {
         return (
@@ -40,7 +40,7 @@ export function TableBodyFunction({
                     className="p-button-rounded p-button-text p-button-danger"
                     tooltip="Eliminar País"
                     tooltipOptions={{ position: 'top' }}
-                    onClick={confirmDeleteSelected}
+                    onClick={deleteData(rowData.uuid)}
                 />
             </div>
         );
