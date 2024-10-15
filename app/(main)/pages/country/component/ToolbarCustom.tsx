@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 
 interface ToolbarProps {

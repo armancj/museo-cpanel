@@ -33,7 +33,7 @@ export function CountryList() {
     } = useHookCountry();
 
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
@@ -60,15 +60,43 @@ export function CountryList() {
 
     const dialogFooter = (
         <>
-            <Button label="Guardar" icon="pi pi-check" text onClick={() => save()} />
-            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDialog} />
+            <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                text
+                className="p-button-rounded p-button-danger p-button-outlined"
+                onClick={hideDialog}
+            />
+
+            <Button
+                label="Guardar"
+                icon="pi pi-check"
+                text
+                onClick={() => save()}
+                className="p-button-rounded p-button-success"
+            />
         </>
     );
 
     const deleteDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" text onClick={hideDeleteDialog} />
-            <Button label="Aceptar" icon="pi pi-check" text onClick={() => deleteData(data.uuid)} />
+            <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                text
+                onClick={hideDeleteDialog}
+                className="p-button-rounded p-button-danger p-button-outlined"
+            />
+            <Button
+                label="Aceptar"
+                icon="pi pi-check"
+                text
+                className="p-button-rounded p-button-success"
+                onClick={async () => {
+                    await deleteData(data.uuid);
+                    hideDeleteDialog();
+                }}
+            />
         </>
     );
 
@@ -102,9 +130,9 @@ export function CountryList() {
                         globalFilter={globalFilter}
                         filters={filters}
                         editData={editData}
-                        onGlobalFilterChange={ onGlobalFilterChange}
-                        deleteData={deleteData}
-                        setDelete={setDeleteDialog}
+                        onGlobalFilterChange={onGlobalFilterChange}
+                        setDeleteDialog={setDeleteDialog}
+                        setData={setData}
                     />
                     <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>
@@ -116,7 +144,7 @@ export function CountryList() {
                     </Dialog>
                     <Dialog
                         visible={deleteDialog}
-                        header="Confirm"
+                        header="Confirmar Eliminación"
                         modal
                         footer={deleteDialogFooter}
                         onHide={hideDeleteDialog}

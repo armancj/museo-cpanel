@@ -12,20 +12,24 @@ export const model: AppMenuItem[] = [
         items: [
             {
                 label: 'Direcciones',
-                icon: 'pi pi-fw pi-truck',
+                icon: 'pi pi-fw pi-envelope',
                 items: [
                     {
                         label: 'País',
-                        icon: 'pi pi-fw pi-flag',
+                        icon: 'pi pi-fw pi-globe',
                         to: '/pages/country'
                     },
                     {
                         label: 'Provincia',
-                        icon: 'pi pi-fw pi-bookmark'
+                        icon: 'pi pi-fw pi-map'
                     },
                     {
                         label: 'Municipio',
-                        icon: 'pi pi-fw pi-bookmark'
+                        icon: 'pi pi-fw pi-map-marker'
+                    },
+                    {
+                        label: 'Instituciones',
+                        icon: 'pi pi-fw pi-building'
                     }
                 ]
             }

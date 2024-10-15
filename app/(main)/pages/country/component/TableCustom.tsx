@@ -13,11 +13,12 @@ interface TableCustomProps {
     selects: CountryResponse[],
     globalFilter: string,
     editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>,
-    deleteData: (uuid: string) => Promise<void>,
     setSelects: (value: (((prevState: CountryResponse[]) => CountryResponse[]) | CountryResponse[])) => void,
     datum: CountryResponse[],
     onGlobalFilterChange: (e: { target: { value: any } }) => void,
     filters: { global: { value: null, matchMode: FilterMatchMode } },
+    setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    setData: (value: (((prevState: CountryResponse) => CountryResponse) | CountryResponse)) => void
 }
 
 export function TableCustom({
@@ -29,13 +30,16 @@ export function TableCustom({
                                 datum,
                                 onGlobalFilterChange,
                                 filters,
-                                deleteData
+                                setDeleteDialog,
+                                setData
                             }: TableCustomProps) {
 
     const {
         columns,
         actionBodyTemplate
-    } = TableBodyFunction({  editData, deleteData });
+    } = TableBodyFunction({  editData, setDeleteDialog, setData });
+
+
 
     return (
         <>
