@@ -8,7 +8,6 @@ import styles from './ButtonStyles.module.css';
 
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
-    confirmDeleteSelected: () => void
     deleteData: (uuid: string) => Promise<void>,
 }
 
@@ -40,7 +39,7 @@ export function TableBodyFunction({
                     className="p-button-rounded p-button-text p-button-danger"
                     tooltip="Eliminar País"
                     tooltipOptions={{ position: 'top' }}
-                    onClick={deleteData(rowData.uuid)}
+                    onClick={()=>deleteData(rowData.uuid)}
                 />
             </div>
         );

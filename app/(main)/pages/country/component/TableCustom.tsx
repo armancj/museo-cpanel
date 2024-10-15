@@ -29,6 +29,7 @@ export function TableCustom({
                                 datum,
                                 onGlobalFilterChange,
                                 filters,
+                                deleteData
                             }: TableCustomProps) {
 
     const {
