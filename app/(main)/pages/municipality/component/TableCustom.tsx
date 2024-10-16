@@ -60,7 +60,7 @@ export function TableCustom({
                 dataKey="uuid"
                 paginator
                 rows={10}
-                globalFilterFields={['name', 'country']}
+                globalFilterFields={['name', 'province']}
                 rowsPerPageOptions={[5, 10, 25]}
                 className="datatable-responsive"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -69,6 +69,7 @@ export function TableCustom({
                 emptyMessage="No hay municipios agregados."
                 style={{ tableLayout: 'auto' }}
                 selectionMode="multiple"
+                filterDisplay="row"
             >
                 <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
                 {columns.map((col, i) => (

@@ -80,12 +80,11 @@ export function TableBodyFunction({
         {
             field: 'province',
             header: 'Nombre de la Provincia',
-            sortable: true,
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
             filter: true,
-            filterPlaceholder: 'Buscar por país',
-            filterField: "country",
+            filterPlaceholder: 'Buscar por province',
+            filterField: "province",
         },
         {
             field: 'createdAt',
