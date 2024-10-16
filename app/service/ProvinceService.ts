@@ -1,6 +1,7 @@
 import { get, post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 import { AddressResponse } from '@/app/service/UserService';
+import { CountryResponse } from '@/app/service/CountryService';
 
 
 export interface ProvinceResponse {
@@ -28,7 +29,8 @@ export const ProvinceService  =   {
     },
     async updateProvince(uuid: string, updated: Omit<ProvinceResponse, 'uuid' | 'deleted'>) {
         const url = WebEnvConst.province.getOne(uuid);
-        return await patch<ProvinceResponse[]>(url, updated);
+        const {name, country} = updated;
+        return await patch<ProvinceResponse[]>(url, {name, country});
     },
     async create(data: ProvinceResponse) {
         const {name, country} = data;

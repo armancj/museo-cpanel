@@ -16,7 +16,14 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     const validateName = (name: string) => name.trim().length > 0;
     const { countries } = useAddressData();
 
-    const [selectedCity, setSelectedCity] = useState(null);
+    const onCountryChange = (e: DropdownChangeEvent) => {
+        onInputChange({
+            target: {
+                name: 'country',
+                value: e.value.name // Extract only the name
+            }
+        } as any, 'country');
+    };
 
 
     return (
@@ -35,11 +42,11 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
             {submitted && !validateName(data.name) && <small className="p-invalid">El nombre es requerido.</small>}
             <label htmlFor={'country'}>Nombre del País</label>
             <Dropdown
-                id={data.uuid}
-                name={data.country}
-                value={data.country}
+                id="country"
+                name="country"
+                value={countries.find((country) => country.name === data.country)  || null}
                 options={countries}
-                onChange={(e) => setSelectedCity(e.value)}
+                onChange={onCountryChange}
                 optionLabel="name"
                 placeholder={`Seleccionar País`}
                 className="w-full md:w-14rem"

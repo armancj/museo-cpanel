@@ -24,7 +24,6 @@ export function CountryList() {
         data,
         setData,
         submitted,
-        setSubmitted,
         toast,
         editData,
         deleteData,

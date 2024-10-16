@@ -60,7 +60,7 @@ export function TableCustom({
                 dataKey="uuid"
                 paginator
                 rows={10}
-                globalFilterFields={['name']}
+                globalFilterFields={['name', 'country']}
                 rowsPerPageOptions={[5, 10, 25]}
                 className="datatable-responsive"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

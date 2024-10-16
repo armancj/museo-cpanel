@@ -6,6 +6,7 @@ import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
 import { ProvinceResponse } from '@/app/service/ProvinceService';
 
+
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<ProvinceResponse>) => Promise<void>;
     setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
@@ -22,6 +23,35 @@ export function TableBodyFunction({
                 <span className="p-column-title">Name</span>
                 {rowData.name}
             </>
+        );
+    };
+
+    const countryCodes: { [key: string]: string } = {
+        "estados unidos": "us",
+        "canada": "ca",
+        "méxico": "mx",
+        "brasil": "br",
+        "argentina": "ar",
+        "reino Unido": "gb",
+        "francia": "fr",
+        "alemania": "de",
+        "italia": "it",
+        "españa": "es",
+        "rusia": "ru",
+        "china": "cn",
+        "japón": "jp",
+        "india": "in",
+        "australia": "au",
+        "sudáfrica": "za",
+        "cuba": "cu"
+    };
+    const countryBodyTemplate = (rowData: ProvinceResponse) => {
+        const codeCountry =countryCodes[rowData.country.toLowerCase()];
+        return (
+            <div className="flex align-items-center gap-2">
+                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
+                <span>{rowData.country}</span>
+            </div>
         );
     };
 
@@ -81,7 +111,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
-            body: nameBodyTemplate
+            filter: true,
+            filterPlaceholder: 'Buscar por país',
+            filterField: "country",
+            body: countryBodyTemplate
         },
         {
             field: 'createdAt',

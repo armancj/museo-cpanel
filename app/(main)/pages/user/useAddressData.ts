@@ -19,7 +19,6 @@ export const useAddressData = () => {
         });
     }, []);
 
-    console.log('here', countries, provinces, municipalities)
     const handleCountryChange = (country: AddressResponse, onInputChange: (e: any, field: string) => void) => {
         onInputChange({ target: { value: country } }, 'nationality');
         ProvinceService.getProvinces(country).then(provincesData => setProvinces(provincesData));

@@ -32,7 +32,8 @@ export function ProvinceList() {
     } = useHook();
 
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        country: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
