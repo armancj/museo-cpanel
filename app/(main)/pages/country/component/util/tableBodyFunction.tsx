@@ -5,6 +5,7 @@ import React from 'react';
 import { CountryResponse } from '@/app/service/CountryService';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
+import { ProvinceResponse } from '@/app/service/ProvinceService';
 
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
@@ -16,12 +17,33 @@ export function TableBodyFunction({
                                       editData,
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
-    const nameBodyTemplate = (rowData: CountryResponse) => {
+
+    const countryCodes: { [key: string]: string } = {
+        "estados unidos": "us",
+        "canada": "ca",
+        "méxico": "mx",
+        "brasil": "br",
+        "argentina": "ar",
+        "reino Unido": "gb",
+        "francia": "fr",
+        "alemania": "de",
+        "italia": "it",
+        "españa": "es",
+        "rusia": "ru",
+        "china": "cn",
+        "japón": "jp",
+        "india": "in",
+        "australia": "au",
+        "sudáfrica": "za",
+        "cuba": "cu"
+    };
+    const nameBodyTemplate = (rowData: ProvinceResponse) => {
+        const codeCountry =countryCodes[rowData.name.toLowerCase()];
         return (
-            <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
-            </>
+            <div className="p-column-title flex align-items-center gap-2">
+                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
+                <span>{rowData.name}</span>
+            </div>
         );
     };
 

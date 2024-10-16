@@ -24,7 +24,7 @@ export const MunicipalityService = {
     getMunicipalities: async ({ name }: AddressResponse = {}) => {
         let url = WebEnvConst.municipality.getAll;
         if(name) url = `${url}?province=${name}`;
-        return await get<MunicipalityResponse[]>(`${url}?province=${name}`);
+        return await get<MunicipalityResponse[]>(url);
     },
     async update(uuid: string, updated: Omit<MunicipalityResponse, 'uuid' | 'deleted'>) {
         const { province, name } =updated;

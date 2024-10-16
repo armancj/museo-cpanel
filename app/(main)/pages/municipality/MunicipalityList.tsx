@@ -34,7 +34,7 @@ export function MunicipalityList() {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        country: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        province: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
