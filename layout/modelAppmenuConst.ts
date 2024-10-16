@@ -26,7 +26,8 @@ export const model: AppMenuItem[] = [
                     },
                     {
                         label: 'Municipio',
-                        icon: 'pi pi-fw pi-map-marker'
+                        icon: 'pi pi-fw pi-map-marker',
+                        to: '/pages/municipality'
                     },
                     {
                         label: 'Instituciones',
