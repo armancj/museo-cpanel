@@ -4,7 +4,6 @@ import { Button } from 'primereact/button';
 import React from 'react';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
-import { ProvinceResponse } from '@/app/service/ProvinceService';
 import { MunicipalityResponse } from '@/app/service/MunicipalityService';
 
 
