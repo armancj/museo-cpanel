@@ -38,7 +38,6 @@ export function TableCustom({
         actionBodyTemplate
     } = TableBodyFunction({  editData, setDeleteDialog, setData });
 
-
     return (
         <>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
