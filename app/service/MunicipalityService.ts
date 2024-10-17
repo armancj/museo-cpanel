@@ -34,7 +34,7 @@ export const MunicipalityService = {
     async create(data: MunicipalityResponse) {
         const { province, name } =data;
         const url = WebEnvConst.municipality.post
-        return await patch<MunicipalityResponse>(url, { province, name})
+        return await post<MunicipalityResponse>(url, { province, name})
     },
     delete: async function(uuid: string) {
         const url = WebEnvConst.municipality.getOne(uuid);

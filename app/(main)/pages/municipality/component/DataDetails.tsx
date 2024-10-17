@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 import { MunicipalityResponse } from '@/app/service/MunicipalityService';
+import { ProvinceService } from '@/app/service/ProvinceService';
+import { AddressResponse } from '@/app/service/UserService';
 
 interface DataDetailsProps {
     data: MunicipalityResponse,
@@ -14,7 +15,14 @@ interface DataDetailsProps {
 
 export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps) {
     const validateName = (name: string) => name.trim().length > 0;
-    const { provinces } = useAddressData();
+    const [provinces, setProvinces] = useState<AddressResponse[]>([]);
+
+
+    useEffect(() => {
+        ProvinceService.getProvinces().then(data => {
+            setProvinces(data);
+        });
+    }, []);
 
     const onProvinceChange = (e: DropdownChangeEvent) => {
         onInputChange({
@@ -28,7 +36,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
     return (
         <div className="field col-12 md:col-6">
-            <label htmlFor="name">Nombre de la Provincia</label>
+            <label htmlFor="name">Nombre del Municipio</label>
             <InputText
                 id="name"
                 name="name"
@@ -39,7 +47,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
                     'p-invalid': submitted && (!validateName(data.name))
                 })}
             />
-            {submitted && !validateName(data.name) && <small className="p-invalid">El nombre es requerido.</small>}
+            {submitted && !validateName(data.name) && <small className="p-invalid">El nombre del municipio es requerido.</small>}
             <label htmlFor={'province'}>Nombre de la Provincia</label>
             <Dropdown
                 id="province"
@@ -49,9 +57,9 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
                 onChange={onProvinceChange}
                 optionLabel="name"
                 placeholder={`Seleccionar Provincia`}
-                className="w-full md:w-14rem"
-                /*className={classNames({ 'p-invalid': submitted && !data.country })}*/
+                className={classNames('w-full md:w-14rem', { 'p-invalid': submitted && !data.country })}
             />
+            {submitted && !validateName(data.province) && <small className="p-invalid">El nombre de la provincia es requerido.</small>}
         </div>
     );
 }

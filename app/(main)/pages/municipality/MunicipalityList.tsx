@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useHook  } from './useHook';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
@@ -9,7 +9,6 @@ import { Dialog } from 'primereact/dialog';
 import { FilterMatchMode } from 'primereact/api';
 import { DataForm } from './component/DataForm';
 import { TableCustom } from './component/TableCustom';
-import { ProvinceResponse, emptyProvince } from '@/app/service/ProvinceService';
 import { emptyMunicipality, MunicipalityResponse } from '@/app/service/MunicipalityService';
 
 
@@ -32,7 +31,7 @@ export function MunicipalityList() {
         setDeleteDialog
     } = useHook();
 
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         province: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     });
@@ -105,7 +104,9 @@ export function MunicipalityList() {
         const value = e.target.value;
         let _filters = { ...filters };
 
+        // @ts-ignore
         _filters['global'].value = value;
+
 
         setFilters(_filters);
         setGlobalFilter(value);

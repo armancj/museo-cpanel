@@ -71,6 +71,8 @@ export function TableBodyFunction({
         {
             field: 'name',
             header: 'Nombre del Municipio',
+            filter: true,
+            filterPlaceholder: 'Buscar por nombre',
             sortable: true,
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
@@ -83,7 +85,6 @@ export function TableBodyFunction({
             style: { whiteSpace: 'nowrap' },
             filter: true,
             filterPlaceholder: 'Buscar por province',
-            filterField: "province",
         },
         {
             field: 'createdAt',

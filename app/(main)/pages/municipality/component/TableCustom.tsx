@@ -1,10 +1,9 @@
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import React from 'react';
 import { TableBodyFunction } from './util/tableBodyFunction';
 import { InputText } from 'primereact/inputtext';
 import styles from '@/app/(main)/pages/user/component/UserTable.module.css';
 import { Column } from 'primereact/column';
-import { FilterMatchMode } from 'primereact/api';
 import { MunicipalityResponse } from '@/app/service/MunicipalityService';
 
 
@@ -16,9 +15,9 @@ interface TableCustomProps {
     setSelects: (value: (((prevState: MunicipalityResponse[]) => MunicipalityResponse[]) | MunicipalityResponse[])) => void,
     datum: MunicipalityResponse[],
     onGlobalFilterChange: (e: { target: { value: any } }) => void,
-    filters: { global: { value: null, matchMode: FilterMatchMode } },
     setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    setData: (value: (((prevState: MunicipalityResponse) => MunicipalityResponse) | MunicipalityResponse)) => void
+    setData: (value: (((prevState: MunicipalityResponse) => MunicipalityResponse) | MunicipalityResponse)) => void,
+    filters: DataTableFilterMeta
 }
 
 export function TableCustom({
@@ -31,14 +30,13 @@ export function TableCustom({
                                 onGlobalFilterChange,
                                 filters,
                                 setDeleteDialog,
-                                setData
+                                setData,
                             }: TableCustomProps) {
 
     const {
         columns,
         actionBodyTemplate
     } = TableBodyFunction({  editData, setDeleteDialog, setData });
-
 
 
     return (
@@ -75,15 +73,17 @@ export function TableCustom({
                 {columns.map((col, i) => (
                     <Column
                         key={i}
-                        field={col.field}
-                        header={col.header}
-                        sortable={col.sortable || false}
-                        body={col.body|| undefined}
-                        headerStyle={col.headerStyle || {}}
-                        style={col.style || {}}
+                        {...col}
                     />
                 ))}
-            <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
+            <Column
+                body={actionBodyTemplate}
+                header="Acciones"
+                headerStyle={{ minWidth: '10rem' }}
+                bodyStyle={{ overflow: 'visible' }}
+                className={styles.stickyColumn}
+                headerClassName={styles.stickyHeader}
+            />
             </DataTable>
         </>
     );
