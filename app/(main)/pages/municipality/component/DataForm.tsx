@@ -14,7 +14,7 @@ export function DataForm({ data, submitted, onInputChange }: DataFormProps) {
 
     return (
         <div className="flex">
-            <Fieldset legend="Detalles de la Provincia" className="p-4 flex-grow-1">
+            <Fieldset legend="Detalles de la Municipio" className="p-4 flex-grow-1">
                 <DataDetails data={data} onInputChange={onInputChange} submitted={submitted} />
             </Fieldset>
         </div>

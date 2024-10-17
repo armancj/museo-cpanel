@@ -136,7 +136,7 @@ export function MunicipalityList() {
                         setData={setData}
                         onGlobalFilterChange={onGlobalFilterChange}
                     />
-                    <Dialog visible={dialog} header="Detalles de Provincia" modal className="p-fluid" footer={dialogFooter}
+                    <Dialog visible={dialog} header="Detalles del Municipio" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>
                         <DataForm
                             data={data}

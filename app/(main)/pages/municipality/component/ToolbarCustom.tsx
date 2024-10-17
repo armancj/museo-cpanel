@@ -22,8 +22,8 @@ export function ToolbarCustom({ selects, confirmDeleteSelected, exportExcel, ope
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="Agregar Provincia" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Eliminar Provincia" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
+                    <Button label="Agregar Municipio" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
+                    <Button label="Eliminar Municipio" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
                 </div>
             </React.Fragment>
         );
