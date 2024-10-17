@@ -30,13 +30,13 @@ export function TableCustom({
                                 onGlobalFilterChange,
                                 filters,
                                 setDeleteDialog,
-                                setData,
+                                setData
                             }: TableCustomProps) {
 
     const {
         columns,
         actionBodyTemplate
-    } = TableBodyFunction({  editData, setDeleteDialog, setData });
+    } = TableBodyFunction({ editData, setDeleteDialog, setData });
 
     return (
         <>
@@ -48,42 +48,44 @@ export function TableCustom({
                     placeholder="Buscar..."
                 />
             </span>
-            <DataTable
-                ref={dt}
-                value={Array.isArray(datum) ? datum : []}
-                selection={selects}
-                filters={filters}
-                onSelectionChange={(e) => setSelects(e.value as any)}
-                dataKey="uuid"
-                paginator
-                rows={10}
-                globalFilterFields={['name', 'province']}
-                rowsPerPageOptions={[5, 10, 25]}
-                className="datatable-responsive"
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} municipios"
-                globalFilter={globalFilter || ''}
-                emptyMessage="No hay municipios agregados."
-                style={{ tableLayout: 'auto' }}
-                selectionMode="multiple"
-                filterDisplay="row"
-            >
-                <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
-                {columns.map((col, i) => (
+                <DataTable
+                    ref={dt}
+                    value={Array.isArray(datum) ? datum : []}
+                    selection={selects}
+                    filters={filters}
+                    onSelectionChange={(e) => setSelects(e.value as any)}
+                    dataKey="uuid"
+                    paginator
+                    rows={10}
+                    globalFilterFields={['name', 'province']}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    className="datatable-responsive"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} municipios"
+                    globalFilter={globalFilter || ''}
+                    emptyMessage="No hay municipios agregados."
+                    style={{ tableLayout: 'auto' }}
+                    selectionMode="multiple"
+                    filterDisplay="row"
+                    scrollable={true}
+                    scrollHeight="400"
+                >
+                    <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
+                    {columns.map((col, i) => (
+                        <Column
+                            key={i}
+                            {...col}
+                        />
+                    ))}
                     <Column
-                        key={i}
-                        {...col}
+                        body={actionBodyTemplate}
+                        header="Acciones"
+                        headerStyle={{ minWidth: '10rem' }}
+                        bodyStyle={{ overflow: 'visible' }}
+                        className={styles.stickyColumn}
+                        headerClassName={styles.stickyHeader}
                     />
-                ))}
-            <Column
-                body={actionBodyTemplate}
-                header="Acciones"
-                headerStyle={{ minWidth: '10rem' }}
-                bodyStyle={{ overflow: 'visible' }}
-                className={styles.stickyColumn}
-                headerClassName={styles.stickyHeader}
-            />
-            </DataTable>
+                </DataTable>
         </>
     );
 }
