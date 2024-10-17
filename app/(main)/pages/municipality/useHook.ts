@@ -17,8 +17,21 @@ export const useHook = () => {
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef<Toast>(null);
 
+    const convertDates = (data: MunicipalityResponse[]): MunicipalityResponse[] => {
+
+        return data.map(item => ({
+            ...item,
+            createdAt: item.createdAt ? new Date(item.createdAt) : null,
+            updatedAt: item.updatedAt ? new Date(item.updatedAt) : null,
+        })) as MunicipalityResponse[];
+    };
+
+
     useEffect(() => {
-        MunicipalityService.getMunicipalities().then((data) => setSelects(data));
+        MunicipalityService.getMunicipalities().then((dataArray) => {
+            const convertedData = convertDates(dataArray);
+            setSelects(convertedData);
+        });
     }, []);
 
     const save = async () => {
@@ -51,7 +64,7 @@ export const useHook = () => {
                     handleError(error, 'No se pudo crear');
                 }
             }
-            setSelects(_data );
+            setSelects(convertDates(_data) );
         }
     };
 

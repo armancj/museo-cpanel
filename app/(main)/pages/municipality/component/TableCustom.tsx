@@ -14,10 +14,10 @@ interface TableCustomProps {
     editData: (updatedCountry: Partial<MunicipalityResponse>) => Promise<void>,
     setSelects: (value: (((prevState: MunicipalityResponse[]) => MunicipalityResponse[]) | MunicipalityResponse[])) => void,
     datum: MunicipalityResponse[],
-    onGlobalFilterChange: (e: { target: { value: any } }) => void,
     setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     setData: (value: (((prevState: MunicipalityResponse) => MunicipalityResponse) | MunicipalityResponse)) => void,
-    filters: DataTableFilterMeta
+    filters: DataTableFilterMeta,
+    onGlobalFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function TableCustom({

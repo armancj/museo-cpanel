@@ -5,6 +5,8 @@ import React from 'react';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
 import { MunicipalityResponse } from '@/app/service/MunicipalityService';
+import { Calendar } from 'primereact/calendar';
+import { FilterMatchMode } from 'primereact/api';
 
 
 interface TableBodyFunctionProps {
@@ -66,17 +68,31 @@ export function TableBodyFunction({
         );
     };
 
+    const calendarFilterTemplate = (options: any) => {
+
+        return (
+            <Calendar
+                value={options.value}
+                onChange={(e) => options.filterApplyCallback(e.value as Date)}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccionar fecha"
+                showIcon
+            />
+        );
+    };
+
 
     const columns: ColumnProps[] = [
         {
             field: 'name',
             header: 'Nombre del Municipio',
             filter: true,
-            filterPlaceholder: 'Buscar por nombre',
+            filterPlaceholder: 'Buscar por municipio',
             sortable: true,
-            headerStyle: { minWidth: '5rem' },
+            headerStyle: { minWidth: '1rem' },
             style: { whiteSpace: 'nowrap' },
-            body: nameBodyTemplate
+            body: nameBodyTemplate,
+            filterHeaderStyle: { minWidth: '20rem' }
         },
         {
             field: 'province',
@@ -84,7 +100,8 @@ export function TableBodyFunction({
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
             filter: true,
-            filterPlaceholder: 'Buscar por province',
+            filterPlaceholder: 'Buscar por provincia',
+            filterHeaderStyle: { minWidth: '20rem' }
         },
         {
             field: 'createdAt',
@@ -92,6 +109,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
         {
@@ -100,6 +121,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
         }
     ];

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useHook  } from './useHook';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
@@ -33,7 +33,10 @@ export function MunicipalityList() {
 
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        province: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        province: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        createdAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
+        updatedAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
@@ -100,15 +103,12 @@ export function MunicipalityList() {
         </>
     );
 
-    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        let _filters = { ...filters };
-
-        // @ts-ignore
-        _filters['global'].value = value;
-
-
-        setFilters(_filters);
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            global: { value, matchMode: FilterMatchMode.CONTAINS }
+        }));
         setGlobalFilter(value);
     };
 
@@ -132,9 +132,9 @@ export function MunicipalityList() {
                         globalFilter={globalFilter}
                         filters={filters}
                         editData={editData}
-                        onGlobalFilterChange={onGlobalFilterChange}
                         setDeleteDialog={setDeleteDialog}
                         setData={setData}
+                        onGlobalFilterChange={onGlobalFilterChange}
                     />
                     <Dialog visible={dialog} header="Detalles de Provincia" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>
