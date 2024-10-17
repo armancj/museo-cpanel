@@ -67,8 +67,8 @@ export function TableCustom({
                     style={{ tableLayout: 'auto' }}
                     selectionMode="multiple"
                     filterDisplay="row"
-                    scrollable={true}
-                    scrollHeight="400"
+                    scrollable
+                    scrollHeight="380px"
                 >
                     <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
                     {columns.map((col, i) => (
