@@ -18,15 +18,27 @@ export function TableBodyFunction({ toggleUserActivation, editUser, deleteUser }
         );
     };
 
+    const iconStyle = {
+        fontSize: '5px', // Ajusta este valor según el tamaño deseado
+    };
     const actionBodyTemplate = (rowData: UsersDatum) => {
         return (
             <div>
                 <Button
-                    icon="pi pi-pencil"
-                    className="p-button-rounded p-button-text p-button-warning"
+                    icon="pi pi-file-edit"
+                    className="p-button-rounded p-button-text p-button-info"
                     tooltip="Editar Usuario"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => editUser(rowData)}
+                    style={iconStyle}
+                />
+                <Button
+                    icon={rowData.active ? 'pi pi-user-minus' : 'pi  pi-user-plus'}
+                    className={`p-button-rounded p-button-text ${rowData.active ? `p-button-warning` : `p-button-success`}`}
+                    tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
+                    style={iconStyle}
                 />
                 <Button
                     icon="pi pi-trash"
@@ -34,13 +46,7 @@ export function TableBodyFunction({ toggleUserActivation, editUser, deleteUser }
                     tooltip="Eliminar Usuario"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => deleteUser(rowData.uuid)}
-                />
-                <Button
-                    icon={rowData.active ? 'pi pi-times' : 'pi pi-check'}
-                    className={`p-button-rounded p-button-text ${rowData.active ? `p-button-danger` : `p-button-success`}`}
-                    tooltip={rowData.active ? 'Desactivar Usuario' : 'Activar Usuario'}
-                    tooltipOptions={{ position: 'top' }}
-                    onClick={() => toggleUserActivation(rowData.uuid, !rowData.active)}
+                    style={iconStyle}
                 />
             </div>
         );
