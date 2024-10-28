@@ -1,20 +1,20 @@
 import { useRef, useState } from 'react';
-import { CountryResponse, emptyCountry } from '@/app/service/CountryService';
-import { useHookCountry } from '@/app/(main)/pages/country/useHookCountry';
+import { useHook  } from './useHook';
 import { DataTable } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ToolbarCustom } from './component/ToolbarCustom';
-import { TableCustom } from '@/app/(main)/pages/country/component/TableCustom';
 import { Dialog } from 'primereact/dialog';
-import { DataForm } from '@/app/(main)/pages/country/component/DataForm';
 import { FilterMatchMode } from 'primereact/api';
+import { DataForm } from './component/DataForm';
+import { TableCustom } from './component/TableCustom';
+import { ProvinceResponse, emptyProvince } from '@/app/service/ProvinceService';
 
 
-export function CountryList() {
+export function ProvinceList() {
 
-    const [selects, setSelects] = useState<CountryResponse[]>([]);
+    const [selects, setSelects] = useState<ProvinceResponse[]>([]);
 
     const {
         datum,
@@ -29,17 +29,18 @@ export function CountryList() {
         deleteData,
         deleteDialog,
         setDeleteDialog
-    } = useHookCountry();
+    } = useHook();
 
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        country: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
-    const dt = useRef<DataTable<CountryResponse[]>>(null);
+    const dt = useRef<DataTable<ProvinceResponse[]>>(null);
 
     const openNew = () => {
-        setData(emptyCountry);
+        setData(emptyProvince);
         setDialog(true);
     };
 
@@ -133,7 +134,7 @@ export function CountryList() {
                         setDeleteDialog={setDeleteDialog}
                         setData={setData}
                     />
-                    <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
+                    <Dialog visible={dialog} header="Detalles de Provincia" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>
                         <DataForm
                             data={data}

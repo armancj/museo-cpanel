@@ -74,7 +74,7 @@ export const UserTable = ({
                 <Column field="active" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '5rem' }} />
                 <Column field="roles" header="Rol" sortable />
                 <Column field="avatar" body={ImageBodyTemplate} header="Avatar" />
-                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
+                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '12rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
         </>
     );

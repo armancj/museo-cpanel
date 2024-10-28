@@ -2,65 +2,46 @@ import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Button } from 'primereact/button';
 import React from 'react';
-import { CountryResponse } from '@/app/service/CountryService';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
-import { ProvinceResponse } from '@/app/service/ProvinceService';
+import { MunicipalityResponse } from '@/app/service/MunicipalityService';
+import { Calendar } from 'primereact/calendar';
+import { FilterMatchMode } from 'primereact/api';
+
 
 interface TableBodyFunctionProps {
-    editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
+    editData: (updatedCountry: Partial<MunicipalityResponse>) => Promise<void>;
     setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    setData: (value: (((prevState: CountryResponse) => CountryResponse) | CountryResponse)) => void
+    setData: (value: (((prevState: MunicipalityResponse) => MunicipalityResponse) | MunicipalityResponse)) => void
 }
 
 export function TableBodyFunction({
                                       editData,
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
-
-    const countryCodes: { [key: string]: string } = {
-        "estados unidos": "us",
-        "canada": "ca",
-        "méxico": "mx",
-        "brasil": "br",
-        "argentina": "ar",
-        "reino Unido": "gb",
-        "francia": "fr",
-        "alemania": "de",
-        "italia": "it",
-        "españa": "es",
-        "rusia": "ru",
-        "china": "cn",
-        "japón": "jp",
-        "india": "in",
-        "australia": "au",
-        "sudáfrica": "za",
-        "cuba": "cu"
-    };
-    const nameBodyTemplate = (rowData: ProvinceResponse) => {
-        const codeCountry =countryCodes[rowData.name.toLowerCase()];
+    const nameBodyTemplate = (rowData: MunicipalityResponse) => {
         return (
-            <div className="p-column-title flex align-items-center gap-2">
-                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
-                <span>{rowData.name}</span>
-            </div>
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.name}
+            </>
         );
     };
 
-    const actionBodyTemplate = (rowData: CountryResponse) => {
+    const actionBodyTemplate = (rowData: MunicipalityResponse) => {
         return (
             <div>
                 <Button
                     icon="pi pi-pencil"
                     className="p-button-rounded p-button-text p-button-warning"
-                    tooltip="Editar País"
+                    tooltip="Editar Municipio"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => editData(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
                     className="p-button-rounded p-button-text p-button-danger"
-                    tooltip="Eliminar País"
+                    tooltip="Eliminar Municipio"
                     tooltipOptions={{ position: 'top' }}
                     onClick={async () => {
                         setDeleteDialog(true);
@@ -71,7 +52,7 @@ export function TableBodyFunction({
         );
     };
 
-    const dateBodyTemplate = (rowData: CountryResponse, field: keyof CountryResponse) => {
+    const dateBodyTemplate = (rowData: MunicipalityResponse, field: keyof MunicipalityResponse) => {
         const date = new Date(rowData[field]);
         return (
             <>
@@ -87,15 +68,40 @@ export function TableBodyFunction({
         );
     };
 
+    const calendarFilterTemplate = (options: any) => {
+
+        return (
+            <Calendar
+                value={options.value}
+                onChange={(e) => options.filterApplyCallback(e.value as Date)}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccionar fecha"
+                showIcon
+            />
+        );
+    };
+
 
     const columns: ColumnProps[] = [
         {
             field: 'name',
-            header: 'Nombre del País',
+            header: 'Nombre del Municipio',
+            filter: true,
+            filterPlaceholder: 'Buscar por municipio',
             sortable: true,
+            headerStyle: { minWidth: '1rem' },
+            style: { whiteSpace: 'nowrap' },
+            body: nameBodyTemplate,
+            filterHeaderStyle: { minWidth: '20rem' }
+        },
+        {
+            field: 'province',
+            header: 'Nombre de la Provincia',
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
-            body: nameBodyTemplate
+            filter: true,
+            filterPlaceholder: 'Buscar por provincia',
+            filterHeaderStyle: { minWidth: '20rem' }
         },
         {
             field: 'createdAt',
@@ -103,6 +109,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
         {
@@ -111,6 +121,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
         }
     ];

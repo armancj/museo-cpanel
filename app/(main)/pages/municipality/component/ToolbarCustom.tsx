@@ -10,7 +10,7 @@ interface ToolbarProps {
     openNew: () => void
 }
 
-export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, exportExcel, openNew }: ToolbarProps) {
+export function ToolbarCustom({ selects, confirmDeleteSelected, exportExcel, openNew }: ToolbarProps) {
 
     const handleDelete = () => {
         if (selects.length) {
@@ -22,8 +22,8 @@ export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, expor
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="Agregar País" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Eliminar País" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
+                    <Button label="Agregar Municipio" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
+                    <Button label="Eliminar Municipio" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selects  || !selects.length} />
                 </div>
             </React.Fragment>
         );

@@ -1,20 +1,20 @@
-import { useRef, useState } from 'react';
-import { CountryResponse, emptyCountry } from '@/app/service/CountryService';
-import { useHookCountry } from '@/app/(main)/pages/country/useHookCountry';
-import { DataTable } from 'primereact/datatable';
+import React, { useRef, useState } from 'react';
+import { useHook  } from './useHook';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ToolbarCustom } from './component/ToolbarCustom';
-import { TableCustom } from '@/app/(main)/pages/country/component/TableCustom';
 import { Dialog } from 'primereact/dialog';
-import { DataForm } from '@/app/(main)/pages/country/component/DataForm';
 import { FilterMatchMode } from 'primereact/api';
+import { DataForm } from './component/DataForm';
+import { TableCustom } from './component/TableCustom';
+import { emptyMunicipality, MunicipalityResponse } from '@/app/service/MunicipalityService';
 
 
-export function CountryList() {
+export function MunicipalityList() {
 
-    const [selects, setSelects] = useState<CountryResponse[]>([]);
+    const [selects, setSelects] = useState<MunicipalityResponse[]>([]);
 
     const {
         datum,
@@ -29,17 +29,21 @@ export function CountryList() {
         deleteData,
         deleteDialog,
         setDeleteDialog
-    } = useHookCountry();
+    } = useHook();
 
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    const [filters, setFilters] = useState<DataTableFilterMeta>({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        province: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        createdAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
+        updatedAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
-    const dt = useRef<DataTable<CountryResponse[]>>(null);
+    const dt = useRef<DataTable<MunicipalityResponse[]>>(null);
 
     const openNew = () => {
-        setData(emptyCountry);
+        setData(emptyMunicipality);
         setDialog(true);
     };
 
@@ -99,13 +103,12 @@ export function CountryList() {
         </>
     );
 
-    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            global: { value, matchMode: FilterMatchMode.CONTAINS }
+        }));
         setGlobalFilter(value);
     };
 
@@ -129,11 +132,11 @@ export function CountryList() {
                         globalFilter={globalFilter}
                         filters={filters}
                         editData={editData}
-                        onGlobalFilterChange={onGlobalFilterChange}
                         setDeleteDialog={setDeleteDialog}
                         setData={setData}
+                        onGlobalFilterChange={onGlobalFilterChange}
                     />
-                    <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
+                    <Dialog visible={dialog} header="Detalles del Municipio" modal className="p-fluid" footer={dialogFooter}
                             onHide={hideDialog}>
                         <DataForm
                             data={data}

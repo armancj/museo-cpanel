@@ -14,7 +14,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
     return (
         <div className="field col-12 md:col-6">
-            <label htmlFor="name">Nombre del País</label>
+            <label htmlFor="name">Nombre de la Provincia</label>
             <InputText
                 id="name"
                 name="name"

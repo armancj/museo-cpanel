@@ -3,20 +3,41 @@ import { WebEnvConst } from '@/app/webEnvConst';
 import { AddressResponse } from '@/app/service/UserService';
 
 
-interface Response {
-    name:      string;
-    province:  string;
+export interface MunicipalityResponse {
+    [key: string]: any;
+    name: string;
+    province: string;
     createdAt: Date;
-    deleted:   boolean;
+    deleted: boolean;
     updatedAt: Date;
-    uuid:      string;
+    uuid: string;
 }
 
 
+export const emptyMunicipality: MunicipalityResponse = {
+    deleted: false, name: '', province: '', uuid: '',
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now())
 
-export const MunicipalityService  =   {
-    getMunicipalities: async ({name}: AddressResponse) => {
-        const url = WebEnvConst.municipality.getAll;
-        return await get<Response[]>(`${url}?province=${name}`);
+};
+export const MunicipalityService = {
+    getMunicipalities: async ({ name }: AddressResponse = {}) => {
+        let url = WebEnvConst.municipality.getAll;
+        if(name) url = `${url}?province=${name}`;
+        return await get<MunicipalityResponse[]>(url);
     },
+    async update(uuid: string, updated: Omit<MunicipalityResponse, 'uuid' | 'deleted'>) {
+        const { province, name } =updated;
+        const url = WebEnvConst.municipality.getOne(uuid)
+        return await patch<boolean>(url, { province, name})
+    },
+    async create(data: MunicipalityResponse) {
+        const { province, name } =data;
+        const url = WebEnvConst.municipality.post
+        return await post<MunicipalityResponse>(url, { province, name})
+    },
+    delete: async function(uuid: string) {
+        const url = WebEnvConst.municipality.getOne(uuid);
+        return await del<boolean>(url);
+    }
 };

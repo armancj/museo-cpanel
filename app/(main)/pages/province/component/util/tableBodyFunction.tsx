@@ -2,21 +2,29 @@ import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Button } from 'primereact/button';
 import React from 'react';
-import { CountryResponse } from '@/app/service/CountryService';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
 import { ProvinceResponse } from '@/app/service/ProvinceService';
 
+
 interface TableBodyFunctionProps {
-    editData: (updatedCountry: Partial<CountryResponse>) => Promise<void>;
+    editData: (updatedCountry: Partial<ProvinceResponse>) => Promise<void>;
     setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    setData: (value: (((prevState: CountryResponse) => CountryResponse) | CountryResponse)) => void
+    setData: (value: (((prevState: ProvinceResponse) => ProvinceResponse) | ProvinceResponse)) => void
 }
 
 export function TableBodyFunction({
                                       editData,
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
+    const nameBodyTemplate = (rowData: ProvinceResponse) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.name}
+            </>
+        );
+    };
 
     const countryCodes: { [key: string]: string } = {
         "estados unidos": "us",
@@ -37,17 +45,17 @@ export function TableBodyFunction({
         "sudáfrica": "za",
         "cuba": "cu"
     };
-    const nameBodyTemplate = (rowData: ProvinceResponse) => {
-        const codeCountry =countryCodes[rowData.name.toLowerCase()];
+    const countryBodyTemplate = (rowData: ProvinceResponse) => {
+        const codeCountry =countryCodes[rowData.country.toLowerCase()];
         return (
-            <div className="p-column-title flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2">
                 <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
-                <span>{rowData.name}</span>
+                <span>{rowData.country}</span>
             </div>
         );
     };
 
-    const actionBodyTemplate = (rowData: CountryResponse) => {
+    const actionBodyTemplate = (rowData: ProvinceResponse) => {
         return (
             <div>
                 <Button
@@ -71,7 +79,7 @@ export function TableBodyFunction({
         );
     };
 
-    const dateBodyTemplate = (rowData: CountryResponse, field: keyof CountryResponse) => {
+    const dateBodyTemplate = (rowData: ProvinceResponse, field: keyof ProvinceResponse) => {
         const date = new Date(rowData[field]);
         return (
             <>
@@ -91,11 +99,22 @@ export function TableBodyFunction({
     const columns: ColumnProps[] = [
         {
             field: 'name',
-            header: 'Nombre del País',
+            header: 'Nombre de la Provincia',
             sortable: true,
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
             body: nameBodyTemplate
+        },
+        {
+            field: 'country',
+            header: 'Nombre del País',
+            sortable: true,
+            headerStyle: { minWidth: '5rem' },
+            style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterPlaceholder: 'Buscar por país',
+            filterField: "country",
+            body: countryBodyTemplate
         },
         {
             field: 'createdAt',
