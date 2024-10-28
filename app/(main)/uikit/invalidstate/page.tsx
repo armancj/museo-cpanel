@@ -15,7 +15,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect } from "primereact/multiselect";
 import { Password } from "primereact/password";
 import { useEffect, useState } from "react";
-import { CountryService } from "../../../../demo/service/CountryService";
+import { CountryService } from "../../../service/CountryService";
 
 const InvalidStateDemo = () => {
     const [countries, setCountries] = useState<Demo.Country[]>([]);

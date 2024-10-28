@@ -1,10 +1,17 @@
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 
 // Definimos la interfaz del payload del JWT
 interface JwtPayload {
-    exp: number;
+    roles:    string;
+    uuid:     string;
+    email:    string;
+    name:     string;
+    lastName: string;
+    iat:      number;
+    exp:      number;
 }
 
 // HOC que protege rutas con autenticación
@@ -12,26 +19,32 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
     const ComponentWithAuth: React.FC<P> = (props: P) => {
         const router = useRouter();
 
-        useEffect(() => {
-            const authUser = localStorage.getItem('authUser'); // Obtenemos el token JWT
+        const checkAuth = useCallback(() => {
+            const authUser = localStorage.getItem('authUser');
 
             if (!authUser) {
-                router.push('/auth/login');
+                router.replace('/auth/login');
                 return;
             }
 
+            const parsedAuthUser: AuthResponse = JSON.parse(authUser);
+
             try {
-                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(authUser);
+                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(parsedAuthUser.access_token);
 
                 if (decodedToken.exp < Date.now() / 1000) {
                     localStorage.removeItem('authUser');
-                    router.push('/auth/login');
+                    router.replace('/auth/login');
                 }
             } catch (error) {
                 localStorage.removeItem('authUser');
-                router.push('/auth/login');
+                router.replace('/auth/login');
             }
         }, [router]);
+
+        useEffect(() => {
+            checkAuth();
+        }, [checkAuth]);
 
         return React.createElement(WrappedComponent, props);
     };
