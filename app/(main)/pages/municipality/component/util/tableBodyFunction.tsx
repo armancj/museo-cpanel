@@ -7,6 +7,8 @@ import styles from './ButtonStyles.module.css';
 import { MunicipalityResponse } from '@/app/service/MunicipalityService';
 import { Calendar } from 'primereact/calendar';
 import { FilterMatchMode } from 'primereact/api';
+import { ProvinceResponse } from '@/app/service/ProvinceService';
+import { convertToCode } from '@/app/(main)/utilities/convertToCode';
 
 
 interface TableBodyFunctionProps {
@@ -25,6 +27,24 @@ export function TableBodyFunction({
                 <span className="p-column-title">Name</span>
                 {rowData.name}
             </>
+        );
+    };
+
+    const provinceBodyTemplate = (rowData: MunicipalityResponse) => {
+        const province = convertToCode(rowData.province);
+        const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = '/demo/images/provinces/default.jpg';
+        };
+
+        return (
+            <div className="p-column-title flex align-items-center gap-2">
+                <img
+                    alt="flag"
+                    src={`/demo/images/provinces/${province}.png`}
+                    onError={handleImageError}
+                    style={{ width: '24px' }} />
+                <span>{rowData.province}</span>
+            </div>
         );
     };
 
@@ -99,6 +119,7 @@ export function TableBodyFunction({
             header: 'Nombre de la Provincia',
             headerStyle: { minWidth: '5rem' },
             style: { whiteSpace: 'nowrap' },
+            body: provinceBodyTemplate,
             filter: true,
             filterPlaceholder: 'Buscar por provincia',
             filterHeaderStyle: { minWidth: '20rem' }
