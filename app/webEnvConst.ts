@@ -25,5 +25,11 @@ export const WebEnvConst = {
         getAll: '/municipality',
         post: '/municipality',
         getOne: (uuid: string) => `/municipality/${uuid}`
+    },
+    roles: {
+        superAdmin: 'super Administrador',
+        admin: 'Administrador',
+        specialist: 'Especialista',
+        technician: 'Técnico'
     }
 };

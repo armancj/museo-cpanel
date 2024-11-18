@@ -44,6 +44,11 @@ export const model: AppMenuItem[] = [
                 label: 'Recursos Humanos',
                 icon: 'pi pi-users',
                 to: '/pages/user'
+            },
+            {
+                label: 'Patrimonio de Bienes Culturales',
+                icon: 'pi pi-landmark',
+                to: '/pages/cultural-property-heritage'
             }
         ]
     },

@@ -5,10 +5,10 @@ import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
-import { AppMenuItem } from '@/types';
 import { UsersDatum } from '@/app/service/UserService';
 import styles from './AppMenu.module.css';
 import { model } from '@/layout/modelAppmenuConst';
+import { WebEnvConst } from '@/app/webEnvConst';
 
 const AppMenu = () => {
     const { layoutConfig,  } = useContext(LayoutContext);
@@ -27,15 +27,15 @@ const AppMenu = () => {
         }
     }, []);
     const getFilteredModel = () => {
-        if (userRole === 'Administrador' || userRole === 'Especialista') {
+        if (userRole === WebEnvConst.roles.admin || userRole === WebEnvConst.roles.specialist) {
             return model.filter(item => item.label === 'Inicio' || item.label === 'Nomencladores' || item.label === 'Aplicación');
         }
 
-        if (userRole === 'Técnico') {
+        if (userRole === WebEnvConst.roles.technician) {
             return model.filter(item => item.label === 'Inicio');
         }
 
-        if (userRole === 'super Administrador') {
+        if (userRole === WebEnvConst.roles.superAdmin) {
             return model;
         }
         return [];
