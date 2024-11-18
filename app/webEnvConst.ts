@@ -26,6 +26,11 @@ export const WebEnvConst = {
         post: '/municipality',
         getOne: (uuid: string) => `/municipality/${uuid}`
     },
+    culturalProperty:{
+        getAll: '/cultural-heritage-property',
+        post: '/cultural-heritage-property',
+        getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`
+    },
     roles: {
         superAdmin: 'super Administrador',
         admin: 'Administrador',
