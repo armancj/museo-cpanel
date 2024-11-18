@@ -74,6 +74,10 @@ export interface VolumesQuantities {
 }
 
 export interface DescriptionControl {
+    reviewDateTime: Date;
+    reviewedBy: string;
+    descriptionDateTime: Date;
+    descriptionMadeBy: string;
 }
 
 export interface EntryAndLocation {
