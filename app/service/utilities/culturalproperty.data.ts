@@ -1,6 +1,4 @@
 import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
-import { undefined } from 'zod';
-
 
 
 export const emptyCulturalProperty: CulturalPropertyModel = {
@@ -21,8 +19,9 @@ export const emptyCulturalProperty: CulturalPropertyModel = {
         conservationState: [],
         descriptionInstrument: [],
         descriptionLevel: 0,
-        dimensions: undefined,
-        extremeDates: undefined,
+        extremeDates: {
+            end: new Date(Date.now()), start: new Date(Date.now())
+        },
         geographicDescriptors: '',
         institutionalDescriptors: '',
         languages: [],
@@ -35,8 +34,24 @@ export const emptyCulturalProperty: CulturalPropertyModel = {
         supports: [],
         valuation: 0,
         valueGrade: '',
+        dimensions: {
+            cubicMeters: 0,
+            heightCms: 0,
+            lengthCms: 0,
+            squareMeters: 0,
+            weightKg: 0,
+            widthCms: 0
+        },
         volumesQuantities: {
-
+            books: 0,
+            engravings: 0,
+            file: 0,
+            mapsPlansSketches: 0,
+            negatives: 0,
+            objects: 0,
+            pages: 0,
+            photos: 0,
+            slides: 0
         }
 
     },
@@ -47,8 +62,43 @@ export const emptyCulturalProperty: CulturalPropertyModel = {
         reviewDateTime: new Date(Date.now()),
         reviewedBy: ''
     },
-    entryAndLocation: undefined,
-    notes: undefined,
-    producerAuthor: undefined,
+    entryAndLocation: {
+        auxiliaryInventory: false,
+        declarationType: '',
+        entryDate: new Date(Date.now()),
+        entryMethod: '',
+        genericClassification: '',
+        heritageType: '',
+        initialDescription: '',
+        institutionType: '',
+        inventoryNumber: '',
+        objectLocation: {
+            box: '',
+            exhibitionRoom: '',
+            fileFolder: '',
+            floor: '',
+            shelfDrawer: '',
+            showcaseShelf: '',
+            storage: ''
+        },
+        objectName: '',
+        pieceInventory: false
 
+    },
+    notes: {
+        notes: ''
+    },
+    producerAuthor: {
+        betweenStreet1: '',
+        betweenStreet2: '',
+        district: '',
+        institutionalHistory: '',
+        locality: '',
+        municipality: '',
+        number: '',
+        objectEntryHistory: '',
+        producerAuthorNames: '',
+        province: '',
+        street: ''
+    },
 };

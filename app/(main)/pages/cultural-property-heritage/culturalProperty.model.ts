@@ -36,7 +36,7 @@ export interface CulturalRecord {
     valueGrade:               string;
     descriptionLevel:         number;
     valuation:                number;
-    volumesQuantities:        Dimensions;
+    volumesQuantities:        VolumesQuantities;
     dimensions:               Dimensions;
     languages:                string[];
     supports:                 string[];
@@ -48,6 +48,12 @@ export interface CulturalRecord {
 }
 
 export interface Dimensions {
+    heightCms:    number;
+    widthCms:     number;
+    lengthCms:    number;
+    squareMeters: number;
+    cubicMeters:  number;
+    weightKg:     number;
 }
 
 export interface ExtremeDates {
@@ -55,11 +61,19 @@ export interface ExtremeDates {
     end:   Date;
 }
 
+export interface VolumesQuantities {
+    file:              number;
+    pages:             number;
+    books:             number;
+    objects:           number;
+    photos:            number;
+    engravings:        number;
+    slides:            number;
+    negatives:         number;
+    mapsPlansSketches: number;
+}
+
 export interface DescriptionControl {
-    descriptionMadeBy:   string;
-    descriptionDateTime: Date;
-    reviewedBy:          string;
-    reviewDateTime:      Date;
 }
 
 export interface EntryAndLocation {
