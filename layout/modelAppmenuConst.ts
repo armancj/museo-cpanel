@@ -46,8 +46,8 @@ export const model: AppMenuItem[] = [
                 to: '/pages/user'
             },
             {
-                label: 'Patrimonio de Bienes Culturales',
-                icon: 'pi pi-landmark',
+                label: 'Patrimonio Cultural',
+                icon: 'pi pi-book',
                 to: '/pages/cultural-property-heritage'
             }
         ]
