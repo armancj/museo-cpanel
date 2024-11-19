@@ -8,7 +8,7 @@ interface props {
 }
 const AuthorInfoPanel = ({ producerAuthor }:props) => {
     return (
-        <Panel header="Información del Autor" toggleable>
+        <Panel header="Información del Autor" toggleable collapsed={true}>
             <div className="p-grid">
                 <div className="p-col-12 p-md-6">
                     <p><b>Nombre:</b> {producerAuthor.producerAuthorNames}</p>

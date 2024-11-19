@@ -3,10 +3,16 @@ import { DataTable, DataTableExpandedRows, DataTableRowEvent, DataTableValueArra
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { Panel } from 'primereact/panel';
 import { CulturalPropertyService } from '@/app/service/CulturalPropertyService';
 import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
-import AuthorInfoPanel from '@/app/(main)/pages/cultural-property-heritage/AuthorInfoPanel';
+import AuthorInfoPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/AuthorInfoPanel';
+import CulturalRecordPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/CulturalRecordPanel';
+import AccessAndUseConditionsPanel
+    from '@/app/(main)/pages/cultural-property-heritage/panel-component/AccessAndUseConditionsPanel';
+import EntryAndLocationPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/EntryAndLocationPanel';
+import DescriptionControlPanel
+    from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
+import NotesPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/NotesPanel';
 
 export default function CulturalPropertyTable() {
     const [culturalProperties, setCulturalProperties] = useState<CulturalPropertyModel[]>([]);
@@ -40,35 +46,17 @@ export default function CulturalPropertyTable() {
     const rowExpansionTemplate = (data: CulturalPropertyModel) => {
         return (
             <div className="p-3">
-                <h5>Detalles del Objeto Museable</h5>
+                <h5>Detalles del objeto: {data.culturalRecord.objectTitle}</h5>
                 <div className="p-grid p-fluid">
                     <div className="p-col-12 p-md-6">
                         <AuthorInfoPanel producerAuthor={data.producerAuthor} />
-                        <Panel header="Condiciones de Acceso y Uso" toggleable>
-                            <p><b>Condiciones de Acceso:</b> {data.accessAndUseConditions.accessConditions.join(', ')}</p>
-                            <p><b>Condiciones de Reproducción:</b> {data.accessAndUseConditions.reproductionConditions.join(', ')}</p>
-                            <p><b>Requisitos Técnicos:</b> {data.accessAndUseConditions.technicalRequirements}</p>
-                        </Panel>
-                        <Panel header="Registro Cultural" toggleable>
-                            <p><b>Título:</b> {data.culturalRecord.objectTitle}</p>
-                            <p><b>Descripción:</b> {data.culturalRecord.objectDescription}</p>
-                            <p><b>Estado de Conservación:</b> {data.culturalRecord.conservationState.join(', ')}</p>
-                        </Panel>
+                        <AccessAndUseConditionsPanel accessAndUseConditions={data.accessAndUseConditions} />
+                        <CulturalRecordPanel culturalRecord={data.culturalRecord} />
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <Panel header="Ubicación del Objeto" toggleable>
-                            <p><b>Ubicación:</b> {`${data.entryAndLocation.objectLocation.box}, ${data.entryAndLocation.objectLocation.shelfDrawer}, ${data.entryAndLocation.objectLocation.storage}`}</p>
-                            <p><b>Tipo de Institución:</b> {data.entryAndLocation.institutionType}</p>
-                        </Panel>
-                        <Panel header="Control de Descripción" toggleable>
-                            <p><b>Hecho por:</b> {data.descriptionControl.descriptionMadeBy}</p>
-                            <p><b>Fecha de Descripción:</b> {new Date(data.descriptionControl.descriptionDateTime).toLocaleDateString()}</p>
-                            <p><b>Revisado por:</b> {data.descriptionControl.reviewedBy}</p>
-                            <p><b>Fecha de Revisión:</b> {new Date(data.descriptionControl.reviewDateTime).toLocaleDateString()}</p>
-                        </Panel>
-                        <Panel header="Notas" toggleable>
-                            <p>{data.notes.notes}</p>
-                        </Panel>
+                        <EntryAndLocationPanel entryAndLocation={data.entryAndLocation} />
+                        <DescriptionControlPanel descriptionControl={data.descriptionControl} />
+                        <NotesPanel notes={data.notes} />
                     </div>
                 </div>
             </div>
@@ -89,10 +77,10 @@ export default function CulturalPropertyTable() {
                        onRowExpand={onRowExpand} onRowCollapse={onRowCollapse} rowExpansionTemplate={rowExpansionTemplate}
                        dataKey="uuid" header={header} tableStyle={{ minWidth: '60rem' }}>
                 <Column expander style={{ width: '5rem' }} />
+                <Column field="entryAndLocation.objectName" header="Nombre del Objeto" sortable />
                 <Column field="producerAuthor.producerAuthorNames" header="Autor" sortable />
                 <Column field="culturalRecord.objectTitle" header="Título" sortable />
                 <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable body={(rowData) => new Date(rowData.entryAndLocation.entryDate).toLocaleDateString()} />
-                <Column field="entryAndLocation.objectName" header="Nombre del Objeto" sortable />
             </DataTable>
         </div>
     );
