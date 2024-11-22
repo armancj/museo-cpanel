@@ -1,7 +1,6 @@
 import { get, post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 import { AddressResponse } from '@/app/service/UserService';
-import { CountryResponse } from '@/app/service/CountryService';
 
 
 export interface ProvinceResponse {

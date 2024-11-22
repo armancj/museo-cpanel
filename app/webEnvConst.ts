@@ -36,5 +36,10 @@ export const WebEnvConst = {
         admin: 'Administrador',
         specialist: 'Especialista',
         technician: 'Técnico'
+    },
+    institution:{
+        getAll: '/institutions',
+        post: '/institutions',
+        getOne: (uuid: string) => `/institutions/${uuid}`,
     }
 };

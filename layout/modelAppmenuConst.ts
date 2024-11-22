@@ -31,7 +31,8 @@ export const model: AppMenuItem[] = [
                     },
                     {
                         label: 'Instituciones',
-                        icon: 'pi pi-fw pi-building'
+                        icon: 'pi pi-fw pi-building',
+                        to: '/pages/institution'
                     }
                 ]
             }
