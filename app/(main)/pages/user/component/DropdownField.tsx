@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { classNames } from 'primereact/utils';
 
 interface DropdownFieldProps {
@@ -7,11 +7,13 @@ interface DropdownFieldProps {
     name: string,
     value: any,
     options: any[],
-    onChange: (e: any) => void,
+    onChange: (e: DropdownChangeEvent) => void,
     optionLabel: string,
     placeholder: string,
     submitted: boolean,
-    disabled?: boolean
+    disabled?: boolean,
+    required?: boolean,
+    className: string | undefined
 }
 
 const DropdownField: React.FC<DropdownFieldProps> = ({
@@ -23,9 +25,16 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                                                          optionLabel,
                                                          placeholder,
                                                          submitted,
-                                                         disabled
+                                                         disabled = false,
+                                                         required = false,
+                                                         className,
                                                      }) => {
+    const isInvalid = submitted && required && !value;
+    const combinedClassNames = classNames(className, { 'p-invalid': isInvalid });
+
+
     return (
+        <div className="field">
             <Dropdown
                 id={id}
                 name={name}
@@ -34,9 +43,11 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                 onChange={onChange}
                 optionLabel={optionLabel}
                 placeholder={placeholder}
-                className={classNames({ 'p-invalid': submitted && !value })}
+                className={combinedClassNames}
                 disabled={disabled}
             />
+            {isInvalid && <small className="p-error">Este campo es requerido.</small>}
+        </div>
     );
 };
 

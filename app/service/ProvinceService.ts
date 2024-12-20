@@ -21,20 +21,24 @@ export const emptyProvince: ProvinceResponse = {
     uuid: ''
 }
 export const ProvinceService  =   {
+
     getProvinces: async ({name}: AddressResponse = {}) => {
         let url = WebEnvConst.province.getAll;
         if(name) url = `${url}?country=${name}`;
         return await get<ProvinceResponse[]>(url);
     },
+
     async updateProvince(uuid: string, updated: Omit<ProvinceResponse, 'uuid' | 'deleted'>) {
         const url = WebEnvConst.province.getOne(uuid);
         const {name, country} = updated;
         return await patch<ProvinceResponse[]>(url, {name, country});
     },
+
     async create(data: ProvinceResponse) {
         const {name, country} = data;
         return await post<ProvinceResponse>(WebEnvConst.province.post, {name, country})
     },
+
     async deleteCountry(uuid: string) {
         const url = WebEnvConst.province.getOne(uuid);
         return await del<ProvinceResponse[]>(url);
