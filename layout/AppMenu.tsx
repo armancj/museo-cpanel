@@ -27,6 +27,7 @@ const AppMenu = () => {
         }
     }, []);
     const getFilteredModel = () => {
+
         if (userRole === WebEnvConst.roles.admin || userRole === WebEnvConst.roles.specialist) {
             return model.filter(item => item.label === 'Inicio' || item.label === 'Nomencladores' || item.label === 'Aplicación');
         }
@@ -38,6 +39,8 @@ const AppMenu = () => {
         if (userRole === WebEnvConst.roles.superAdmin) {
             return model;
         }
+
+
         return [];
     };
 
@@ -46,7 +49,6 @@ const AppMenu = () => {
     return (
         <MenuProvider>
             <div className={isCollapsed ? styles.layoutMenuCollapsed : styles.layoutMenu}>
-                <button onClick={toggleMenu}>Toggle Menu</button>
                 <ul className="layout-menu">
                     {filteredModel.map((item, i) => {
                         return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> :

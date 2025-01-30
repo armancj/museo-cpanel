@@ -1,8 +1,10 @@
 "use client";
 import React from 'react';
 import CulturalPropertyTable from '@/app/(main)/pages/cultural-property-heritage/CulturalPropertyTable';
+import { Button } from 'primereact/button';
 
 const culturalPropertyHeritage = () => {
+
     return (
         <div className="grid">
             <div className="col-12">

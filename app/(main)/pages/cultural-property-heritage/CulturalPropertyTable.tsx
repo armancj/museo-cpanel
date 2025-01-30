@@ -24,11 +24,21 @@ export default function CulturalPropertyTable() {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const onRowExpand = (event: DataTableRowEvent) => {
-        toast.current?.show({ severity: 'info', summary: 'Fila expandida', detail: event.data.culturalRecord.objectTitle, life: 3000 });
+        toast.current?.show({
+            severity: 'info',
+            summary: 'Fila expandida',
+            detail: event.data.culturalRecord.objectTitle,
+            life: 3000
+        });
     };
 
     const onRowCollapse = (event: DataTableRowEvent) => {
-        toast.current?.show({ severity: 'success', summary: 'Fila colapsada', detail: event.data.culturalRecord.objectTitle, life: 3000 });
+        toast.current?.show({
+            severity: 'success',
+            summary: 'Fila colapsada',
+            detail: event.data.culturalRecord.objectTitle,
+            life: 3000
+        });
     };
 
     const expandAll = () => {
@@ -63,24 +73,34 @@ export default function CulturalPropertyTable() {
         );
     };
 
+    const toggleMenu = () => {
+        alert('Creado por <NAME>');
+    };
     const header = (
         <div className="flex flex-wrap justify-content-end gap-2">
-            <Button icon="pi pi-plus" label="Expandir Todo" onClick={expandAll} text />
-            <Button icon="pi pi-minus" label="Colapsar Todo" onClick={collapseAll} text />
+            <Button label="Exportar" onClick={toggleMenu} icon="pi pi-plus" severity="success" />
+            {!expandedRows ? (
+                    <Button icon="pi pi-angle-down" label="Expandir Todo" onClick={!expandedRows ?  expandAll : collapseAll}
+                            text />) :
+                (<Button icon="pi pi-angle-up" label="Colapsar Todo" onClick={expandedRows ?  collapseAll : expandAll} text />)
+            }
         </div>
     );
 
     return (
         <div className="card">
             <Toast ref={toast} />
-            <DataTable value={culturalProperties} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}
-                       onRowExpand={onRowExpand} onRowCollapse={onRowCollapse} rowExpansionTemplate={rowExpansionTemplate}
+            <DataTable value={culturalProperties} expandedRows={expandedRows}
+                       onRowToggle={(e) => setExpandedRows(e.data)}
+                       onRowExpand={onRowExpand} onRowCollapse={onRowCollapse}
+                       rowExpansionTemplate={rowExpansionTemplate}
                        dataKey="uuid" header={header} tableStyle={{ minWidth: '60rem' }}>
                 <Column expander style={{ width: '5rem' }} />
                 <Column field="entryAndLocation.objectName" header="Nombre del Objeto" sortable />
                 <Column field="producerAuthor.producerAuthorNames" header="Autor" sortable />
                 <Column field="culturalRecord.objectTitle" header="Título" sortable />
-                <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable body={(rowData) => new Date(rowData.entryAndLocation.entryDate).toLocaleDateString()} />
+                <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable
+                        body={(rowData) => new Date(rowData.entryAndLocation.entryDate).toLocaleDateString()} />
             </DataTable>
         </div>
     );
