@@ -73,12 +73,12 @@ export default function CulturalPropertyTable() {
         );
     };
 
-    const toggleMenu = () => {
+    const createCulturalProperty = () => {
         alert('Creado por <NAME>');
     };
     const header = (
         <div className="flex flex-wrap justify-content-end gap-2">
-            <Button label="Exportar" onClick={toggleMenu} icon="pi pi-plus" severity="success" />
+            <Button className={'p-button-text'} label="Añadir" outlined onClick={createCulturalProperty} icon="pi pi-plus" severity="success" />
             {!expandedRows ? (
                     <Button icon="pi pi-angle-down" label="Expandir Todo" onClick={!expandedRows ?  expandAll : collapseAll}
                             text />) :
