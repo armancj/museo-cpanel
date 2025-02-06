@@ -13,12 +13,19 @@ import EntryAndLocationPanel from '@/app/(main)/pages/cultural-property-heritage
 import DescriptionControlPanel
     from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
 import NotesPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/NotesPanel';
+import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
+import { ToolbarCustom } from '@/app/(main)/pages/country/component/ToolbarCustom';
+import { ToolbarCommon } from '@/app/common/component/ToolbarCommon';
+import styles from '@/app/(main)/pages/user/component/UserTable.module.css';
+import { CountryResponse } from '@/app/service/CountryService';
+
 
 export default function CulturalPropertyTable() {
     const [culturalProperties, setCulturalProperties] = useState<CulturalPropertyModel[]>([]);
     const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
     const toast = useRef<Toast>(null);
 
+    const dt = useRef<DataTable<CulturalPropertyModel[]>>(null);
     useEffect(() => {
         CulturalPropertyService.getCulturalProperties().then((data) => setCulturalProperties(data));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -53,6 +60,22 @@ export default function CulturalPropertyTable() {
         setExpandedRows(undefined);
     };
 
+    const exportExcel = createdExportExcel(dt);
+
+    const openNewCulturalObject = () => {
+        console.log('add');
+    };
+
+    const deleteSelectedCulturalObject = (select: any) => {
+        console.log(`delete`);
+    };
+
+    const exportCulturalObject = () => {
+        console.log('Export');
+    };
+
+
+
     const rowExpansionTemplate = (data: CulturalPropertyModel) => {
         return (
             <div className="p-3">
@@ -78,7 +101,6 @@ export default function CulturalPropertyTable() {
     };
     const header = (
         <div className="flex flex-wrap justify-content-end gap-2">
-            <Button className={'p-button-text'} label="Añadir" outlined onClick={createCulturalProperty} icon="pi pi-plus" severity="success" />
             {!expandedRows ? (
                     <Button icon="pi pi-angle-down" label="Expandir Todo" onClick={!expandedRows ?  expandAll : collapseAll}
                             text />) :
@@ -87,9 +109,40 @@ export default function CulturalPropertyTable() {
         </div>
     );
 
+    const actionBodyTemplate = (rowData: CountryResponse) => {
+        return (
+            <div>
+                <Button
+                    icon="pi pi-pencil"
+                    className="p-button-rounded p-button-text p-button-warning"
+                    tooltip="Editar País"
+                    tooltipOptions={{ position: 'top' }}
+                    //onClick={() => editData(rowData)}
+                />
+                <Button
+                    icon="pi pi-trash"
+                    className="p-button-rounded p-button-text p-button-danger"
+                    tooltip="Eliminar País"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={async () => {
+                        /*setDeleteDialog(true);
+                        setData(rowData);*/
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <div className="card">
             <Toast ref={toast} />
+            <ToolbarCommon
+                selects={culturalProperties}
+                setDialog={(value) => console.log('Dialog status:', value)}
+                confirmDeleteSelected={deleteSelectedCulturalObject}
+                exportExcel={exportCulturalObject}
+                openNew={openNewCulturalObject}
+            />
             <DataTable value={culturalProperties} expandedRows={expandedRows}
                        onRowToggle={(e) => setExpandedRows(e.data)}
                        onRowExpand={onRowExpand} onRowCollapse={onRowCollapse}
@@ -101,6 +154,7 @@ export default function CulturalPropertyTable() {
                 <Column field="culturalRecord.objectTitle" header="Título" sortable />
                 <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable
                         body={(rowData) => new Date(rowData.entryAndLocation.entryDate).toLocaleDateString()} />
+                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
         </div>
     );
