@@ -78,6 +78,7 @@ export const CulturalPropertyService = {
 
     deleteCulturalProperty: async (uuid: string,)=> {
         const url = WebEnvConst.culturalProperty.getOne(uuid);
+        console.log({url})
         return await del<void>(url);
     }
 };

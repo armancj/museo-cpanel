@@ -3,32 +3,53 @@ import { DataTable, DataTableExpandedRows, DataTableRowEvent, DataTableValueArra
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { CulturalPropertyService } from '@/app/service/CulturalPropertyService';
 import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import AuthorInfoPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/AuthorInfoPanel';
 import CulturalRecordPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/CulturalRecordPanel';
 import AccessAndUseConditionsPanel
     from '@/app/(main)/pages/cultural-property-heritage/panel-component/AccessAndUseConditionsPanel';
 import EntryAndLocationPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/EntryAndLocationPanel';
-import DescriptionControlPanel
-    from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
+import DescriptionControlPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
 import NotesPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/NotesPanel';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
-import { ToolbarCustom } from '@/app/(main)/pages/country/component/ToolbarCustom';
 import { ToolbarCommon } from '@/app/common/component/ToolbarCommon';
 import styles from '@/app/(main)/pages/user/component/UserTable.module.css';
-import { CountryResponse } from '@/app/service/CountryService';
-
+import { useHookCulturalProperty } from '@/app/(main)/pages/cultural-property-heritage/usehookCulturalProperty';
+import { FilterMatchMode } from 'primereact/api';
+import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 
 export default function CulturalPropertyTable() {
     const [culturalProperties, setCulturalProperties] = useState<CulturalPropertyModel[]>([]);
     const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
-    const toast = useRef<Toast>(null);
+
+    const {
+        datum,
+        dialog,
+        setDialog,
+        save,
+        data,
+        setData,
+        submitted,
+        toast,
+        editData,
+        deleteData,
+        deleteDialog,
+        setDeleteDialog
+    } = useHookCulturalProperty();
+
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    });
+    const [globalFilter, setGlobalFilter] = useState<string>('');
 
     const dt = useRef<DataTable<CulturalPropertyModel[]>>(null);
-    useEffect(() => {
-        CulturalPropertyService.getCulturalProperties().then((data) => setCulturalProperties(data));
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const openNew = () => {
+        setData(emptyCulturalProperty);
+        setDialog(true);
+    };
 
     const onRowExpand = (event: DataTableRowEvent) => {
         toast.current?.show({
@@ -60,21 +81,19 @@ export default function CulturalPropertyTable() {
         setExpandedRows(undefined);
     };
 
+    const hideDialog = () => {
+        setDialog(false);
+    };
+
+    const hideDeleteDialog = () => {
+        setDeleteDialog(false);
+    };
+
+    const confirmDeleteSelected = () => {
+        setDeleteDialog(true);
+    };
+
     const exportExcel = createdExportExcel(dt);
-
-    const openNewCulturalObject = () => {
-        console.log('add');
-    };
-
-    const deleteSelectedCulturalObject = (select: any) => {
-        console.log(`delete`);
-    };
-
-    const exportCulturalObject = () => {
-        console.log('Export');
-    };
-
-
 
     const rowExpansionTemplate = (data: CulturalPropertyModel) => {
         return (
@@ -96,9 +115,6 @@ export default function CulturalPropertyTable() {
         );
     };
 
-    const createCulturalProperty = () => {
-        alert('Creado por <NAME>');
-    };
     const header = (
         <div className="flex flex-wrap justify-content-end gap-2">
             {!expandedRows ? (
@@ -109,7 +125,49 @@ export default function CulturalPropertyTable() {
         </div>
     );
 
-    const actionBodyTemplate = (rowData: CountryResponse) => {
+    const dialogFooter = (
+        <>
+            <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                text
+                className="p-button-rounded p-button-danger p-button-outlined"
+                onClick={hideDialog}
+            />
+
+            <Button
+                label="Guardar"
+                icon="pi pi-check"
+                text
+                onClick={() => save()}
+                className="p-button-rounded p-button-success"
+            />
+        </>
+    );
+
+    const deleteDialogFooter = (
+        <>
+            <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                text
+                onClick={hideDeleteDialog}
+                className="p-button-rounded p-button-danger p-button-outlined"
+            />
+            <Button
+                label="Aceptar"
+                icon="pi pi-check"
+                text
+                className="p-button-rounded p-button-success"
+                onClick={async () => {
+                    await deleteData(data.uuid);
+                    hideDeleteDialog();
+                }}
+            />
+        </>
+    );
+
+    const actionBodyTemplate = (rowData: CulturalPropertyModel) => {
         return (
             <div>
                 <Button
@@ -117,7 +175,7 @@ export default function CulturalPropertyTable() {
                     className="p-button-rounded p-button-text p-button-warning"
                     tooltip="Editar País"
                     tooltipOptions={{ position: 'top' }}
-                    //onClick={() => editData(rowData)}
+                    onClick={() => editData(rowData)}
                 />
                 <Button
                     icon="pi pi-trash"
@@ -125,12 +183,22 @@ export default function CulturalPropertyTable() {
                     tooltip="Eliminar País"
                     tooltipOptions={{ position: 'top' }}
                     onClick={async () => {
-                        /*setDeleteDialog(true);
-                        setData(rowData);*/
+                        setDeleteDialog(true);
+                        setData(rowData);
                     }}
                 />
             </div>
         );
+    };
+
+    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
+
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilter(value);
     };
 
     return (
@@ -138,24 +206,78 @@ export default function CulturalPropertyTable() {
             <Toast ref={toast} />
             <ToolbarCommon
                 selects={culturalProperties}
-                setDialog={(value) => console.log('Dialog status:', value)}
-                confirmDeleteSelected={deleteSelectedCulturalObject}
-                exportExcel={exportCulturalObject}
-                openNew={openNewCulturalObject}
+                setDialog={setDialog}
+                confirmDeleteSelected={confirmDeleteSelected}
+                exportExcel={exportExcel}
+                openNew={openNew}
             />
-            <DataTable value={culturalProperties} expandedRows={expandedRows}
-                       onRowToggle={(e) => setExpandedRows(e.data)}
-                       onRowExpand={onRowExpand} onRowCollapse={onRowCollapse}
-                       rowExpansionTemplate={rowExpansionTemplate}
-                       dataKey="uuid" header={header} tableStyle={{ minWidth: '60rem' }}>
+            <span className="block mt-2 mb-2 md:mt-0 p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText
+                    type="search"
+                    value={globalFilter} onChange={onGlobalFilterChange}
+                    placeholder="Buscar..."
+                />
+            </span>
+            <DataTable
+                ref={dt}
+                value={Array.isArray(datum) ? datum : []}
+                filters={filters}
+                expandedRows={expandedRows}
+                selection={culturalProperties}
+                onRowToggle={(e) => setExpandedRows(e.data)}
+                onRowExpand={onRowExpand}
+                onRowCollapse={onRowCollapse}
+                rowExpansionTemplate={rowExpansionTemplate}
+                dataKey="uuid"
+                header={header}
+                selectionMode="multiple"
+                tableStyle={{ minWidth: '60rem' }}
+                onSelectionChange={(e) => setCulturalProperties(e.value as any)}
+                paginator
+                rows={10}
+                className="datatable-responsive"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} de ojeto culturales"
+                globalFilter={globalFilter || ''}
+                emptyMessage="No hay patrimonio agregado de ojeto culturales."
+                style={{ tableLayout: 'auto' }}
+            >
                 <Column expander style={{ width: '5rem' }} />
                 <Column field="entryAndLocation.objectName" header="Nombre del Objeto" sortable />
                 <Column field="producerAuthor.producerAuthorNames" header="Autor" sortable />
                 <Column field="culturalRecord.objectTitle" header="Título" sortable />
                 <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable
-                        body={(rowData) => new Date(rowData.entryAndLocation.entryDate).toLocaleDateString()} />
+                        body={(rowData) => new Date(rowData.entryAndLocation?.entryDate).toLocaleDateString()} />
                 <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
+
+            <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
+                    onHide={hideDialog}>
+                {/*<DataForm
+                    data={data}
+                    onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
+                    submitted={submitted}
+                />*/}
+                <p>form data</p>
+                <Button label={'save'} onClick={hideDialog} />
+            </Dialog>
+            <Dialog
+                visible={deleteDialog}
+                header="Confirmar Eliminación"
+                modal
+                footer={deleteDialogFooter}
+                onHide={hideDeleteDialog}
+            >
+                <div className="flex align-items-center justify-content-center">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                    {data && (
+                        <span>
+                  ¿Estás seguro de que deseas eliminar a <b>{data.culturalRecord?.objectTitle}</b>?
+                </span>
+                    )}
+                </div>
+            </Dialog>
         </div>
     );
 }
