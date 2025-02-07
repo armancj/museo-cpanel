@@ -254,13 +254,11 @@ export default function CulturalPropertyTable() {
 
             <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
                     onHide={hideDialog}>
-                {/*<DataForm
+                <DataForm
                     data={data}
                     onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
                     submitted={submitted}
-                />*/}
-                <p>form data</p>
-                <Button label={'save'} onClick={hideDialog} />
+                />
             </Dialog>
             <Dialog
                 visible={deleteDialog}
