@@ -31,6 +31,17 @@ export const WebEnvConst = {
         post: '/cultural-heritage-property',
         getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`
     },
+
+    culturalPropertyDataEndpoints: (uuid: string) => ({
+        entryAndLocationRecordUrl: `/entry-and-location-record/${uuid}`,
+        producerAuthorRecordUrl: `/producer-author-record/${uuid}`,
+        culturalRecordUrl: `/cultural-record/${uuid}`,
+        accessAndUseConditionsUrl: `/access-and-use-conditions/${uuid}`,
+        associatedDocumentationUrl: `/associated-documentation/${uuid}`,
+        descriptionControlUrl: `/description-control/${uuid}`,
+        culturalNotesUrl: `/cultural-notes/${uuid}`,
+    }),
+
     roles: {
         superAdmin: 'super Administrador',
         admin: 'Administrador',
