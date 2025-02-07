@@ -56,7 +56,6 @@ export const CulturalPropertyService = {
         return culturalProperty;
     },
 
-
     updateCulturalProperty: async (uuid: string, updatedData: Partial<CulturalPropertyModel>) => {
         const endpoints = WebEnvConst.culturalPropertyDataEndpoints(uuid);
 
