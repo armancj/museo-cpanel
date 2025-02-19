@@ -45,14 +45,12 @@ const CulturalPropertyForm: React.FC = () => {
         <>
             <h2 className="text-center">Formulario de Propiedad Cultural</h2>
         <div className="card flex justify-content-center" >
-                <Stepper ref={stepperRef} activeStep={1}>
+                <Stepper ref={stepperRef} headerPosition={'left'} linear={true}>
                 <StepperPanel header="Productor / Autor" >
-                    <div className="flex flex-column h-12rem">
                     <ProducerAuthorStep data={formData.producerAuthor} onChange={(field, value) =>
                         handleChange('producerAuthor', field, value)
                     }
                     />
-                    </div>
                     <div className="flex pt-4 justify-content-end align-items-end col-2 ">
                         <Button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" onClick={nextStep} />
                     </div>

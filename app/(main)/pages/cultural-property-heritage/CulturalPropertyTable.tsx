@@ -253,7 +253,7 @@ export default function CulturalPropertyTable() {
                 <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
 
-            <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
+            <Dialog visible={dialog} header="Detalles de paises" modal footer={dialogFooter}
                     onHide={hideDialog}>
                 <CulturalPropertyForm />
             </Dialog>

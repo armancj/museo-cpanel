@@ -11,9 +11,9 @@ interface ProducerAuthorStepProps {
 
 const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange }) => {
     return (
-        <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+        <div className="p-fluid formgrid grid border-2 border-dashed surface-border border-round surface-ground font-medium">
             {/* Nombre del Productor/Autor */}
-            <div className="field col-4">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="producerAuthorNames">Nombres del Productor/Autor</label>
                 <InputText
                     id="producerAuthorNames"
@@ -23,7 +23,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Historia Institucional */}
-            <div className="field col-6">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="institutionalHistory">Historia Institucional</label>
                 <InputText
                     id="institutionalHistory"
@@ -33,7 +33,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Historia de Entrada del Objeto */}
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="objectEntryHistory">Historia de Entrada del Objeto</label>
                 <InputText
                     id="objectEntryHistory"
@@ -43,7 +43,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Dirección: Calle y Número */}
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="street">Calle</label>
                 <InputText
                     id="street"
@@ -51,7 +51,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
                     onChange={(e) => onChange('street', e.target.value)}
                 />
             </div>
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="number">Número</label>
                 <InputText
                     id="number"
@@ -61,7 +61,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Entre calles */}
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="betweenStreet1">Entre Calle 1</label>
                 <InputText
                     id="betweenStreet1"
@@ -69,7 +69,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
                     onChange={(e) => onChange('betweenStreet1', e.target.value)}
                 />
             </div>
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="betweenStreet2">Entre Calle 2</label>
                 <InputText
                     id="betweenStreet2"
@@ -79,7 +79,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Provincia y Municipio */}
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="province">Provincia</label>
                 <InputText
                     id="province"
@@ -87,7 +87,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
                     onChange={(e) => onChange('province', e.target.value)}
                 />
             </div>
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="municipality">Municipio</label>
                 <InputText
                     id="municipality"
@@ -97,7 +97,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
             </div>
 
             {/* Distrito y Localidad */}
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="district">Distrito</label>
                 <InputText
                     id="district"
@@ -105,7 +105,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange 
                     onChange={(e) => onChange('district', e.target.value)}
                 />
             </div>
-            <div className="field">
+            <div className="field col-12 md:col-6">
                 <label htmlFor="locality">Localidad</label>
                 <InputText
                     id="locality"
