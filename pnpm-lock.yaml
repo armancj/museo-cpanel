@@ -39,8 +39,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       primereact:
-        specifier: 10.2.1
-        version: 10.2.1(@types/react@18.2.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 10.9.1
+        version: 10.9.1(@types/react@18.2.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -133,28 +133,24 @@ packages:
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@next/swc-linux-arm64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-dASaggPDUpQYkQ7oUSKOIx9DEvmH8JBRcUwOZ8J/LF1yJp1hmGkNIGBlqsirV3LP0/9Su4MgNRV5FXjfVNEUzQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@next/swc-linux-x64-gnu@13.4.20-canary.13':
     resolution: {integrity: sha512-dD6/hHkkeiM3Mjz6kDkd7ydtMdAECpcF8gUpwFoBjFrDFc4v5Bf45px56FC95I2R3vUMNzuRfus7U9QsQWdi7w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@next/swc-linux-x64-musl@13.4.20-canary.13':
     resolution: {integrity: sha512-eHgzJobusbRfBLbR1jcgEMO2qsU+L9prDWQsOY1uBrmlqn9qjii4rmMAWQ7bj8G4F+TpCUv/uKN2S2W5aREeVw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@next/swc-win32-arm64-msvc@13.4.20-canary.13':
     resolution: {integrity: sha512-eq+XM3nDNxKasQI874uspQ9EbzkssgcnqXN4CQ5f+vOVvVXFA0o82YmqrSx+amBd310MdKdBnwiGWTEhjClsHw==}
@@ -1127,13 +1123,13 @@ packages:
   primeicons@6.0.1:
     resolution: {integrity: sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==}
 
-  primereact@10.2.1:
-    resolution: {integrity: sha512-F25053E1z+fod6V7AJ1Ix/DwSPkFQotk2+Idm0XkFsN+gQEywH7DgtbvNKpUA+LEq48h2+/WVK3D0V8IAm1Npg==}
+  primereact@10.9.1:
+    resolution: {integrity: sha512-mq5Pr6/zySO913RlL5oUWD+n1ygTjJjhhxBoRWhLNKx7Na8pHpswh/QCesShFXlfYyCjDOVXFVT6J2sSDceF1g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      '@types/react': ^17.0.0 || ^18.0.0
-      react: ^17.0.0 || ^18.0.0
-      react-dom: ^17.0.0 || ^18.0.0
+      '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -2680,7 +2676,7 @@ snapshots:
 
   primeicons@6.0.1: {}
 
-  primereact@10.2.1(@types/react@18.2.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  primereact@10.9.1(@types/react@18.2.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@types/react-transition-group': 4.4.11
       react: 18.2.0

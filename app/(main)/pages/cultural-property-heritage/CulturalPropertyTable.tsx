@@ -19,6 +19,7 @@ import { FilterMatchMode } from 'primereact/api';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import CulturalPropertyForm from '@/app/(main)/pages/cultural-property-heritage/panel-component/CulturalPropertyForm';
 
 export default function CulturalPropertyTable() {
     const [culturalProperties, setCulturalProperties] = useState<CulturalPropertyModel[]>([]);
@@ -254,11 +255,7 @@ export default function CulturalPropertyTable() {
 
             <Dialog visible={dialog} header="Detalles de paises" modal className="p-fluid" footer={dialogFooter}
                     onHide={hideDialog}>
-                <DataForm
-                    data={data}
-                    onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
-                    submitted={submitted}
-                />
+                <CulturalPropertyForm />
             </Dialog>
             <Dialog
                 visible={deleteDialog}
