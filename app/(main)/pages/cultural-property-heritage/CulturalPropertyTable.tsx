@@ -9,7 +9,8 @@ import CulturalRecordPanel from '@/app/(main)/pages/cultural-property-heritage/p
 import AccessAndUseConditionsPanel
     from '@/app/(main)/pages/cultural-property-heritage/panel-component/AccessAndUseConditionsPanel';
 import EntryAndLocationPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/EntryAndLocationPanel';
-import DescriptionControlPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
+import DescriptionControlPanel
+    from '@/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel';
 import NotesPanel from '@/app/(main)/pages/cultural-property-heritage/panel-component/NotesPanel';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { ToolbarCommon } from '@/app/common/component/ToolbarCommon';
@@ -19,7 +20,7 @@ import { FilterMatchMode } from 'primereact/api';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import CulturalPropertyForm from '@/app/(main)/pages/cultural-property-heritage/panel-component/CulturalPropertyForm';
+import CulturalPropertyForm from '@/app/(main)/pages/cultural-property-heritage/form-componenet/CulturalPropertyForm';
 
 export default function CulturalPropertyTable() {
     const [culturalProperties, setCulturalProperties] = useState<CulturalPropertyModel[]>([]);
@@ -119,9 +120,10 @@ export default function CulturalPropertyTable() {
     const header = (
         <div className="flex flex-wrap justify-content-end gap-2">
             {!expandedRows ? (
-                    <Button icon="pi pi-angle-down" label="Expandir Todo" onClick={!expandedRows ?  expandAll : collapseAll}
+                    <Button icon="pi pi-angle-down" label="Expandir Todo" onClick={!expandedRows ? expandAll : collapseAll}
                             text />) :
-                (<Button icon="pi pi-angle-up" label="Colapsar Todo" onClick={expandedRows ?  collapseAll : expandAll} text />)
+                (<Button icon="pi pi-angle-up" label="Colapsar Todo" onClick={expandedRows ? collapseAll : expandAll}
+                         text />)
             }
         </div>
     );
@@ -205,58 +207,94 @@ export default function CulturalPropertyTable() {
     return (
         <div className="card">
             <Toast ref={toast} />
-            <ToolbarCommon
-                selects={culturalProperties}
-                setDialog={setDialog}
-                confirmDeleteSelected={confirmDeleteSelected}
-                exportExcel={exportExcel}
-                openNew={openNew}
-            />
-            <span className="block mt-2 mb-2 md:mt-0 p-input-icon-left">
+            {
+                !dialog ? (
+                    <>
+                        {/* Barra de herramientas */}
+                        <ToolbarCommon
+                            selects={culturalProperties}
+                            setDialog={setDialog}
+                            confirmDeleteSelected={confirmDeleteSelected}
+                            exportExcel={exportExcel}
+                            openNew={openNew}
+                        />
+
+                        {/* Barra de búsqueda */}
+                        <span className="block mt-2 mb-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
                     type="search"
-                    value={globalFilter} onChange={onGlobalFilterChange}
+                    value={globalFilter}
+                    onChange={onGlobalFilterChange}
                     placeholder="Buscar..."
                 />
             </span>
-            <DataTable
-                ref={dt}
-                value={Array.isArray(datum) ? datum : []}
-                filters={filters}
-                expandedRows={expandedRows}
-                selection={culturalProperties}
-                onRowToggle={(e) => setExpandedRows(e.data)}
-                onRowExpand={onRowExpand}
-                onRowCollapse={onRowCollapse}
-                rowExpansionTemplate={rowExpansionTemplate}
-                dataKey="uuid"
-                header={header}
-                selectionMode="multiple"
-                tableStyle={{ minWidth: '60rem' }}
-                onSelectionChange={(e) => setCulturalProperties(e.value as any)}
-                paginator
-                rows={10}
-                className="datatable-responsive"
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} de ojeto culturales"
-                globalFilter={globalFilter || ''}
-                emptyMessage="No hay patrimonio agregado de ojeto culturales."
-                style={{ tableLayout: 'auto' }}
-            >
-                <Column expander style={{ width: '5rem' }} />
-                <Column field="entryAndLocation.objectName" header="Nombre del Objeto" sortable />
-                <Column field="producerAuthor.producerAuthorNames" header="Autor" sortable />
-                <Column field="culturalRecord.objectTitle" header="Título" sortable />
-                <Column field="entryAndLocation.entryDate" header="Fecha de Entrada" sortable
-                        body={(rowData) => new Date(rowData.entryAndLocation?.entryDate).toLocaleDateString()} />
-                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
-            </DataTable>
 
-            <Dialog visible={dialog} header="Detalles de paises" modal footer={dialogFooter}
-                    onHide={hideDialog}>
-                <CulturalPropertyForm />
-            </Dialog>
+                        {/* Tabla */}
+                        <DataTable
+                            ref={dt}
+                            value={Array.isArray(datum) ? datum : []}
+                            filters={filters}
+                            expandedRows={expandedRows}
+                            selection={culturalProperties}
+                            onRowToggle={(e) => setExpandedRows(e.data)}
+                            onRowExpand={onRowExpand}
+                            onRowCollapse={onRowCollapse}
+                            rowExpansionTemplate={rowExpansionTemplate}
+                            dataKey="uuid"
+                            header={header}
+                            selectionMode="multiple"
+                            tableStyle={{ minWidth: '60rem' }}
+                            onSelectionChange={(e) => setCulturalProperties(e.value as any)}
+                            paginator
+                            rows={10}
+                            className="datatable-responsive"
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} de objetos culturales"
+                            globalFilter={globalFilter || ''}
+                            emptyMessage="No hay patrimonio agregado de objetos culturales."
+                            style={{ tableLayout: 'auto' }}
+                        >
+                            {/* Columnas */}
+                            <Column expander style={{ width: '5rem' }} />
+                            <Column
+                                field="entryAndLocation.objectName"
+                                header="Nombre del Objeto"
+                                sortable
+                            />
+                            <Column
+                                field="producerAuthor.producerAuthorNames"
+                                header="Autor"
+                                sortable
+                            />
+                            <Column
+                                field="culturalRecord.objectTitle"
+                                header="Título"
+                                sortable
+                            />
+                            <Column
+                                field="entryAndLocation.entryDate"
+                                header="Fecha de Entrada"
+                                sortable
+                                body={(rowData) =>
+                                    new Date(rowData.entryAndLocation?.entryDate).toLocaleDateString()
+                                }
+                            />
+                            <Column
+                                body={actionBodyTemplate}
+                                header="Acciones"
+                                headerStyle={{ minWidth: '10rem' }}
+                                bodyStyle={{ overflow: 'visible' }}
+                                className={styles.stickyColumn}
+                                headerClassName={styles.stickyHeader}
+                            />
+                        </DataTable>
+                    </>
+                ) : (
+                    <CulturalPropertyForm />
+                )
+            }
+
             <Dialog
                 visible={deleteDialog}
                 header="Confirmar Eliminación"

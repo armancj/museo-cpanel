@@ -10,6 +10,9 @@ interface AccessConditionsStepProps {
 
 const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onChange }) => {
     return (
+        <div className="grid">
+            <div className="col-12 md:col-6">
+                <div className="card p-fluid">
         <div className="p-fluid">
             {/* Condiciones de Acceso */}
             <div className="field">
@@ -40,6 +43,9 @@ const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onCha
                     onChange={(e) => onChange('technicalRequirements', e.target.value)}
                 />
             </div>
+        </div>
+        </div>
+        </div>
         </div>
     );
 };
