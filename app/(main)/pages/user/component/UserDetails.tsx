@@ -35,92 +35,151 @@ export function UserDetails({ user, onInputChange, submitted }: UserDetailsProps
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateMobile = (mobile: string) => /^\+?[1-9]\d{1,14}$/.test(mobile);
 
-    const fields = [
-        { field: 'name', label: 'Nombre', required: true },
-        { field: 'lastName', label: 'Apellidos', required: false },
-        { field: 'mobile', label: 'Teléfono', required: true },
-        { field: 'municipal', label: 'Municipio', required: true },
-        { field: 'province', label: 'Provincia', required: true },
-        { field: 'nationality', label: 'País', required: true },
-        { field: 'email', label: 'Correo', required: true },
-        { field: 'roles', label: 'Rol', required: true },
-    ];
-
     const handleDropdownChange = async (field: string, value: any) => {
         if (field === 'nationality') {
-            await handleCountryChange(value, onInputChange);
-        } else if (field === 'province') {
-            await handleProvinceChange(value, onInputChange);
-        } else {
-            onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
-        }
-    };
+            await handleCountryChange(value);
+        } else if (field === 'province') await handleProvinceChange(value);
+        onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
+    }
 
     return (
-        <div className="p-grid">
-            {fields.map(({ field, label, required }) => {
-                const isDropdown = ['nationality', 'province', 'municipal', 'roles'].includes(field);
-                const options =
-                    field === 'nationality'
-                        ? countries
-                        : field === 'province'
-                            ? provinces
-                            : field === 'roles'
-                                ? roles
-                                : municipalities;
+        <div className="grid">
+            {/* Nombre */}
+            <div className="col-12 md:col-6">
+                <label htmlFor="name">Nombre*</label>
+                <InputText
+                    id="name"
+                    value={user.name}
+                    onChange={(e) => onInputChange(e, 'name')}
+                    required
+                    className={classNames({ 'p-invalid': submitted && !user.name })}
+                />
+                {submitted && !user.name && <small className="p-error">Nombre es requerido.</small>}
+            </div>
 
-                const isDisabled =
-                    field === 'nationality'
-                        ? false
-                        : field === 'province'
-                            ? isProvinceDisabled
-                            : field === 'roles'
-                                ? false
-                                : isMunicipalityDisabled;
+            {/* Apellidos */}
+            <div className="col-12 md:col-6">
+                <label htmlFor="lastName">Apellidos</label>
+                <InputText
+                    id="lastName"
+                    value={user.lastName}
+                    onChange={(e) => onInputChange(e, 'lastName')}
+                />
+            </div>
 
-                return (
-                    <div className="p-field p-col-12 p-md-6" key={field}>
-                        <label htmlFor={field} className="p-mb-2">
-                            {label} {required && <span className="p-error">*</span>}
-                        </label>
-                        {isDropdown ? (
-                            <DropdownField
-                                id={field}
-                                name={field}
-                                value={user[field]}
-                                options={options}
-                                onChange={(e) => handleDropdownChange(field, e.target.value)}
-                                optionLabel="name"
-                                placeholder={`Seleccionar ${label}`}
-                                submitted={submitted}
-                                disabled={isDisabled}
-                            />
-                        ) : (
-                            <InputText
-                                id={field}
-                                name={field}
-                                value={user[field]}
-                                onChange={(e) => onInputChange(e, field)}
-                                required={required}
-                                className={classNames({
-                                    'p-invalid': (submitted && !user[field]) ||
-                                        (field === 'email' && !validateEmail(user[field])) ||
-                                        (field === 'mobile' && !validateMobile(user[field])),
-                                })}
-                            />
-                        )}
-                        {submitted && !user[field] && (
-                            <small className="p-error">{`${label} es requerido.`}</small>
-                        )}
-                        {submitted && field === 'email' && !validateEmail(user[field]) && (
-                            <small className="p-error">Correo no válido.</small>
-                        )}
-                        {submitted && field === 'mobile' && !validateMobile(user[field]) && (
-                            <small className="p-error">Teléfono no válido.</small>
-                        )}
-                    </div>
-                );
-            })}
+            {/* Email */}
+            <div className="col-12 md:col-6">
+                <label htmlFor="email">Correo*</label>
+                <InputText
+                    id="email"
+                    value={user.email}
+                    onChange={(e) => onInputChange(e, 'email')}
+                    required
+                    className={classNames({ 'p-invalid': submitted && !validateEmail(user.email) })}
+                />
+                {submitted && !validateEmail(user.email) && (
+                    <small className="p-error">Correo no válido.</small>
+                )}
+            </div>
+
+            {/* Teléfono */}
+            <div className="col-12 md:col-6">
+                <label htmlFor="mobile">Teléfono*</label>
+                <InputText
+                    id="mobile"
+                    value={user.mobile}
+                    onChange={(e) => onInputChange(e, 'mobile')}
+                    required
+                    className={classNames({ 'p-invalid': submitted && !validateMobile(user.mobile) })}
+                />
+                {submitted && !validateMobile(user.mobile) && (
+                    <small className="p-error">Teléfono no válido.</small>
+                )}
+            </div>
+
+            {/* Roles */}
+            <div className="field col-12 md:col-3">
+                <label htmlFor="roles">Rol*</label>
+                <DropdownField
+                    id="roles"
+                    name="roles"
+                    value={user.roles}
+                    options={roles}
+                    optionLabel="name"
+                    placeholder="Seleccionar un Rol"
+                    onChange={(e) => handleDropdownChange('roles', e.value)}
+                    required
+                    submitted={submitted}
+                    className={classNames({ 'p-invalid': submitted && !user.roles })}
+                />
+                {submitted && !user.roles && (
+                    <small className="p-error">Rol es requerido.</small>
+                )}
+            </div>
+
+            {/* País */}
+            <div className="field col-12 md:col-3">
+                <label htmlFor="nationality">País*</label>
+                <DropdownField
+                    id="nationality"
+                    name="nationality"
+                    value={user.nationality}
+                    options={countries}
+                    optionLabel="name"
+                    placeholder="Seleccionar País"
+                    required
+                    submitted={submitted}
+                    onChange={(e) => handleDropdownChange('nationality', e.value)}
+                    className={classNames({ 'p-invalid': submitted && !user.nationality })}
+                />
+                {submitted && !user.nationality && (
+                    <small className="p-error">País es requerido.</small>
+                )}
+            </div>
+
+            {/* Provincia */}
+            <div className="field col-12 md:col-3">
+                <label htmlFor="province">Provincia*</label>
+                <DropdownField
+                    id="province"
+                    name="province"
+                    value={user.province}
+                    options={provinces}
+                    optionLabel="name"
+                    placeholder="Seleccionar Provincia"
+                    disabled={isProvinceDisabled}
+                    required
+                    submitted={submitted}
+                    className={classNames({ 'p-invalid': submitted && !user.province })}
+                    onChange={(e) => handleDropdownChange('province', e.value)}
+                />
+                {submitted && !user.province && (
+                    <small className="p-error">Provincia es requerida.</small>
+                )}
+            </div>
+
+            {/* Municipio */}
+            <div className="field col-12 md:col-3">
+                <label htmlFor="municipal">Municipio*</label>
+                <DropdownField
+                    id="municipal"
+                    name="municipal"
+                    value={user.municipal}
+                    options={municipalities}
+                    optionLabel="name"
+                    placeholder="Seleccionar Municipio"
+                    disabled={isMunicipalityDisabled}
+                    required
+                    submitted={submitted}
+                    onChange={(e) =>  handleDropdownChange('municipal', e.value)}
+                    className={classNames({ 'p-invalid': submitted && !user.municipal })}
+                />
+                {submitted && !user.municipal && (
+                    <small className="p-error">Municipio es requerido.</small>
+                )}
+            </div>
+
         </div>
     );
 }
+

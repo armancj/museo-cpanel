@@ -30,8 +30,9 @@ export const useAddressData = () => {
      * Handles changes when a country is selected.
      */
     const handleCountryChange = useCallback(
-        async (country: AddressResponse, onInputChange: (e: any, field: string) => void) => {
+        async (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
             // Asumiendo que 'country' es el objeto completo, pasamos solo el valor necesario
+            if(onInputChange)
             onInputChange({ target: { name: 'country', value: country.name } }, 'country');
 
             try {
@@ -50,7 +51,8 @@ export const useAddressData = () => {
      * Handles changes when a province is selected.
      */
     const handleProvinceChange = useCallback(
-        async (province: AddressResponse, onInputChange: (e: any, field: string) => void) => {
+        async (province: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
+            if(onInputChange)
             onInputChange({ target: { name: 'province', value: province.name } }, 'province');
 
             try {
