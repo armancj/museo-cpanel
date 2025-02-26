@@ -30,17 +30,19 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
                 <UserDetails user={user} onInputChange={onInputChange} submitted={submitted} />
             </Fieldset>
 
+            <Fieldset legend="Avatar" className="col-12 md:col-5 lg:col-4">
+                <UserAvatar handleImageUpload={handleImageUpload} />
+            </Fieldset>
+
+            <Fieldset legend="Contacto y Dirección" className="col-12 md:col-8 lg:col-6">
+                <UserAddress user={user} onInputChange={onInputChange} submitted={submitted} />
+            </Fieldset>
+
             <Fieldset legend="Seguridad" className="col-12 md:col-4 lg:col-3">
                 <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} />
             </Fieldset>
 
-            <Fieldset legend="Contacto y Dirección" className="col-12 lg:col-7">
-                <UserAddress user={user} onInputChange={onInputChange} submitted={submitted} />
-            </Fieldset>
 
-            <Fieldset legend="Avatar" className="col-12 lg:col-5">
-                <UserAvatar handleImageUpload={handleImageUpload} />
-            </Fieldset>
         </div>
     );
 };

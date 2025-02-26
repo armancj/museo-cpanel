@@ -1,4 +1,4 @@
-import { get, post, patch, del } from '@/adapter/httpAdapter';
+import { post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 
 export interface UsersResponse {
@@ -53,9 +53,9 @@ export const UserService  =   {
     createUser: async (user: UsersDatum) => {
         const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
 
-        const province = (provinceData as unknown as AddressResponse)?.name || 'Las Tunas'
-        const nationality = (nationalityData as unknown as AddressResponse)?.name || 'Cuba'
-        const municipal = (municipalData as unknown as AddressResponse)?.name || ''
+        const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
+        const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
+        const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
 
         return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, ...rest });
     },
@@ -70,6 +70,19 @@ export const UserService  =   {
         const url = WebEnvConst.user.getOne(uuid);
         return await del<UsersDatum>(url);
 
+    },
+    uploadAvatar :async (uuid: string, file: File) => {
+        const url = WebEnvConst.user.getOne(uuid)
+        const formData = new FormData();
+        formData.append("avatar", file); // El campo debe coincidir con lo esperado por el backend
+
+        try {
+            const response = await post(`${url}/avatar`,formData);
+            console.log("Avatar uploaded:", response);
+        } catch (error) {
+            console.error("Error uploaded avatar:", error);
+        }
     }
+
 };
 
