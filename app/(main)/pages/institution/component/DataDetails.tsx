@@ -18,13 +18,15 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     const validateField = (field: string) => field.trim().length > 0;
     const { countries, provinces, municipalities, handleCountryChange, handleProvinceChange, isProvinceDisabled } = useAddressData();
 
-    const onCountryChange = async (e: DropdownChangeEvent) => {
-        onInputChange({ target: { name: 'country', value: e.value.name } } as React.ChangeEvent<HTMLInputElement>, 'country');
-        await handleCountryChange(e.value, onInputChange);
+    const onCountryChange = async (value: any) => {
+        console.log('onCountryChange', { value });
+        await handleCountryChange(value.name);
+        onInputChange({ target: { value: value.name } } as React.ChangeEvent<HTMLInputElement>, 'country');
     };
 
     const onProvincesChange = async (e: DropdownChangeEvent) => {
-        await handleProvinceChange(e.value, onInputChange);
+        await handleProvinceChange(e.value);
+        onInputChange({ target: { name: 'province', value: e.value.name } } as React.ChangeEvent<HTMLInputElement>, 'province');
     };
 
     const onMunicipalitiesChange = (e: DropdownChangeEvent) => {
@@ -147,7 +149,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
                         name="country"
                         value={data.country}
                         options={countries}
-                        onChange={onCountryChange}
+                        onChange={(e) => onCountryChange(e.value)}
                         optionLabel="name"
                         placeholder="Seleccione el país"
                         className={classNames({ 'p-invalid': submitted && !validateField(data.country) })}

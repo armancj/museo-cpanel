@@ -42,9 +42,10 @@ const CulturalRecordStep: React.FC<CulturalRecordStepProps> = ({ data, onChange 
     };
 
     return (
-        <div className="p-fluid">
+        <div className="card p-fluid">
+            <div className="formgrid grid">
             {/* Título del Objeto */}
-            <div className="field">
+            <div className="field col">
                 <label htmlFor="objectTitle">Título del Objeto</label>
                 <InputText
                     id="objectTitle"
@@ -54,7 +55,7 @@ const CulturalRecordStep: React.FC<CulturalRecordStepProps> = ({ data, onChange 
             </div>
 
             {/* Descripción del Objeto */}
-            <div className="field">
+            <div className="field col-5">
                 <label htmlFor="objectDescription">Descripción del Objeto</label>
                 <InputText
                     id="objectDescription"
@@ -64,7 +65,7 @@ const CulturalRecordStep: React.FC<CulturalRecordStepProps> = ({ data, onChange 
             </div>
 
             {/* Descripción Extrema */}
-            <div className="field">
+            <div className="field col-2">
                 <label>Fechas Extremas</label>
                 <div className="p-grid">
                     <div className="p-col">
@@ -91,7 +92,7 @@ const CulturalRecordStep: React.FC<CulturalRecordStepProps> = ({ data, onChange 
             </div>
 
             {/* Cantidades y Volúmenes */}
-            <div className="field">
+            <div className="field col-6">
                 <label>Cantidades (Volúmenes)</label>
                 <div className="p-grid">
                     <div className="p-col-4">
@@ -161,6 +162,7 @@ const CulturalRecordStep: React.FC<CulturalRecordStepProps> = ({ data, onChange 
                     onChange={(e) => onChange('languages', e.value ?? ['Español'])}
                 />
             </div>
+        </div>
         </div>
     );
 };

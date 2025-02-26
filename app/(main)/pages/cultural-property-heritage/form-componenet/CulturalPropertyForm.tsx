@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Button } from "primereact/button";
+import React, { useRef, useState } from 'react';
+import { Button } from 'primereact/button';
 import {
-    CulturalPropertyModel,
+    CulturalPropertyModel
 } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import ProducerAuthorStep from '@/app/(main)/pages/cultural-property-heritage/form-componenet/ProducerAuthorStep';
@@ -13,37 +13,72 @@ import DescriptionControlStep
     from '@/app/(main)/pages/cultural-property-heritage/form-componenet/DescriptionControlStep';
 import NotesStep from '@/app/(main)/pages/cultural-property-heritage/form-componenet/NotesStep';
 import { TabMenu } from 'primereact/tabmenu';
+import { MenuItem } from 'primereact/menuitem';
+import { Toast } from 'primereact/toast';
 
-const CulturalPropertyForm: React.FC = () => {
+interface CulturalPropertyFormProps {
+    setDialog?: () => void;
+}
+
+const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps) => {
 
     const [formData, setFormData] = useState<CulturalPropertyModel>(emptyCulturalProperty);
 
     const [activeIndex, setActiveIndex] = useState(0);
+    const toast = useRef<Toast>(null);
 
 
     const handleChange = (section: keyof CulturalPropertyModel, field: string, value: any) => {
         setFormData((prevData) => {
             const updatedSection = {
-                    ...(prevData[section] as Record<string, any>),
-                [field]: value,
+                ...(prevData[section] as Record<string, any>),
+                [field]: value
             };
 
             return {
                 ...prevData,
-                [section]: updatedSection,
+                [section]: updatedSection
             };
         });
     };
 
 
-    const wizardItems = [
-        { label: 'Productor / Autor', icon: 'pi pi-user' },
-        { label: 'Condiciones de Acceso', icon: 'pi pi-lock' },
-        { label: 'Documentación Asociada', icon: 'pi pi-file' },
-        { label: 'Registro Cultural', icon: 'pi pi-book' },
-        { label: 'Ubicación y Entrada', icon: 'pi pi-map-marker' },
-        { label: 'Control de Descripción', icon: 'pi pi-cog' },
-        { label: 'Notas', icon: 'pi pi-pencil' }
+    const wizardItems: MenuItem[] = [
+        {
+            label: 'Productor / Autor', icon: 'pi pi-user', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Primer paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Condiciones de Acceso', icon: 'pi pi-lock', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Segundo paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Documentación Asociada', icon: 'pi pi-file', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Tercer paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Registro Cultural', icon: 'pi pi-book', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Cuarto paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Ubicación y Entrada', icon: 'pi pi-map-marker', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Quinto paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Control de Descripción', icon: 'pi pi-cog', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Sexto paso', detail: event.item.label });
+            }
+        },
+        {
+            label: 'Notas', icon: 'pi pi-pencil', command: (event) => {
+                toast.current?.show({ severity: 'info', summary: 'Septimo paso', detail: event.item.label });
+            }
+        }
     ];
 
 
@@ -207,7 +242,8 @@ const CulturalPropertyForm: React.FC = () => {
                                 icon="pi pi-arrow-left"
                                 onClick={() => setActiveIndex((prev) => prev - 1)}
                             />
-                            <Button label="Finalizar" icon="pi pi-check" />
+                            <Button label="Finalizar" icon="pi pi-check"
+                                    onClick={setDialog} />
                         </div>
                     </>
                 );
@@ -219,6 +255,11 @@ const CulturalPropertyForm: React.FC = () => {
 
     return (
         <>
+            <div className="flex flex-wrap justify-content-end gap-2 mb-3">
+                <Button outlined rounded onClick={setDialog}
+                        className="w-2rem h-2rem p-0"  icon={'pi pi-times'} severity={'danger'}/>
+            </div>
+            <Toast ref={toast} />
             <h2 className="text-center">Formulario de Propiedad Cultural</h2>
             <div className="card">
                 <TabMenu

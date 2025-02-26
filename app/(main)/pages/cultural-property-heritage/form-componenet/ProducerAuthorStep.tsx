@@ -11,7 +11,7 @@ interface ProducerAuthorStepProps {
 
 const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange }) => {
     return (
-        <div className="p-fluid formgrid grid border-2 border-dashed surface-border border-round surface-ground font-medium">
+        <div className="card p-fluid formgrid grid font-medium">
             {/* Nombre del Productor/Autor */}
             <div className="field col-12 md:col-6">
                 <label htmlFor="producerAuthorNames">Nombres del Productor/Autor</label>

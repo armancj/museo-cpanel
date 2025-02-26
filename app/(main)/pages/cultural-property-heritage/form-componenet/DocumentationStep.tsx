@@ -9,9 +9,10 @@ interface DocumentationStepProps {
 
 const DocumentationStep: React.FC<DocumentationStepProps> = ({ data, onChange }) => {
     return (
-        <div className="p-fluid">
+        <div className="card p-fluid">
+            <div className="formgrid grid">
             {/* Copias Existentes y Localización */}
-            <div className="field">
+            <div className="field col-12 md:col-4">
                 <label htmlFor="copiesExistenceAndLocation">Copias Existentes y Localización</label>
                 <InputText
                     id="copiesExistenceAndLocation"
@@ -21,7 +22,7 @@ const DocumentationStep: React.FC<DocumentationStepProps> = ({ data, onChange })
             </div>
 
             {/* Originales Existentes y Localización */}
-            <div className="field">
+            <div className="field col-12 md:col-4">
                 <label htmlFor="originalsExistenceAndLocation">Originales Existentes y Localización</label>
                 <InputText
                     id="originalsExistenceAndLocation"
@@ -31,7 +32,7 @@ const DocumentationStep: React.FC<DocumentationStepProps> = ({ data, onChange })
             </div>
 
             {/* Unidades de Descripción Relacionadas */}
-            <div className="field">
+            <div className="field col-12 md:col-4">
                 <label htmlFor="relatedDescriptionUnits">Unidades de Descripción Relacionadas</label>
                 <InputText
                     id="relatedDescriptionUnits"
@@ -41,7 +42,7 @@ const DocumentationStep: React.FC<DocumentationStepProps> = ({ data, onChange })
             </div>
 
             {/* Información de Publicaciones Relacionadas */}
-            <div className="field">
+            <div className="field col">
                 <label htmlFor="relatedPublicationsInformation">Información de Publicaciones Relacionadas</label>
                 <InputText
                     id="relatedPublicationsInformation"
@@ -49,6 +50,7 @@ const DocumentationStep: React.FC<DocumentationStepProps> = ({ data, onChange })
                     onChange={(e) => onChange('relatedPublicationsInformation', e.target.value)}
                 />
             </div>
+        </div>
         </div>
     );
 };
