@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
 import { AxiosError } from 'axios';
+import { CountryService } from '@/app/service/CountryService';
+import { ProvinceService } from '@/app/service/ProvinceService';
+import { MunicipalityService } from '@/app/service/MunicipalityService';
 
 export const emptyUser: UsersDatum = {
     password: '',
@@ -138,7 +141,7 @@ export const useManagement = () => {
 
     const deleteUser = async (uuid: string) => {
         try {
-            const data = await UserService.deleteUser(uuid);
+            await UserService.deleteUser(uuid);
             const updatedUsers = usersResponse?.usersData.filter(user => user.uuid !== uuid);
             setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
             toast.current?.show({ severity: 'success', summary: 'Usuario Eliminado', life: 5000 });
@@ -156,6 +159,36 @@ export const useManagement = () => {
 
         setUser(userToEdit);
         setSelectedAvatar(null);
+
+        try {
+            // Cargar países
+            const countryData = (await CountryService.getCountries({name: userToEdit.nationality}))[0];
+                console.log('Countries:', countryData);
+
+                if (countryData) {
+                    const provincesData = await ProvinceService.getProvinces(countryData);
+                    if (userToEdit.province) {
+                        const province = provincesData.find((province) => province.name === userToEdit.province);
+                        if (province) {
+                            const municipalitiesData = await MunicipalityService.getMunicipalities(province);
+
+                            console.log('Países:', user.countries);
+                            console.log('Provincias:', user.provinces);
+                            console.log('Municipios:', user.municipalities);
+
+                            setUser((prev) => ({
+                                ...prev,
+                                nationality: countryData as any,
+                                province: provincesData as any,
+                            }));
+                        }
+                    }
+                }
+        } catch (error) {
+            console.error('Error cargando datos de país/provincia/municipio:', error);
+        }
+
+
         setUserDialog(true);
 
     };
