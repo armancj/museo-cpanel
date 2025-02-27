@@ -81,7 +81,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* Email */}
-            <div className="col-12 md:col-7">
+            <div className="col-12 md:col-7 mt-2">
                 <label htmlFor="email">Correo*</label>
                 <div className="p-inputgroup">
                      <span className="p-inputgroup-addon">
@@ -101,7 +101,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* Teléfono */}
-            <div className="col-12 md:col-5 ">
+            <div className="col-12 md:col-5 mt-2">
                 <label htmlFor="mobile">Teléfono*</label>
                 <div className="p-inputgroup">
                      <span className="p-inputgroup-addon">
@@ -122,7 +122,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* Roles */}
-            <div className="field col-12 md:col-4">
+            <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="roles">Rol*</label>
                 <DropdownField
                     id="roles"
@@ -142,7 +142,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* País */}
-            <div className="field col-12 md:col-2">
+            <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="nationality">País*</label>
                 <DropdownField
                     id="nationality"
@@ -162,7 +162,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* Provincia */}
-            <div className="field col-12 md:col-3">
+            <div className="field col-12 md:col-4 mt-2">
                 <label htmlFor="province">Provincia*</label>
                 <DropdownField
                     id="province"
@@ -176,6 +176,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                     submitted={submitted}
                     className={classNames({ 'p-invalid': submitted && !user.province })}
                     onChange={(e) => handleDropdownChange('province', e.value)}
+                    filter={true}
                 />
                 {submitted && !user.province && (
                     <small className="p-error">Provincia es requerida.</small>
@@ -183,7 +184,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             </div>
 
             {/* Municipio */}
-            <div className="field col-12 md:col-3">
+            <div className="field col-12 md:col-4">
                 <label htmlFor="municipal">Municipio*</label>
                 <DropdownField
                     id="municipal"
@@ -197,6 +198,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                     submitted={submitted}
                     onChange={(e) => handleDropdownChange('municipal', e.value)}
                     className={classNames({ 'p-invalid': submitted && !user.municipal })}
+                    filter={true}
                 />
                 {submitted && !user.municipal && (
                     <small className="p-error">Municipio es requerido.</small>

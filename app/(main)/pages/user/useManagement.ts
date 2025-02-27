@@ -51,7 +51,7 @@ export const useManagement = () => {
             if (user.uuid) {
                 // Actualizar usuario existente
                 try {
-                    const {active, uuid, deleted, ...userUpdated}=user;
+                    const {active, uuid, deleted, avatar, ...userUpdated}=user;
                     const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
                     const index = _usersData.findIndex((u) => u.uuid === user.uuid);
 
@@ -73,7 +73,7 @@ export const useManagement = () => {
             } else {
                 // Crear nuevo usuario
                 try {
-                    let createdUser = await UserService.createUser(user);
+                    const createdUser = await UserService.createUser(user);
 
                     if (selectedAvatar) {
                         const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
@@ -147,13 +147,19 @@ export const useManagement = () => {
             console.error('Error al eliminar el usuario:', error);
         }
     };
-    const editUser = async (updatedUser: Partial<UsersDatum>) => {
-        const transformedUser = {
+
+    const editUser = async (updatedUser: Partial<UsersDatum>): Promise<void> => {
+        const userToEdit = {
+            ...emptyUser,
             ...updatedUser,
-        }
-        setUser({ ...transformedUser } as unknown as  UsersDatum);
+        };
+
+        setUser(userToEdit);
+        setSelectedAvatar(null);
         setUserDialog(true);
+
     };
+
 
 
 

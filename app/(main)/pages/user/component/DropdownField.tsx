@@ -13,6 +13,7 @@ interface DropdownFieldProps {
     submitted: boolean,
     disabled?: boolean,
     required?: boolean,
+    filter?: boolean,
     className: string | undefined
 }
 
@@ -27,6 +28,7 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                                                          submitted,
                                                          disabled = false,
                                                          required = false,
+                                                         filter = false,
                                                          className,
                                                      }) => {
     const isInvalid = submitted && required && !value;
@@ -45,6 +47,7 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                 placeholder={placeholder}
                 className={combinedClassNames}
                 disabled={disabled}
+                filter={filter}
             />
             {isInvalid && <small className="p-error">Este campo es requerido.</small>}
         </div>

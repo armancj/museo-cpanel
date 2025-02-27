@@ -23,6 +23,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
         reader.readAsDataURL(file);
     };
 
+    const avatarURL = user.avatar ? process.env.NEXT_PUBLIC_API_BASE_URL + `file-storage/${user.avatar.id}` : undefined;
     return (
         <div className="p-fluid formgrid grid gap-4">
             <Fieldset legend="Detalles del Usuario" className="col-12 md:col-8 lg:col-6">
@@ -30,7 +31,8 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
             </Fieldset>
 
             <Fieldset legend="Avatar" className="col-12 md:col-5 lg:col-4">
-                <UserAvatar handleImageUpload={handleImageUpload} />
+                <UserAvatar handleImageUpload={handleImageUpload} avatarURL={avatarURL}
+                />
             </Fieldset>
 
             <Fieldset legend="Contacto y Dirección" className="col-12 md:col-8 lg:col-6">
