@@ -66,6 +66,7 @@ export const UserService  =   {
 
         return await patch<UsersDatum>(url, user);
     },
+
     deleteUser: async (uuid: string) =>  {
         const url = WebEnvConst.user.getOne(uuid);
         return await del<UsersDatum>(url);
@@ -74,7 +75,7 @@ export const UserService  =   {
     uploadAvatar :async (uuid: string, file: File) => {
         const url = WebEnvConst.user.getOne(uuid)
         const formData = new FormData();
-        formData.append("avatar", file); // El campo debe coincidir con lo esperado por el backend
+        formData.append("file", file);
 
         try {
             const response = await post(`${url}/avatar`,formData);
@@ -83,6 +84,5 @@ export const UserService  =   {
             console.error("Error uploaded avatar:", error);
         }
     }
-
 };
 

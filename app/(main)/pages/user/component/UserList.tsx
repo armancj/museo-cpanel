@@ -25,12 +25,12 @@ export const UserList = () => {
         submitted,
         toast,
         toggleUserActivation
-        , deleteUser, editUser
+        , deleteUser, editUser,
+        setSelectedAvatar
     } = useManagement();
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<UsersDatum[]>([]);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [globalFilter, setGlobalFilter] = useState('');
 
     const dt = useRef<DataTable<UsersDatum[]>>(null);
@@ -57,8 +57,9 @@ export const UserList = () => {
         </>
     );
 
+
     const handleImageUpload = (file: File) => {
-        setSelectedFile(file);
+        setSelectedAvatar(file);
         console.log("selected file:", file);
     };
 

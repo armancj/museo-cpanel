@@ -68,7 +68,7 @@ export const UserTable = ({
                 <Column field="municipal" header="Municipio" sortable />
                 <Column field="province" header="Provincia" headerStyle={{ minWidth: '5rem', width: 'auto' }} style={{ whiteSpace: 'nowrap' }} />
                 <Column field="nationality" header="Pais" headerStyle={{ minWidth: '5rem' }} />
-                <Column field="mobile" header="Teléfono" headerStyle={{ minWidth: '5rem' }} />
+                <Column field="mobile" header="Teléfono" headerStyle={{ minWidth: '12rem', width: 'auto'  }} />
                 <Column field="email" header="Correo" sortable headerStyle={{ minWidth: '5rem' }} />
                 <Column field="address" header="Dirección" headerStyle={{ minWidth: '20rem', width: 'auto' }} style={{ whiteSpace: 'normal' }} />
                 <Column field="active" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '5rem' }} />

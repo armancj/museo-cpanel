@@ -7,7 +7,6 @@ import { UserDetails } from '@/app/(main)/pages/user/component/UserDetails';
 import UserPassword from '@/app/(main)/pages/user/component/UserPassword';
 import UserAddress from '@/app/(main)/pages/user/component/UserAddress';
 import UserAvatar from '@/app/(main)/pages/user/component/UserAvatar';
-import { Divider } from 'primereact/divider';
 
 interface UserFormProps {
     user: UsersDatum;
