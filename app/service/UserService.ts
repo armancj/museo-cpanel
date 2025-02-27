@@ -7,6 +7,17 @@ export interface UsersResponse {
     totalElement: number;
 }
 
+export interface UploadedFile {
+    id: string;
+    nameFile: string;
+    file?: string;
+}
+
+type FileMessage = {
+    avatar: UploadedFile;
+    message: string;
+};
+
 export interface UsersDatum {
     [key: string]: any;
     uuid:        string;
@@ -26,8 +37,8 @@ export interface UsersDatum {
 }
 
 export interface Avatar {
-    id:       string;
-    nameFile: string;
+    id?:       string;
+    nameFile?: string;
 }
 
 
@@ -78,8 +89,15 @@ export const UserService  =   {
         formData.append("file", file);
 
         try {
-            const response = await post(`${url}/avatar`,formData);
+            const response = await post<FileMessage>(`${url}/avatar`,formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                } as any,
+
+            );
             console.log("Avatar uploaded:", response);
+            return response;
         } catch (error) {
             console.error("Error uploaded avatar:", error);
         }

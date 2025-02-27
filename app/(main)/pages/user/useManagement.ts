@@ -36,9 +36,7 @@ export const useManagement = () => {
     const uploadAvatar = async (uuid: string, file: File) => {
         if (!file) return;
         try {
-            const response = await UserService.uploadAvatar(uuid, file);
-            toast.current?.show({ severity: 'success', summary: 'Avatar Subido', life: 5000 });
-            return response;
+            return await UserService.uploadAvatar(uuid, file);
         } catch (error) {
             console.error("Error upload avatar:", error);
             toast.current?.show({ severity: 'error', summary: 'Error al subir avatar', life: 5000 });
@@ -56,14 +54,16 @@ export const useManagement = () => {
                     const {active, uuid, deleted, ...userUpdated}=user;
                     const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
                     const index = _usersData.findIndex((u) => u.uuid === user.uuid);
+
+                    if (selectedAvatar) {
+                        const response = await uploadAvatar(uuid, selectedAvatar);
+                        setSelectedAvatar(null);
+                        updatedUserData.avatar = response?.avatar
+                    }
+
                     if (index !== -1) {
                         _usersData[index] = updatedUserData;
                         toast.current?.show({ severity: 'success', summary: 'Usuario Actualizado', life: 5000 });
-                    }
-
-                    if (selectedAvatar) {
-                        await uploadAvatar(uuid, selectedAvatar);
-                        setSelectedAvatar(null);
                     }
 
                     setUserDialog(false);
@@ -73,14 +73,15 @@ export const useManagement = () => {
             } else {
                 // Crear nuevo usuario
                 try {
-                    const createdUser = await UserService.createUser(user);
-                    _usersData.push(createdUser);
-                    toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
+                    let createdUser = await UserService.createUser(user);
 
                     if (selectedAvatar) {
-                        await uploadAvatar(createdUser.uuid, selectedAvatar);
+                        const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
                         setSelectedAvatar(null);
+                        createdUser.avatar = response?.avatar
                     }
+                    _usersData.push(createdUser);
+                    toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
 
                     setUserDialog(false);
                     setUser(emptyUser);
@@ -138,7 +139,6 @@ export const useManagement = () => {
     const deleteUser = async (uuid: string) => {
         try {
             const data = await UserService.deleteUser(uuid);
-            console.log({ delete:data });
             const updatedUsers = usersResponse?.usersData.filter(user => user.uuid !== uuid);
             setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
             toast.current?.show({ severity: 'success', summary: 'Usuario Eliminado', life: 5000 });
@@ -148,11 +148,9 @@ export const useManagement = () => {
         }
     };
     const editUser = async (updatedUser: Partial<UsersDatum>) => {
-
         const transformedUser = {
             ...updatedUser,
         }
-        console.log({transformedUser});
         setUser({ ...transformedUser } as unknown as  UsersDatum);
         setUserDialog(true);
     };
