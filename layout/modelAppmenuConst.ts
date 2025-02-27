@@ -31,7 +31,8 @@ export const model: AppMenuItem[] = [
                     },
                     {
                         label: 'Instituciones',
-                        icon: 'pi pi-fw pi-building'
+                        icon: 'pi pi-fw pi-building',
+                        to: '/pages/institution'
                     }
                 ]
             }
@@ -44,6 +45,11 @@ export const model: AppMenuItem[] = [
                 label: 'Recursos Humanos',
                 icon: 'pi pi-users',
                 to: '/pages/user'
+            },
+            {
+                label: 'Patrimonio Cultural',
+                icon: 'pi pi-book',
+                to: '/pages/cultural-property-heritage'
             }
         ]
     },

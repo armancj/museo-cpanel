@@ -23,14 +23,28 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
         reader.readAsDataURL(file);
     };
 
+    const avatarURL = user.avatar ? process.env.NEXT_PUBLIC_API_BASE_URL + `file-storage/${user.avatar.id}` : undefined;
     return (
-        <div className="flex">
-            <Fieldset legend="Detalles del Usuario" className="p-4 flex-grow-1">
+        <div className="p-fluid formgrid grid gap-4">
+            <Fieldset legend="Detalles del Usuario" className="col-12 md:col-8 lg:col-6">
                 <UserDetails user={user} onInputChange={onInputChange} submitted={submitted} />
-                <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} />
-                <UserAddress user={user} onInputChange={onInputChange} submitted={submitted} />
-                <UserAvatar handleImageUpload={handleImageUpload} />
             </Fieldset>
+
+            <Fieldset legend="Avatar" className="col-12 md:col-5 lg:col-4">
+                <UserAvatar handleImageUpload={handleImageUpload} avatarURL={avatarURL}
+                />
+            </Fieldset>
+
+            <Fieldset legend="Contacto y Dirección" className="col-12 md:col-8 lg:col-6">
+                <UserAddress user={user} onInputChange={onInputChange} submitted={submitted} />
+            </Fieldset>
+
+            <Fieldset legend="Seguridad" className="col-12 md:col-4 lg:col-3">
+                <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} />
+            </Fieldset>
+
+
         </div>
     );
 };
+

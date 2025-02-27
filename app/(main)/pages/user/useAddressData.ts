@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import {
-    AddressResponse,
-} from '@/app/service/UserService';
+import { useEffect, useState, useCallback } from 'react';
+import { AddressResponse } from '@/app/service/UserService';
 import { CountryService } from '@/app/service/CountryService';
 import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
@@ -10,37 +8,71 @@ export const useAddressData = () => {
     const [countries, setCountries] = useState<AddressResponse[]>([]);
     const [provinces, setProvinces] = useState<AddressResponse[]>([]);
     const [municipalities, setMunicipalities] = useState<AddressResponse[]>([]);
-    const [isProvinceDisabled, setIsProvinceDisabled] = useState(true);
-    const [isMunicipalityDisabled, setIsMunicipalityDisabled] = useState(true);
+    const [dropdownState, setDropdownState] = useState({
+        isProvinceDisabled: true,
+        isMunicipalityDisabled: true,
+    });
 
+    // Fetch countries on component mount
     useEffect(() => {
-        CountryService.getCountries().then(data => {
-            setCountries(data);
-        });
+        const fetchCountries = async () => {
+            try {
+                const data = await CountryService.getCountries();
+                setCountries(data);
+            } catch (error) {
+                console.error('Error fetching countries:', error);
+            }
+        };
+        fetchCountries();
     }, []);
 
-    const handleCountryChange = (country: AddressResponse, onInputChange: (e: any, field: string) => void) => {
-        onInputChange({ target: { value: country } }, 'nationality');
-        ProvinceService.getProvinces(country).then(provincesData => setProvinces(provincesData));
-        setMunicipalities([]);
-        setIsProvinceDisabled(false); // Enable province dropdown
-        setIsMunicipalityDisabled(true); // Disable municipality dropdown
-    };
+    /**
+     * Handles changes when a country is selected.
+     */
+    const handleCountryChange = useCallback(
+        async (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
+            // Asumiendo que 'country' es el objeto completo, pasamos solo el valor necesario
+            if(onInputChange)
+            onInputChange({ target: { name: 'country', value: country.name } }, 'country');
 
-    const handleProvinceChange = (province: AddressResponse, onInputChange: (e: any, field: string) => void) => {
-        onInputChange({ target: { value: province } }, 'province');
-        MunicipalityService.getMunicipalities(province).then(municipalitiesData => setMunicipalities(municipalitiesData));
-        setIsMunicipalityDisabled(false); // Enable municipality dropdown
+            try {
+                const provincesData = await ProvinceService.getProvinces(country);
+                setProvinces(provincesData);
+                setMunicipalities([]);  // Reseteamos los municipios al seleccionar un nuevo país
+                setDropdownState({ isProvinceDisabled: false, isMunicipalityDisabled: true });
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+            }
+        },
+        []
+    );
 
-    };
+    /**
+     * Handles changes when a province is selected.
+     */
+    const handleProvinceChange = useCallback(
+        async (province: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
+            if(onInputChange)
+            onInputChange({ target: { name: 'province', value: province.name } }, 'province');
+
+            try {
+                const municipalitiesData = await MunicipalityService.getMunicipalities(province);
+                setMunicipalities(municipalitiesData);
+                setDropdownState((prev) => ({ ...prev, isMunicipalityDisabled: false }));
+            } catch (error) {
+                console.error('Error fetching municipalities:', error);
+            }
+        },
+        []
+    );
 
     return {
         countries,
         provinces,
         municipalities,
-        isProvinceDisabled,
-        isMunicipalityDisabled,
+        isProvinceDisabled: dropdownState.isProvinceDisabled,
+        isMunicipalityDisabled: dropdownState.isMunicipalityDisabled,
         handleCountryChange,
-        handleProvinceChange
+        handleProvinceChange,
     };
 };

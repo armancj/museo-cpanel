@@ -5,6 +5,7 @@ import React from 'react';
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
 import { ProvinceResponse } from '@/app/service/ProvinceService';
+import { convertToCode } from '@/app/(main)/utilities/convertToCode';
 
 
 interface TableBodyFunctionProps {
@@ -18,38 +19,48 @@ export function TableBodyFunction({
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
     const nameBodyTemplate = (rowData: ProvinceResponse) => {
+        const province = convertToCode(rowData.name);
+        const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = '/demo/images/provinces/default.jpg';
+        };
+
         return (
-            <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
-            </>
+            <div className="p-column-title flex align-items-center gap-2">
+                <img
+                    alt="flag"
+                    src={`/demo/images/provinces/${province}.png`}
+                    onError={handleImageError}
+                    style={{ width: '24px' }} />
+                <span>{rowData.name}</span>
+            </div>
         );
     };
 
     const countryCodes: { [key: string]: string } = {
-        "estados unidos": "us",
-        "canada": "ca",
-        "méxico": "mx",
-        "brasil": "br",
-        "argentina": "ar",
-        "reino Unido": "gb",
-        "francia": "fr",
-        "alemania": "de",
-        "italia": "it",
-        "españa": "es",
-        "rusia": "ru",
-        "china": "cn",
-        "japón": "jp",
-        "india": "in",
-        "australia": "au",
-        "sudáfrica": "za",
-        "cuba": "cu"
+        'estados unidos': 'us',
+        'canada': 'ca',
+        'méxico': 'mx',
+        'brasil': 'br',
+        'argentina': 'ar',
+        'reino Unido': 'gb',
+        'francia': 'fr',
+        'alemania': 'de',
+        'italia': 'it',
+        'españa': 'es',
+        'rusia': 'ru',
+        'china': 'cn',
+        'japón': 'jp',
+        'india': 'in',
+        'australia': 'au',
+        'sudáfrica': 'za',
+        'cuba': 'cu'
     };
     const countryBodyTemplate = (rowData: ProvinceResponse) => {
-        const codeCountry =countryCodes[rowData.country.toLowerCase()];
+        const codeCountry = countryCodes[rowData.country.toLowerCase()];
         return (
             <div className="flex align-items-center gap-2">
-                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
+                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png"
+                     className={`flag flag-${codeCountry}`} style={{ width: '24px' }} />
                 <span>{rowData.country}</span>
             </div>
         );
@@ -113,7 +124,7 @@ export function TableBodyFunction({
             style: { whiteSpace: 'nowrap' },
             filter: true,
             filterPlaceholder: 'Buscar por país',
-            filterField: "country",
+            filterField: 'country',
             body: countryBodyTemplate
         },
         {

@@ -25,7 +25,8 @@ export const UserList = () => {
         submitted,
         toast,
         toggleUserActivation
-        , deleteUser, editUser
+        , deleteUser, editUser,
+        setSelectedAvatar
     } = useManagement();
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
@@ -56,8 +57,10 @@ export const UserList = () => {
         </>
     );
 
+
     const handleImageUpload = (file: File) => {
-        console.log(file)
+        setSelectedAvatar(file);
+        console.log("selected file:", file);
     };
 
     return (

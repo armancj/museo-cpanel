@@ -36,6 +36,6 @@ export const CountryService = {
 
     async deleteCountry(uuid: string) {
         const url = WebEnvConst.country.getOne(uuid);
-        return await del<CountryResponse>(url);
+        return await del<void>(url);
     }
 };

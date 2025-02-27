@@ -1,4 +1,4 @@
-import { get, post, patch, del } from '@/adapter/httpAdapter';
+import { post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
 
 export interface UsersResponse {
@@ -6,6 +6,17 @@ export interface UsersResponse {
     totalPage:    number;
     totalElement: number;
 }
+
+export interface UploadedFile {
+    id: string;
+    nameFile: string;
+    file?: string;
+}
+
+type FileMessage = {
+    avatar: UploadedFile;
+    message: string;
+};
 
 export interface UsersDatum {
     [key: string]: any;
@@ -26,8 +37,8 @@ export interface UsersDatum {
 }
 
 export interface Avatar {
-    id:       string;
-    nameFile: string;
+    id?:       string;
+    nameFile?: string;
 }
 
 
@@ -53,9 +64,9 @@ export const UserService  =   {
     createUser: async (user: UsersDatum) => {
         const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
 
-        const province = (provinceData as unknown as AddressResponse)?.name || 'Las Tunas'
-        const nationality = (nationalityData as unknown as AddressResponse)?.name || 'Cuba'
-        const municipal = (municipalData as unknown as AddressResponse)?.name || ''
+        const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
+        const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
+        const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
 
         return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, ...rest });
     },
@@ -66,10 +77,30 @@ export const UserService  =   {
 
         return await patch<UsersDatum>(url, user);
     },
+
     deleteUser: async (uuid: string) =>  {
         const url = WebEnvConst.user.getOne(uuid);
         return await del<UsersDatum>(url);
 
+    },
+    uploadAvatar :async (uuid: string, file: File) => {
+        const url = WebEnvConst.user.getOne(uuid)
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await post<FileMessage>(`${url}/avatar`,formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                } as any,
+
+            );
+            console.log("Avatar uploaded:", response);
+            return response;
+        } catch (error) {
+            console.error("Error uploaded avatar:", error);
+        }
     }
 };
 

@@ -37,9 +37,7 @@ export function TableCustom({
     const {
         columns,
         actionBodyTemplate
-    } = TableBodyFunction({  editData, setDeleteDialog, setData });
-
-
+    } = TableBodyFunction({ editData, setDeleteDialog, setData });
 
     return (
         <>
