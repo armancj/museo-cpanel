@@ -16,6 +16,11 @@ export const WebEnvConst = {
         post: '/province',
         getOne: (uuid: string) => `/province/${uuid}`
     },
+    categoryMuseum: {
+        getAll: '/category-museum',
+        post: '/category-museum',
+        getOne: (uuid: string) => `/category-museum/${uuid}`
+    },
     country: {
         getAll: '/country',
         post: '/country',

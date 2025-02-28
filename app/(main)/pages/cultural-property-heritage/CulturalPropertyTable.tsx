@@ -291,7 +291,7 @@ export default function CulturalPropertyTable() {
                         </DataTable>
                     </>
                 ) : (
-                    <CulturalPropertyForm setDialog={hideDialog} />
+                    <CulturalPropertyForm hideDialog={hideDialog} />
                 )
             }
 

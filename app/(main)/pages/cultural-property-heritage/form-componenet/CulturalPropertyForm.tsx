@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import {
-    CulturalPropertyModel
+    CulturalPropertyModel,
 } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import ProducerAuthorStep from '@/app/(main)/pages/cultural-property-heritage/form-componenet/ProducerAuthorStep';
@@ -16,11 +16,12 @@ import { TabMenu } from 'primereact/tabmenu';
 import { MenuItem } from 'primereact/menuitem';
 import { Toast } from 'primereact/toast';
 
+
 interface CulturalPropertyFormProps {
-    setDialog?: () => void;
+    hideDialog: () => void;
 }
 
-const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps) => {
+const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
 
     const [formData, setFormData] = useState<CulturalPropertyModel>(emptyCulturalProperty);
 
@@ -32,12 +33,12 @@ const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps
         setFormData((prevData) => {
             const updatedSection = {
                 ...(prevData[section] as Record<string, any>),
-                [field]: value
+                [field]: value,
             };
 
             return {
                 ...prevData,
-                [section]: updatedSection
+                [section]: updatedSection,
             };
         });
     };
@@ -47,38 +48,38 @@ const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps
         {
             label: 'Productor / Autor', icon: 'pi pi-user', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Primer paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Condiciones de Acceso', icon: 'pi pi-lock', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Segundo paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Documentación Asociada', icon: 'pi pi-file', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Tercer paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Registro Cultural', icon: 'pi pi-book', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Cuarto paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Ubicación y Entrada', icon: 'pi pi-map-marker', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Quinto paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Control de Descripción', icon: 'pi pi-cog', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Sexto paso', detail: event.item.label });
-            }
+            },
         },
         {
             label: 'Notas', icon: 'pi pi-pencil', command: (event) => {
                 toast.current?.show({ severity: 'info', summary: 'Septimo paso', detail: event.item.label });
-            }
-        }
+            },
+        },
     ];
 
 
@@ -243,7 +244,7 @@ const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps
                                 onClick={() => setActiveIndex((prev) => prev - 1)}
                             />
                             <Button label="Finalizar" icon="pi pi-check"
-                                    onClick={setDialog} />
+                                    onClick={hideDialog} />
                         </div>
                     </>
                 );
@@ -256,8 +257,8 @@ const CulturalPropertyForm: React.FC = ({ setDialog }: CulturalPropertyFormProps
     return (
         <>
             <div className="flex flex-wrap justify-content-end gap-2 mb-3">
-                <Button outlined rounded onClick={setDialog}
-                        className="w-2rem h-2rem p-0"  icon={'pi pi-times'} severity={'danger'}/>
+                <Button outlined rounded onClick={hideDialog}
+                        className="w-2rem h-2rem p-0" icon={'pi pi-times'} severity={'danger'} />
             </div>
             <Toast ref={toast} />
             <h2 className="text-center">Formulario de Propiedad Cultural</h2>
