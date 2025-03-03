@@ -43,7 +43,11 @@ const FloatLabelDemo = () => {
 
     useEffect(() => {
         CountryService.getCountries().then((countries) => {
-            setCountries(countries);
+            setCountries(countries.map((country) => ({
+                name: country.name,
+                flag: '', // Provide a default or meaningful value for 'flag'
+                code: '', // Provide a default or meaningful value for 'code'
+            })));
         });
     }, []);
 

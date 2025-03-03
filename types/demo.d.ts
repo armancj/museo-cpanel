@@ -192,6 +192,8 @@ declare namespace Demo {
 
     type Country = {
         name: string;
+        flag: string;
+
         code: string;
     };
 

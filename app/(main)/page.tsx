@@ -39,8 +39,8 @@ const lineData: ChartData = {
 
 const Dashboard = () => {
     const [products, setProducts] = useState<Demo.Product[]>([]);
-    const menu1 = useRef<Menu>();
-    const menu2 = useRef<Menu>();
+    const menu1 = useRef<Menu | null>(null);
+    const menu2 = useRef<Menu | null>(null);
     const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
 
