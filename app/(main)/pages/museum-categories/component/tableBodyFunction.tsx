@@ -130,7 +130,9 @@ export function TableBodyFunction({
             filterPlaceholder: 'Buscar',
             sortable: true,
             headerStyle: { minWidth: '1rem' },
+            filterHeaderStyle: { minWidth: '20rem' },
             style: { whiteSpace: 'nowrap' },
+            showFilterMenu: false,
             body: nameBodyTemplate,
         },
         {
@@ -139,7 +141,8 @@ export function TableBodyFunction({
             filterPlaceholder: 'Buscar',
             header: 'Descripción ',
             headerStyle: { minWidth: '5rem' },
-            filterHeaderStyle: { minWidth: '15rem' }
+            filterHeaderStyle: { minWidth: '20rem' },
+            showFilterMenu: false,
         },
         {
             field: "active",
@@ -150,6 +153,7 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle:{ minWidth: '5rem'},
             filterElement: statusRowFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
             style: { minWidth: '12rem' }
         },
         {
@@ -162,6 +166,7 @@ export function TableBodyFunction({
             filterElement: calendarFilterTemplate,
             filterHeaderStyle: { minWidth: '22rem' },
             filterMatchMode: FilterMatchMode.DATE_IS,
+            showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
         {
@@ -172,8 +177,9 @@ export function TableBodyFunction({
             style: { whiteSpace: 'nowrap' },
             filter: true,
             filterElement: calendarFilterTemplate,
+            showFilterMenu: false,
             filterHeaderStyle: { minWidth: '22rem' },
-            filterMatchMode: FilterMatchMode.DATE_IS,
+            //filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
         },
     ];
