@@ -21,6 +21,16 @@ export const WebEnvConst = {
         post: '/category-museum',
         getOne: (uuid: string) => `/category-museum/${uuid}`
     },
+    accessConditions: {
+        getAll: '/nomenclator/access-conditions',
+        post: '/nomenclator/access-conditions',
+        getOne: (uuid: string) => `/nomenclator/access-conditions/${uuid}`
+    },
+    descriptionInstruments: {
+        getAll: '/description-instruments',
+        post: '/description-instruments',
+        getOne: (uuid: string) => `/description-instruments/${uuid}`
+    },
     country: {
         getAll: '/country',
         post: '/country',
