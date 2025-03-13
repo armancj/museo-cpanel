@@ -56,8 +56,8 @@ export function TableBodyFunction({
     const nameBodyTemplate = (rowData: NomenclatureAccessConditionsResponse) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
-        {rowData.name}
+                <span className="p-column-title">Type</span>
+        {rowData.type}
         </>
     );
     };

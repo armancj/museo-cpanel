@@ -4,14 +4,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { classNames } from 'primereact/utils';
 import { NomenclatureAccessConditionsResponse } from '@/app/service/NomenclatureAccessConditionsService';
 
-interface MuseumCategoryFormProps {
+interface NomenclatureAccessConditionsFormProps {
     data: NomenclatureAccessConditionsResponse;
     submitted: boolean;
     setSubmitted: (value: boolean) => void;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
 }
 
-const NomenclatureAccessConditionsForm: React.FC<MuseumCategoryFormProps> = ({
+const NomenclatureAccessConditionsForm: React.FC<NomenclatureAccessConditionsFormProps> = ({
                                                                    data,
                                                                    submitted,
                                                                    onInputChange,

@@ -40,9 +40,8 @@ export default function NomenclatureAccessConditions() {
 
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
+        type: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
-        active: { value: null, matchMode: FilterMatchMode.EQUALS },
         createdAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
         updatedAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
     });
