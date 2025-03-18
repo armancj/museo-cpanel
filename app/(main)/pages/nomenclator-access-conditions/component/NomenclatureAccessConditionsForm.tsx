@@ -18,6 +18,7 @@ const NomenclatureAccessConditionsForm: React.FC<NomenclatureAccessConditionsFor
                                                                }) => {
 
 
+    console.log({data})
     return (
         <div className="grid">
             <div className="col-12">

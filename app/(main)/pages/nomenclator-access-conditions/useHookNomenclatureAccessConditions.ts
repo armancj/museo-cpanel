@@ -2,7 +2,8 @@ import { useGenericHook } from '@/app/common/hooks/useGenericHook';
 import { capitalize } from '@/app/(main)/pages/util/export.functions';
 import { useMemo } from 'react';
 import {
-    emptyNomenclatureAccessConditions, NomenclatureAccessConditionsResponse,
+    emptyNomenclatureAccessConditions,
+    NomenclatureAccessConditionsResponse,
     NomenclatureAccessConditionsService,
 } from '@/app/service/NomenclatureAccessConditionsService';
 

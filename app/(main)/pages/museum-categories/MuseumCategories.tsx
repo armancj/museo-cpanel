@@ -13,10 +13,6 @@ import { Dialog } from 'primereact/dialog';
 import { ToolbarCustom } from './component/ToolbarCustom';
 import { TableCustom } from './component/TableCustom';
 import MuseumCategoryForm from '@/app/(main)/pages/museum-categories/component/MuseumCategoryForm';
-import { Tag } from 'primereact/tag';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { ColumnFilterElementTemplateOptions } from 'primereact/column';
-
 export default function MuseumCategories() {
     const [selects, setSelects] = useState<MuseumCategoriesResponse[]>([]);
     const {
