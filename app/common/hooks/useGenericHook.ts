@@ -45,9 +45,19 @@ export const useGenericHook = <ResponseType>({
 
     const save = async () => {
         setSubmitted(true);
-        if ((data as any).name?.trim) {
+            const hasValidName = (data as any)?.name?.trim;
+            const hasValidType = (data as any)?.type?.trim;
+        if (hasValidName || hasValidType) {
             let _data = [...selects];
-            (data as any).name = capitalizeFunc((data as any).name);
+
+                if (hasValidName) {
+                    (data as any).name = capitalizeFunc((data as any).name);
+                }
+
+                if (hasValidType) {
+                    (data as any).type = capitalizeFunc((data as any).type);
+                }
+
             if ((data as any).uuid) {
 
                 try {
