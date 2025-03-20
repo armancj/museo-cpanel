@@ -38,7 +38,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
     const [categories, setCategories] = useState<{ name: string, code: string }[]>([]);
 
-    const [selectedCategory, setSelectedCategory] = useState<any>(null);
+    const [selectedCategory, setSelectedCategory] = useState<any>(data?.category ?? null);
 
     const [selectedClassification, setSelectedClassification] = useState<any>(null);
     const [selectedTypology, setSelectedTypology] = useState<any>(null)
@@ -60,10 +60,9 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     ], []);
 
     const classifications = useMemo(() => [
-        { name: 'Educativa', code: 'EDU' },
-        { name: 'Salud', code: 'SAL' },
-        { name: 'Gubernamental', code: 'GOB' },
-        { name: 'ONG', code: 'ONG' },
+        { name: 'Nacional', code: 'Nacional' },
+        { name: 'Provincial', code: 'Provincial' },
+        { name: 'Municipal', code: 'Municipal' },
     ], []);
 
     const typologies = useMemo(() => [
@@ -120,8 +119,10 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
         setSelectedInstitutionType(selectedType);
         onInputChange(
-            { target: { name: 'institutionType', value: selectedType.code } } as React.ChangeEvent<HTMLInputElement>,
-            'institutionType',
+            {
+                target: { name: 'institutionType', value: selectedType?.code }
+            } as React.ChangeEvent<HTMLInputElement>,
+            'institutionType'
         );
 
         // Resetear las categorías
