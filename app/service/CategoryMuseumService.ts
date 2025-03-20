@@ -28,8 +28,13 @@ const validateRegisterBookSummaryData = (data: any): MuseumCategories | null => 
 
 export const CategoryMuseumService  =   {
 
-    get: async () => {
+    get: async (institutionType?: string) => {
         let url = WebEnvConst.categoryMuseum.getAll;
+
+        if (institutionType) {
+            url = `${url}?institutionType=${institutionType}`;
+        }
+
         return await get<MuseumCategoriesResponse[]>(url);
     },
 

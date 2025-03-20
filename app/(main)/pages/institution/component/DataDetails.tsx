@@ -1,11 +1,15 @@
-import React from 'react';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import React, { useEffect, useMemo, useState } from 'react';
+import { DropdownChangeEvent } from 'primereact/dropdown';
 import { Panel } from 'primereact/panel';
 import { Divider } from 'primereact/divider';
 import { InstitutionResponse } from '@/app/service/InstitutionService';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
+import { AddressResponse } from '@/app/service/UserService';
+import { useAddress } from '@/app/(main)/pages/hooks/useAddress';
+import { CategoryMuseumService } from '@/app/service/CategoryMuseumService';
+import { ContactInformationForm } from '@/app/(main)/pages/institution/component/ContactInformationForm';
+import { InstitutionAddressInputForm } from '@/app/(main)/pages/institution/component/InstitutionAddressInputForm';
+import { BasicInstitutionData } from '@/app/(main)/pages/institution/component/BasicInstitutionData';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
 
 interface DataDetailsProps {
@@ -16,183 +20,251 @@ interface DataDetailsProps {
 
 export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps) {
     const validateField = (field: string) => field.trim().length > 0;
-    const { countries, provinces, municipalities, handleCountryChange, handleProvinceChange, isProvinceDisabled } = useAddressData();
+    const {
+        countries,
+        provinces,
+        municipalities,
+        handleCountryChange,
+        handleProvinceChange,
+        isProvinceDisabled,
+        isMunicipalityDisabled,
+    } = useAddressData();
 
-    const onCountryChange = async (value: any) => {
-        console.log('onCountryChange', { value });
-        await handleCountryChange(value.name);
-        onInputChange({ target: { value: value.name } } as React.ChangeEvent<HTMLInputElement>, 'country');
+    const [selectedCountry, setSelectedCountry] = useState<AddressResponse | null>(null);
+    const [selectedProvince, setSelectedProvince] = useState<AddressResponse | null>(null);
+    const [selectedMunicipality, setSelectedMunicipality] = useState<AddressResponse | null>(null);
+
+    const [selectedInstitutionType, setSelectedInstitutionType] = useState<any>(null);
+
+    const [categories, setCategories] = useState<{ name: string, code: string }[]>([]);
+
+    const [selectedCategory, setSelectedCategory] = useState<any>(null);
+
+    const [selectedClassification, setSelectedClassification] = useState<any>(null);
+    const [selectedTypology, setSelectedTypology] = useState<any>(null)
+
+
+    const [loadingCategories, setLoadingCategories] = useState(false);
+
+
+    const institutionTypes = useMemo(() => [
+        { name: 'Museo', code: 'Museo' },
+        { name: 'Complejo Museístico', code: 'Complejo Mus' },
+        { name: 'Extensión Museística', code: 'Ext. Mus' },
+        { name: 'Salas Museísticas', code: 'Salas Mus' },
+        { name: 'OMSH', code: 'OMSH' },
+        { name: 'RBC', code: 'RBC' },
+        { name: 'Centro Cultural', code: 'CCULT' },
+        { name: 'Biblioteca', code: 'Bibliot' },
+        { name: 'Archivo', code: 'Archivo' },
+    ], []);
+
+    const classifications = useMemo(() => [
+        { name: 'Educativa', code: 'EDU' },
+        { name: 'Salud', code: 'SAL' },
+        { name: 'Gubernamental', code: 'GOB' },
+        { name: 'ONG', code: 'ONG' },
+    ], []);
+
+    const typologies = useMemo(() => [
+        { name: 'Primaria', code: 'PRI' },
+        { name: 'Secundaria', code: 'SEC' },
+        { name: 'Universidad', code: 'UNI' },
+        { name: 'Hospital', code: 'HOS' },
+        { name: 'Ministerio', code: 'MIN' },
+    ], []);
+
+    const {
+        onCountryChange,
+        onProvincesChange,
+        onMunicipalitiesChange,
+    } = useAddress(countries, data, setSelectedCountry, provinces, setSelectedProvince, municipalities, setSelectedMunicipality, handleCountryChange, onInputChange, handleProvinceChange);
+
+    useEffect(() => {
+        if (data.institutionType) {
+            const foundType = institutionTypes.find(type => type.name === data.institutionType);
+            if (foundType && foundType !== selectedInstitutionType) {
+                setSelectedInstitutionType(foundType);
+            }
+        }
+
+        if (data.typology) {
+            const found = typologies.find(t => t.name === data.typology);
+            if (found && found !== selectedTypology) {
+                setSelectedTypology(found);
+            }
+        }
+
+        if (data.classification) {
+            const found = classifications.find(c => c.name === data.classification);
+            if (found && found !== selectedClassification) {
+                setSelectedClassification(found);
+            }
+        }
+    }, [data, institutionTypes, typologies, classifications, selectedInstitutionType, selectedTypology, selectedClassification]);
+    const handleInstitutionTypeChange = async (e: DropdownChangeEvent) => {
+        const selectedType = e.value;
+        setSelectedInstitutionType(selectedType);
+        onInputChange(
+            { target: { name: 'institutionType', value: selectedType.code } } as React.ChangeEvent<HTMLInputElement>,
+            'institutionType',
+        );
+
+        // Resetear las categorías
+        setSelectedCategory(null);
+        onInputChange(
+            { target: { name: 'category', value: '' } } as React.ChangeEvent<HTMLInputElement>,
+            'category',
+        );
+
+        setLoadingCategories(true);
+        try {
+            const response = await CategoryMuseumService.get(selectedType.code);
+            setCategories(response.map(category => ({
+                name: category.name,
+                code: category.uuid || category.id || '',
+            })));
+        } catch (error) {
+            console.error('Error al cargar categorías:', error);
+            setCategories([]);
+        } finally {
+            setLoadingCategories(false);
+        }
     };
 
-    const onProvincesChange = async (e: DropdownChangeEvent) => {
-        await handleProvinceChange(e.value);
-        onInputChange({ target: { name: 'province', value: e.value.name } } as React.ChangeEvent<HTMLInputElement>, 'province');
+    const handleCategoryChange = (e: DropdownChangeEvent) => {
+        const category = e.value;
+        setSelectedCategory(category);
+
+        onInputChange(
+            { target: { name: 'category', value: category.name } } as React.ChangeEvent<HTMLInputElement>,
+            'category',
+        );
     };
 
-    const onMunicipalitiesChange = (e: DropdownChangeEvent) => {
-        onInputChange({ target: { name: 'municipalities', value: e.value.name } } as React.ChangeEvent<HTMLInputElement>, 'municipalities');
+    const handleTypologyChange = (e: DropdownChangeEvent) => {
+        const selected = e.value;
+        setSelectedTypology(selected);
+
+        onInputChange(
+            { target: { name: 'typology', value: selected.name } } as React.ChangeEvent<HTMLInputElement>,
+            'typology',
+        );
     };
+
+
+    const handleClassificationChange = (e: DropdownChangeEvent) => {
+        const selected = e.value;
+        setSelectedClassification(selected);
+
+        onInputChange(
+            { target: { name: 'classification', value: selected.name } } as React.ChangeEvent<HTMLInputElement>,
+            'classification',
+        );
+    };
+
+    const isCategoryDisabled = !selectedInstitutionType || loadingCategories;
 
     return (
         <Panel header="Detalles de Institución" className="p-fluid">
             <div className="grid">
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="name">Nombre de Institución</label>
-                    <InputText
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        onChange={(e) => onInputChange(e, 'name')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.name) })}
-                    />
-                    {submitted && !validateField(data.name) && (
-                        <small className="p-error">El Nombre es requerido.</small>
-                    )}
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="street">Calle</label>
-                    <InputText
-                        id="street"
-                        name="street"
-                        value={data.street}
-                        onChange={(e) => onInputChange(e, 'street')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.street) })}
-                    />
-                    {submitted && !validateField(data.street) && (
-                        <small className="p-error">La Calle es requerida.</small>
-                    )}
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="number">Número de institución</label>
-                    <InputText
-                        id="number"
-                        name="number"
-                        value={data.number}
-                        onChange={(e) => onInputChange(e, 'number')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.number) })}
-                    />
-                    {submitted && !validateField(data.number) && (
-                        <small className="p-error">El Número de institución es requerido.</small>
-                    )}
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="referenceCode">Código De Referencia</label>
-                    <InputText
-                        id="referenceCode"
-                        name="referenceCode"
-                        value={data.referenceCode}
-                        onChange={(e) => onInputChange(e, 'referenceCode')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.referenceCode) })}
-                    />
-                    {submitted && !validateField(data.referenceCode) && (
-                        <small className="p-error">El Código De Referencia es requerido.</small>
-                    )}
+                {/* Datos básicos */}
+                {BasicInstitutionData(data, onInputChange, submitted, validateField)}
+
+                {/* Clasificación de Institución */}
+                <div className="field col-12">
+                    <Divider align="center">
+                        <b>Clasificación de Institución</b>
+                    </Divider>
                 </div>
 
-                <Divider align="center" className="col-12">
-                    <b>Información Adicional</b>
-                </Divider>
                 <div className="field col-12 md:col-6">
-                    <label htmlFor="email">Email</label>
-                    <InputText
-                        id="email"
-                        name="email"
-                        value={data.email}
-                        onChange={(e) => onInputChange(e, 'email')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.email) })}
-                    />
-                    {submitted && !validateField(data.email) && (
-                        <small className="p-error">Email es requerido.</small>
-                    )}
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="phone1">Phone 1</label>
-                    <InputText
-                        id="phone1"
-                        name="phone1"
-                        value={data.phone1}
-                        onChange={(e) => onInputChange(e, 'phone1')}
-                    />
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="phone2">Phone 2</label>
-                    <InputText
-                        id="phone2"
-                        name="phone2"
-                        value={data.phone2}
-                        onChange={(e) => onInputChange(e, 'phone2')}
-                    />
-                </div>
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="website">Website</label>
-                    <InputText
-                        id="website"
-                        name="website"
-                        value={data.website}
-                        onChange={(e) => onInputChange(e, 'website')}
-                    />
-                </div>
-
-                <Divider align="center" className="col-12">
-                    <b>Dirección de Institución</b>
-                </Divider>
-
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="country">País</label>
+                    <label htmlFor="institutionType">Tipo de Institución</label>
                     <DropdownField
-                        id="country"
-                        name="country"
-                        value={data.country}
-                        options={countries}
-                        onChange={(e) => onCountryChange(e.value)}
+                        id="institutionType"
+                        name="institutionType"
+                        value={selectedInstitutionType}
+                        options={institutionTypes}
+                        onChange={handleInstitutionTypeChange}
                         optionLabel="name"
-                        placeholder="Seleccione el país"
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.country) })}
-                        submitted
+                        placeholder="Selecciona un tipo de institución"
+                        submitted={submitted}
+                        required={true}
+                        className={undefined}
                     />
-                    {submitted && !validateField(data.country) && (
-                        <small className="p-error">El País es requerido.</small>
-                    )}
                 </div>
 
                 <div className="field col-12 md:col-6">
-                    <label htmlFor="province">Provincia</label>
+                    <label htmlFor="category">Categoría</label>
                     <DropdownField
-                        id="province"
-                        name="province"
-                        value={data.province}
-                        options={provinces}
-                        onChange={onProvincesChange}
+                        id="category"
+                        name="category"
+                        value={selectedCategory}
+                        options={categories}
+                        onChange={handleCategoryChange}
                         optionLabel="name"
-                        placeholder="Seleccione la provincia"
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.province) })}
-                        submitted
+                        placeholder={isCategoryDisabled ? 'Primero seleccione un tipo de institución' : 'Seleccione una categoría'}
+                        submitted={submitted}
+                        required={!isCategoryDisabled}
+                        disabled={isCategoryDisabled}
+                        className={undefined}
                     />
-                    {submitted && !validateField(data.province) && (
-                        <small className="p-error">La provincia es requerida.</small>
-                    )}
+                    {loadingCategories && <small className="p-text-secondary">Cargando categorías...</small>}
                 </div>
 
-                {/* Sección de municipio (si es necesario) */}
                 <div className="field col-12 md:col-6">
-                    <label htmlFor="municipalities">Municipio</label>
+                    <label htmlFor="classification">Clasificación</label>
                     <DropdownField
-                        id="municipalities"
-                        name="municipalities"
-                        value={data.municipalities}
-                        options={municipalities}
-                        onChange={onMunicipalitiesChange}
+                        id="classification"
+                        name="classification"
+                        value={selectedClassification}
+                        options={classifications}
+                        onChange={handleClassificationChange}
                         optionLabel="name"
-                        placeholder="Seleccione el municipio"
-                        submitted
-                        className={classNames({ 'p-invalid': submitted && !validateField(data.municipality) })}
+                        placeholder="Seleccione la clasificación"
+                        submitted={submitted}
+                        required={true}
+                        className={undefined}
                     />
                 </div>
+
+                <div className="field col-12 md:col-6">
+                    <label htmlFor="typology">Tipología</label>
+                    <DropdownField
+                        id="typology"
+                        name="typology"
+                        value={selectedTypology}
+                        options={typologies}
+                        onChange={handleTypologyChange}
+                        optionLabel="name"
+                        placeholder="Seleccione la tipología"
+                        submitted={submitted}
+                        required={true}
+                        className={undefined}
+                    />
+                </div>
+
+
+                {/* Dirección de Institución */}
+                {InstitutionAddressInputForm(
+                    data,
+                    onInputChange,
+                    submitted,
+                    validateField,
+                    selectedCountry,
+                    countries,
+                    onCountryChange,
+                    selectedProvince,
+                    provinces,
+                    onProvincesChange,
+                    isProvinceDisabled,
+                    selectedMunicipality,
+                    municipalities,
+                    onMunicipalitiesChange,
+                    isMunicipalityDisabled)}
+
+                {/* Información de Contacto */}
+                {ContactInformationForm(data, onInputChange, submitted, validateField)}
             </div>
         </Panel>
     );

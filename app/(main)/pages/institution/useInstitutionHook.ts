@@ -11,6 +11,8 @@ export const useInstitutionHook = () => {
     const [dialog, setDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef<Toast>(null);
+    const [multipleDeleteDialog, setMultipleDeleteDialog] = useState(false);
+
 
     useEffect(() => {
         InstitutionService.getInstitutions().then((data) => setSelects(data));
@@ -96,6 +98,39 @@ export const useInstitutionHook = () => {
         setDialog(true);
     };
 
+    const deleteSelected = async (selectedInstitutions: InstitutionResponse[]) => {
+        try {
+            const deletePromises = selectedInstitutions.map(institution =>
+                InstitutionService.deleteInstitution(institution.uuid)
+            );
+
+            await Promise.all(deletePromises);
+
+            const remainingInstitutions = selects.filter(
+                institution => !selectedInstitutions.some(selected => selected.uuid === institution.uuid)
+            );
+
+            setSelects(remainingInstitutions);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Instituciones Eliminadas',
+                detail: `Se han eliminado ${selectedInstitutions.length} instituciones`,
+                life: 5000
+            });
+
+            setMultipleDeleteDialog(false);
+        } catch (error) {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudieron eliminar algunas instituciones',
+                life: 5000
+            });
+            console.error('Error al eliminar instituciones:', error);
+        }
+    };
+
+
     return {
         datum: selects,
         setDatum: setSelects,
@@ -108,8 +143,10 @@ export const useInstitutionHook = () => {
         setSubmitted,
         toast,
         deleteData,
+        deleteSelected,
         editData,
         deleteDialog,
-        setDeleteDialog
+        setDeleteDialog,
+        multipleDeleteDialog,
     };
 }

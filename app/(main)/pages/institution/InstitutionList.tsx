@@ -9,7 +9,7 @@ import { Dialog } from 'primereact/dialog';
 import { FilterMatchMode } from 'primereact/api';
 import { DataForm } from './component/DataForm';
 import { TableCustom } from "./component/TableCustom";
-import { InstitutionResponse, emptyInstitution } from '@/app/service/InstitutionService';
+import { InstitutionResponse, emptyInstitution, InstitutionService } from '@/app/service/InstitutionService';
 
 export function InstitutionList() {
     const [selects, setSelects] = useState<InstitutionResponse[]>([]);
@@ -26,7 +26,10 @@ export function InstitutionList() {
         editData,
         deleteData,
         deleteDialog,
-        setDeleteDialog
+        setDeleteDialog,
+        multipleDeleteDialog,
+        setDatum,
+        deleteSelected
     } = useInstitutionHook();
 
     const [filters, setFilters] = useState({
@@ -50,8 +53,10 @@ export function InstitutionList() {
         setDeleteDialog(false);
     };
 
-    const confirmDeleteSelected = () => {
+    const confirmDeleteSelected = async () => {
+        await deleteSelected(selects);
         setDeleteDialog(true);
+        setDatum([])
     };
 
     const exportExcel = createdExportExcel(dt);
