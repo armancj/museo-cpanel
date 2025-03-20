@@ -5,7 +5,7 @@ import { Toolbar } from 'primereact/toolbar';
 interface ToolbarProps {
     selects: any[],
     setDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    confirmDeleteSelected: (select: any) => void,
+    confirmDeleteSelected: () => void,
     exportExcel: () => void,
     openNew: () => void
 }
@@ -14,7 +14,7 @@ export function ToolbarCustom({ selects, confirmDeleteSelected, exportExcel, ope
 
     const handleDelete = () => {
         if (selects.length) {
-            confirmDeleteSelected(selects[0]);
+            confirmDeleteSelected();
         }
     };
 

@@ -26,7 +26,9 @@ export function InstitutionList() {
         editData,
         deleteData,
         deleteDialog,
-        setDeleteDialog
+        setDeleteDialog,
+        setDatum,
+        deleteSelected
     } = useInstitutionHook();
 
     const [filters, setFilters] = useState({
@@ -50,8 +52,10 @@ export function InstitutionList() {
         setDeleteDialog(false);
     };
 
-    const confirmDeleteSelected = () => {
+    const confirmDeleteSelected = async () => {
+        await deleteSelected(selects);
         setDeleteDialog(true);
+        setDatum([])
     };
 
     const exportExcel = createdExportExcel(dt);

@@ -19,17 +19,12 @@ export function TableBodyFunction({
                                       setDeleteDialog
                                   }: TableBodyFunctionProps) {
     const nameBodyTemplate = (rowData: InstitutionResponse) => {
-        const institution = convertToCode(rowData.name);
-        const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = '/demo/images/institutions/default.jpg';
-        };
 
         return (
             <div className="p-column-title flex align-items-center gap-2">
                 <img
                     alt="flag"
-                    src={`/demo/images/institutions/${institution}.png`}
-                    onError={handleImageError}
+                    src={`/demo/images/institutions/default.png`}
                     style={{ width: '24px' }} />
                 <span>{rowData.name}</span>
             </div>
