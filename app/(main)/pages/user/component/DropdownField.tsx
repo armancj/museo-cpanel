@@ -14,7 +14,7 @@ interface DropdownFieldProps {
     disabled?: boolean,
     required?: boolean,
     filter?: boolean,
-    className: string | undefined
+    className?: string | undefined
 }
 
 const DropdownField: React.FC<DropdownFieldProps> = ({

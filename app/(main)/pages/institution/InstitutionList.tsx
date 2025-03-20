@@ -140,7 +140,13 @@ export function InstitutionList() {
                             onHide={hideDialog}>
                         <DataForm
                             data={data}
-                            onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
+                            onInputChange={(e, field) => {
+                                const newData = { ...data, [field]: e.target.value };
+                                console.log(`Campo actualizado: ${field}, valor: ${e.target.value}`);
+                                console.log("Nuevo estado de data:", newData);
+                                setData(newData);
+                            }}
+
                             submitted={submitted}
                         />
                     </Dialog>

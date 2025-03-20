@@ -12,7 +12,7 @@ export function ContactInformationForm(data: InstitutionResponse, onInputChange:
             </Divider>
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="email">Email</label>
             <InputText
                 id="email"
@@ -27,7 +27,7 @@ export function ContactInformationForm(data: InstitutionResponse, onInputChange:
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="phone1">Teléfono 1</label>
             <InputText
                 id="phone1"
@@ -42,7 +42,7 @@ export function ContactInformationForm(data: InstitutionResponse, onInputChange:
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="phone2">Teléfono 2</label>
             <InputText
                 id="phone2"
@@ -52,7 +52,7 @@ export function ContactInformationForm(data: InstitutionResponse, onInputChange:
             />
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="website">Sitio Web</label>
             <InputText
                 id="website"

@@ -11,11 +11,98 @@ import { ContactInformationForm } from '@/app/(main)/pages/institution/component
 import { InstitutionAddressInputForm } from '@/app/(main)/pages/institution/component/InstitutionAddressInputForm';
 import { BasicInstitutionData } from '@/app/(main)/pages/institution/component/BasicInstitutionData';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
+import { TypologyService } from '@/app/service/TypologyService';
 
 interface DataDetailsProps {
     data: InstitutionResponse;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
     submitted: boolean;
+}
+
+export function InstitutionClassificationFields(selectedInstitutionType: any, institutionTypes: ({ name: string; code: string })[], handleInstitutionTypeChange: (e: DropdownChangeEvent) => Promise<void>, submitted: boolean, selectedCategory: {
+    name: string;
+    code: string
+}[] | null | undefined, categories: {
+    name: string;
+    code: string
+}[], handleCategoryChange: (e: DropdownChangeEvent) => void, isCategoryDisabled: boolean, loadingCategories: boolean, selectedClassification: any, classifications: ({
+    name: string;
+    code: string
+})[], handleClassificationChange: (e: DropdownChangeEvent) => void, selectedTypology: any, typologies: {
+    name: string;
+    code: string
+}[], handleTypologyChange: (e: DropdownChangeEvent) => void, loadingTypologies: boolean) {
+    return <>
+        <div className="field col-12">
+            <Divider align="center">
+                <b>Clasificación de Institución</b>
+            </Divider>
+        </div>
+
+        <div className="field col-12 md:col-3">
+            <label htmlFor="institutionType">Tipo de Institución</label>
+            <DropdownField
+                id="institutionType"
+                name="institutionType"
+                value={selectedInstitutionType}
+                options={institutionTypes}
+                onChange={handleInstitutionTypeChange}
+                optionLabel="name"
+                placeholder="Selecciona un tipo de institución"
+                submitted={submitted}
+                required={true}
+            />
+        </div>
+
+        <div className="field col-12 md:col-3">
+            <label htmlFor="category">Categoría</label>
+            <DropdownField
+                id="category"
+                name="category"
+                value={selectedCategory}
+                options={categories}
+                onChange={handleCategoryChange}
+                optionLabel="name"
+                placeholder={isCategoryDisabled ? 'Primero seleccione un tipo de institución' : 'Seleccione una categoría'}
+                submitted={submitted}
+                required={!isCategoryDisabled}
+                disabled={isCategoryDisabled}
+                className={undefined}
+            />
+            {loadingCategories && <small className="p-text-secondary">Cargando categorías...</small>}
+        </div>
+
+        <div className="field col-12 md:col-3">
+            <label htmlFor="classification">Clasificación</label>
+            <DropdownField
+                id="classification"
+                name="classification"
+                value={selectedClassification}
+                options={classifications}
+                onChange={handleClassificationChange}
+                optionLabel="name"
+                placeholder="Seleccione la clasificación"
+                submitted={submitted}
+                required={true}
+            />
+        </div>
+
+        <div className="field col-12 md:col-3">
+            <label htmlFor="typology">Tipología</label>
+            <DropdownField
+                id="typology"
+                name="typology"
+                value={selectedTypology}
+                options={typologies}
+                onChange={handleTypologyChange}
+                optionLabel="name"
+                placeholder="Seleccione la tipología"
+                submitted={submitted}
+                required={true}
+                disabled={loadingTypologies}
+            />
+        </div>
+    </>;
 }
 
 export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps) {
@@ -34,16 +121,15 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     const [selectedProvince, setSelectedProvince] = useState<AddressResponse | null>(null);
     const [selectedMunicipality, setSelectedMunicipality] = useState<AddressResponse | null>(null);
 
+
     const [selectedInstitutionType, setSelectedInstitutionType] = useState<any>(null);
-
     const [categories, setCategories] = useState<{ name: string, code: string }[]>([]);
-
-    const [selectedCategory, setSelectedCategory] = useState<any>(data?.category ?? null);
+    const [selectedCategory, setSelectedCategory] = useState<{ name: string, code: string }[] | null>();
 
     const [selectedClassification, setSelectedClassification] = useState<any>(null);
+    const [typologies, setTypologies] = useState<{ name: string, code: string }[]>([]);
+    const [loadingTypologies, setLoadingTypologies] = useState<boolean>(false);
     const [selectedTypology, setSelectedTypology] = useState<any>(null)
-
-
     const [loadingCategories, setLoadingCategories] = useState(false);
 
 
@@ -65,13 +151,6 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
         { name: 'Municipal', code: 'Municipal' },
     ], []);
 
-    const typologies = useMemo(() => [
-        { name: 'Primaria', code: 'PRI' },
-        { name: 'Secundaria', code: 'SEC' },
-        { name: 'Universidad', code: 'UNI' },
-        { name: 'Hospital', code: 'HOS' },
-        { name: 'Ministerio', code: 'MIN' },
-    ], []);
 
     const {
         onCountryChange,
@@ -80,26 +159,36 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     } = useAddress(countries, data, setSelectedCountry, provinces, setSelectedProvince, municipalities, setSelectedMunicipality, handleCountryChange, onInputChange, handleProvinceChange);
 
     useEffect(() => {
-        if (!data || !data.institutionType || institutionTypes.length === 0) {
-            setSelectedInstitutionType(institutionTypes[0]); // Selecciona el primero como default
-            onInputChange(
-                {
-                    target: { name: 'institutionType', value: institutionTypes[0]?.code }
-                } as React.ChangeEvent<HTMLInputElement>,
-                'institutionType'
-            );
-            return;
-        }
+        const fetchTypologies = async () => {
+            setLoadingTypologies(true);
+            try {
+                const response = await TypologyService.getTypologies();
+                const formattedTypologies = response.map(typology => ({
+                    name: typology.name,
+                    code: typology.uuid,
+                    description: typology.description
+                }));
+                setTypologies(formattedTypologies);
+            } catch (error) {
+                setTypologies([]);
+            } finally {
+                setLoadingTypologies(false);
+            }
+        };
 
-        const foundType = institutionTypes.find(type => type.code
-            === data.institutionType);
-        console.log("Tipo de institución encontrado:", foundType);
-        if (foundType) {
+        fetchTypologies();
+    }, []);
+
+    useEffect(() => {
+        if (data.institutionType) {
+        const foundType = institutionTypes.find(type => {
+            return type.code === data.institutionType;
+        });
             setSelectedInstitutionType(foundType);
         }
 
 
-        if (data.typology) {
+        if (data.typology && typologies?.length > 0) {
             const found = typologies.find(t => t.name === data.typology);
             if (found && found !== selectedTypology) {
                 setSelectedTypology(found);
@@ -113,24 +202,55 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
             }
         }
     }, [data, institutionTypes, typologies, classifications, selectedInstitutionType, selectedTypology, selectedClassification]);
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            if (selectedInstitutionType) {
+                setLoadingCategories(true);
+                try {
+                    const response = await CategoryMuseumService.get(selectedInstitutionType.code);
+                    const formattedCategories = response.map(category => ({
+                        name: category.name,
+                        code: category.uuid || category.id || '',
+                    }));
+                    setCategories(formattedCategories);
+
+                    if (data.category) {
+                        const foundCategory = formattedCategories.find(c => c.name === data.category);
+                        if (foundCategory) {
+                            setSelectedCategory(foundCategory as any);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al cargar categorías:', error);
+                    setCategories([]);
+                } finally {
+                    setLoadingCategories(false);
+                }
+            }
+        };
+
+        loadCategories();
+    }, [selectedInstitutionType, data.category]);
+
     const handleInstitutionTypeChange = async (e: DropdownChangeEvent) => {
         const selectedType = e.value;
-        console.log("Tipo seleccionado:", selectedType);
 
         setSelectedInstitutionType(selectedType);
+
         onInputChange(
             {
-                target: { name: 'institutionType', value: selectedType?.code }
+                target: {
+                    name: 'institutionType',
+                    value: selectedType.code,
+                    type: 'change',
+                    checked: false
+                }
             } as React.ChangeEvent<HTMLInputElement>,
             'institutionType'
         );
 
-        // Resetear las categorías
         setSelectedCategory(null);
-        onInputChange(
-            { target: { name: 'category', value: '' } } as React.ChangeEvent<HTMLInputElement>,
-            'category',
-        );
 
         setLoadingCategories(true);
         try {
@@ -146,6 +266,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
             setLoadingCategories(false);
         }
     };
+
 
     const handleCategoryChange = (e: DropdownChangeEvent) => {
         const category = e.value;
@@ -170,10 +291,11 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
     const handleClassificationChange = (e: DropdownChangeEvent) => {
         const selected = e.value;
+            console.log({ selected })
         setSelectedClassification(selected);
 
         onInputChange(
-            { target: { name: 'classification', value: selected.name } } as React.ChangeEvent<HTMLInputElement>,
+            { target: { name: 'classification', value: selected.code } } as React.ChangeEvent<HTMLInputElement>,
             'classification',
         );
     };
@@ -187,77 +309,24 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
                 {BasicInstitutionData(data, onInputChange, submitted, validateField)}
 
                 {/* Clasificación de Institución */}
-                <div className="field col-12">
-                    <Divider align="center">
-                        <b>Clasificación de Institución</b>
-                    </Divider>
-                </div>
-
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="institutionType">Tipo de Institución</label>
-                    <DropdownField
-                        id="institutionType"
-                        name="institutionType"
-                        value={selectedInstitutionType}
-                        options={institutionTypes}
-                        onChange={handleInstitutionTypeChange}
-                        optionLabel="name"
-                        placeholder="Selecciona un tipo de institución"
-                        submitted={submitted}
-                        required={true}
-                        className={undefined}
-                    />
-                </div>
-
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="category">Categoría</label>
-                    <DropdownField
-                        id="category"
-                        name="category"
-                        value={selectedCategory}
-                        options={categories}
-                        onChange={handleCategoryChange}
-                        optionLabel="name"
-                        placeholder={isCategoryDisabled ? 'Primero seleccione un tipo de institución' : 'Seleccione una categoría'}
-                        submitted={submitted}
-                        required={!isCategoryDisabled}
-                        disabled={isCategoryDisabled}
-                        className={undefined}
-                    />
-                    {loadingCategories && <small className="p-text-secondary">Cargando categorías...</small>}
-                </div>
-
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="classification">Clasificación</label>
-                    <DropdownField
-                        id="classification"
-                        name="classification"
-                        value={selectedClassification}
-                        options={classifications}
-                        onChange={handleClassificationChange}
-                        optionLabel="name"
-                        placeholder="Seleccione la clasificación"
-                        submitted={submitted}
-                        required={true}
-                        className={undefined}
-                    />
-                </div>
-
-                <div className="field col-12 md:col-6">
-                    <label htmlFor="typology">Tipología</label>
-                    <DropdownField
-                        id="typology"
-                        name="typology"
-                        value={selectedTypology}
-                        options={typologies}
-                        onChange={handleTypologyChange}
-                        optionLabel="name"
-                        placeholder="Seleccione la tipología"
-                        submitted={submitted}
-                        required={true}
-                        className={undefined}
-                    />
-                </div>
+                {InstitutionClassificationFields(
+                    selectedInstitutionType,
+                    institutionTypes,
+                    handleInstitutionTypeChange,
+                    submitted,
+                    selectedCategory,
+                    categories,
+                    handleCategoryChange,
+                    isCategoryDisabled,
+                    loadingCategories,
+                    selectedClassification,
+                    classifications,
+                    handleClassificationChange,
+                    selectedTypology,
+                    typologies,
+                    handleTypologyChange,
+                    loadingTypologies)
+                }
 
 
                 {/* Dirección de Institución */}
