@@ -43,7 +43,7 @@ const InvalidStateDemo = () => {
 
     useEffect(() => {
         CountryService.getCountries().then((countries) => {
-            setCountries(countries);
+            setCountries(countries as any);
         });
     }, []);
 

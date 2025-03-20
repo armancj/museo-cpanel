@@ -1,5 +1,6 @@
 import { get, post, patch, del } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
+import { AddressResponse } from '@/app/service/UserService';
 
 
 export interface CountryResponse {
@@ -19,8 +20,10 @@ export const emptyCountry: CountryResponse = {
     uuid: ''
 };
 export const CountryService = {
-    getCountries: async () => {
-        return await get<CountryResponse[]>(WebEnvConst.country.getAll);
+    getCountries: async ({name}: AddressResponse = {}) => {
+        let url = WebEnvConst.country.getAll;
+        if(name) url = `${url}?name=${name}`;
+        return await get<CountryResponse[]>(url);
     },
     async updateCountry(uuid: string, countryUpdated: Omit<CountryResponse, 'uuid' | 'deleted'>) {
         const url = WebEnvConst.country.getOne(uuid);

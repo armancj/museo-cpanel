@@ -35,7 +35,22 @@ export const model: AppMenuItem[] = [
                         to: '/pages/institution'
                     }
                 ]
-            }
+            },
+            {
+                label: 'Categorías de Museos',
+                icon: 'pi pi-fw pi-building',
+                to: '/pages/museum-categories'
+            },
+            {
+                label: 'Instrumentos',
+                icon: 'pi pi-fw pi-image',
+                to: '/pages/description-instruments'
+            },
+            {
+                label: 'Condiciones de Acceso',
+                icon: 'pi pi-fw pi-unlock',
+                to: '/pages/nomenclator-access-conditions'
+            },
         ]
     },
     {

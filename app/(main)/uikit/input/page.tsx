@@ -105,7 +105,7 @@ const InputDemo: Page = () => {
     ];
 
     useEffect(() => {
-        CountryService.getCountries().then((data) => setAutoValue(data));
+        CountryService.getCountries().then((data) => setAutoValue(data as any));
     }, []);
 
     const searchCountry = (event: AutoCompleteCompleteEvent) => {

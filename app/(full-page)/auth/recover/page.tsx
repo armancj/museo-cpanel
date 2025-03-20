@@ -86,6 +86,7 @@ const RecoverPage: React.FC = () => {
                     }}>
                         Panel de administración
                         <div style={{ fontSize: '1.0rem', fontWeight: 'normal', marginTop: '0.5rem' }}>
+                            {/* eslint-disable-next-line react/no-unescaped-entities */}
                             Salvando la historia "Patrimonio Las Tunas"
                         </div>
                     </div>
