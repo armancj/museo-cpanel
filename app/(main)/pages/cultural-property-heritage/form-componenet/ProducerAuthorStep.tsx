@@ -1,117 +1,159 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import {
-    ProducerAuthor
+    ProducerAuthor,
 } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import { classNames } from 'primereact/utils';
+import { InputNumber } from 'primereact/inputnumber';
 
 interface ProducerAuthorStepProps {
     data: ProducerAuthor,
     onChange: (field: keyof ProducerAuthor, value: string) => void;
+    errors: Partial<Record<keyof ProducerAuthor, string>>;
+    onValidate: () => boolean;
+    submitted: boolean;
 }
 
-const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({ data, onChange }) => {
+const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
+                                                                   data,
+                                                                   onChange,
+                                                                   errors,
+                                                                   onValidate,
+                                                                   submitted,
+                                                               }) => {
+
+    useEffect(() => {
+        if (submitted) {
+            onValidate();
+        }
+    }, [data, submitted, onValidate]);
+
     return (
         <div className="card p-fluid formgrid grid font-medium">
             {/* Nombre del Productor/Autor */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="producerAuthorNames">Nombres del Productor/Autor</label>
+            <div className="field col-12 md:col-4">
+                <label htmlFor="producerAuthorNames" className={classNames({ 'p-error': errors.producerAuthorNames })}
+                >Nombres del Productor/Autor</label>
                 <InputText
                     id="producerAuthorNames"
                     value={data.producerAuthorNames}
                     onChange={(e) => onChange('producerAuthorNames', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.producerAuthorNames })}
                 />
+                {errors.producerAuthorNames && <small className="p-error">{errors.producerAuthorNames}</small>}
             </div>
 
             {/* Historia Institucional */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="institutionalHistory">Historia Institucional</label>
+            <div className="field col-12 md:col-4">
+                <label htmlFor="institutionalHistory" className={classNames({ 'p-error': errors.institutionalHistory })}>Historia Institucional</label>
                 <InputText
                     id="institutionalHistory"
                     value={data.institutionalHistory}
                     onChange={(e) => onChange('institutionalHistory', e.target.value)}
+                    className={classNames({ 'p-error': errors.institutionalHistory })}
                 />
+                {errors.institutionalHistory && <small className="p-error">{errors.institutionalHistory}</small>}
             </div>
 
             {/* Historia de Entrada del Objeto */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="objectEntryHistory">Historia de Entrada del Objeto</label>
+            <div className="field col-12 md:col-4">
+                <label htmlFor="objectEntryHistory" className={classNames({ 'p-error': errors.objectEntryHistory })}>Historia de Entrada del Objeto</label>
                 <InputText
                     id="objectEntryHistory"
                     value={data.objectEntryHistory}
                     onChange={(e) => onChange('objectEntryHistory', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.objectEntryHistory })}
                 />
+                {errors.objectEntryHistory && <small className="p-error">{errors.objectEntryHistory}</small>}
             </div>
 
             {/* Dirección: Calle y Número */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="street">Calle</label>
+            <div className="field col-12 md:col-8">
+                <label htmlFor="street" className={classNames({ 'p-error': errors.street })}>Calle</label>
                 <InputText
                     id="street"
                     value={data.street}
                     onChange={(e) => onChange('street', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.street })}
                 />
+                {errors.street && <small className="p-error">{errors.street}</small>}
             </div>
-            <div className="field col-12 md:col-6">
-                <label htmlFor="number">Número</label>
-                <InputText
+            <div className="field col-12 md:col-4">
+                <label htmlFor="number" className={classNames({ 'p-error': errors.number })}>Número</label>
+                <InputNumber
                     id="number"
-                    value={data.number}
-                    onChange={(e) => onChange('number', e.target.value)}
+                    value={data?.number ? parseInt(data.number): 0}
+                    onChange={(e) => onChange('number', `${e.value!}`)}
+                    className={classNames({ 'p-invalid': errors.number })}
+                    useGrouping={false}
                 />
+                {errors.number && <small className="p-error">{errors.number}</small>}
             </div>
 
             {/* Entre calles */}
             <div className="field col-12 md:col-6">
-                <label htmlFor="betweenStreet1">Entre Calle 1</label>
+                <label htmlFor="betweenStreet1" className={classNames({ 'p-error': errors.betweenStreet1 })}>Entre Calle 1</label>
                 <InputText
                     id="betweenStreet1"
                     value={data.betweenStreet1}
                     onChange={(e) => onChange('betweenStreet1', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.betweenStreet1 })}
                 />
+                {errors.betweenStreet1 && <small className="p-error">{errors.betweenStreet1}</small>}
             </div>
             <div className="field col-12 md:col-6">
-                <label htmlFor="betweenStreet2">Entre Calle 2</label>
+                <label htmlFor="betweenStreet2" className={classNames({ 'p-error': errors.betweenStreet2 })}>Entre Calle 2</label>
                 <InputText
                     id="betweenStreet2"
                     value={data.betweenStreet2}
                     onChange={(e) => onChange('betweenStreet2', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.betweenStreet2 })}
                 />
+                {errors.betweenStreet2 && <small className="p-error">{errors.betweenStreet2}</small>}
             </div>
 
             {/* Provincia y Municipio */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="province">Provincia</label>
+            <div className="field col-12 md:col-3">
+                <label htmlFor="province" className={classNames({ 'p-error': errors.province })}>Provincia</label>
                 <InputText
                     id="province"
                     value={data.province}
                     onChange={(e) => onChange('province', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.province })}
                 />
+                {errors.province && <small className="p-error">{errors.province}</small>}
             </div>
-            <div className="field col-12 md:col-6">
-                <label htmlFor="municipality">Municipio</label>
+            <div className="field col-12 md:col-3">
+                <label htmlFor="municipality" className={classNames({ 'p-error': errors.municipality })}>Municipio</label>
                 <InputText
                     id="municipality"
                     value={data.municipality}
                     onChange={(e) => onChange('municipality', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.municipality })}
                 />
+                {errors.municipality && <small className="p-error">{errors.municipality}</small>}
             </div>
 
             {/* Distrito y Localidad */}
-            <div className="field col-12 md:col-6">
-                <label htmlFor="district">Distrito</label>
+            <div className="field col-12 md:col-3">
+                <label htmlFor="district" className={classNames({ 'p-error': errors.district })}>Distrito</label>
                 <InputText
                     id="district"
                     value={data.district}
                     onChange={(e) => onChange('district', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.district })}
                 />
+                {errors.district && <small className="p-error">{errors.district}</small>}
             </div>
-            <div className="field col-12 md:col-6">
-                <label htmlFor="locality">Localidad</label>
+            <div className="field col-12 md:col-3">
+                <label htmlFor="locality" className={classNames({ 'p-error': errors.locality })}>Localidad</label>
                 <InputText
                     id="locality"
                     value={data.locality}
                     onChange={(e) => onChange('locality', e.target.value)}
+                    className={classNames({ 'p-invalid': errors.locality })}
                 />
+                {errors.locality && <small className="p-error">{errors.locality}</small>}
             </div>
         </div>
     );
