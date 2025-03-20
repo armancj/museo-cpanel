@@ -36,7 +36,6 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     const [selectedProvince, setSelectedProvince] = useState<AddressResponse | null>(null);
     const [selectedMunicipality, setSelectedMunicipality] = useState<AddressResponse | null>(null);
 
-
     const [selectedInstitutionType, setSelectedInstitutionType] = useState<any>(null);
     const [categories, setCategories] = useState<{ name: string, code: string }[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<{ name: string, code: string }[] | null>();
@@ -46,7 +45,6 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     const [loadingTypologies, setLoadingTypologies] = useState<boolean>(false);
     const [selectedTypology, setSelectedTypology] = useState<any>(null)
     const [loadingCategories, setLoadingCategories] = useState(false);
-
 
     const institutionTypes = useMemo(() => [
         { name: 'Museo', code: 'Museo' },
@@ -65,7 +63,6 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
         { name: 'Provincial', code: 'Provincial' },
         { name: 'Municipal', code: 'Municipal' },
     ], []);
-
 
     const {
         onCountryChange,
@@ -106,7 +103,6 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
                     handleTypologyChange,
                     loadingTypologies)
                 }
-
 
                 {/* Dirección de Institución */}
                 {InstitutionAddressInputForm(
