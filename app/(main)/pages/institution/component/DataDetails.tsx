@@ -1,19 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { DropdownChangeEvent } from 'primereact/dropdown';
+import React, { useMemo, useState } from 'react';
 import { Panel } from 'primereact/panel';
-import { Divider } from 'primereact/divider';
 import { InstitutionResponse } from '@/app/service/InstitutionService';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 import { AddressResponse } from '@/app/service/UserService';
 import { useAddress } from '@/app/(main)/pages/hooks/useAddress';
-import { CategoryMuseumService } from '@/app/service/CategoryMuseumService';
 import { ContactInformationForm } from '@/app/(main)/pages/institution/component/ContactInformationForm';
 import { InstitutionAddressInputForm } from '@/app/(main)/pages/institution/component/InstitutionAddressInputForm';
 import { BasicInstitutionData } from '@/app/(main)/pages/institution/component/BasicInstitutionData';
-import { TypologyService } from '@/app/service/TypologyService';
 import {
     InstitutionClassificationFields
 } from '@/app/(main)/pages/institution/component/InstitutionClassificationFields';
+import {
+    useInstitutionClassificationDataHandlers
+} from '@/app/(main)/pages/institution/hooks/useInstitutionClassificationDataHandlers';
 
 interface DataDetailsProps {
     data: InstitutionResponse;
@@ -74,149 +73,13 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
         onMunicipalitiesChange,
     } = useAddress(countries, data, setSelectedCountry, provinces, setSelectedProvince, municipalities, setSelectedMunicipality, handleCountryChange, onInputChange, handleProvinceChange);
 
-    useEffect(() => {
-        const fetchTypologies = async () => {
-            setLoadingTypologies(true);
-            try {
-                const response = await TypologyService.getTypologies();
-                const formattedTypologies = response.map(typology => ({
-                    name: typology.name,
-                    code: typology.uuid,
-                    description: typology.description
-                }));
-                setTypologies(formattedTypologies);
-            } catch (error) {
-                setTypologies([]);
-            } finally {
-                setLoadingTypologies(false);
-            }
-        };
-
-        fetchTypologies();
-    }, []);
-
-    useEffect(() => {
-        if (data.institutionType) {
-        const foundType = institutionTypes.find(type => {
-            return type.code === data.institutionType;
-        });
-            setSelectedInstitutionType(foundType);
-        }
-
-
-        if (data.typology && typologies?.length > 0) {
-            const found = typologies.find(t => t.name === data.typology);
-            if (found && found !== selectedTypology) {
-                setSelectedTypology(found);
-            }
-        }
-
-        if (data.classification) {
-            const found = classifications.find(c => c.name === data.classification);
-            if (found && found !== selectedClassification) {
-                setSelectedClassification(found);
-            }
-        }
-    }, [data, institutionTypes, typologies, classifications, selectedInstitutionType, selectedTypology, selectedClassification]);
-
-    useEffect(() => {
-        const loadCategories = async () => {
-            if (selectedInstitutionType) {
-                setLoadingCategories(true);
-                try {
-                    const response = await CategoryMuseumService.get(selectedInstitutionType.code);
-                    const formattedCategories = response.map(category => ({
-                        name: category.name,
-                        code: category.uuid || category.id || '',
-                    }));
-                    setCategories(formattedCategories);
-
-                    if (data.category) {
-                        const foundCategory = formattedCategories.find(c => c.name === data.category);
-                        if (foundCategory) {
-                            setSelectedCategory(foundCategory as any);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error al cargar categorías:', error);
-                    setCategories([]);
-                } finally {
-                    setLoadingCategories(false);
-                }
-            }
-        };
-
-        loadCategories();
-    }, [selectedInstitutionType, data.category]);
-
-    const handleInstitutionTypeChange = async (e: DropdownChangeEvent) => {
-        const selectedType = e.value;
-
-        setSelectedInstitutionType(selectedType);
-
-        onInputChange(
-            {
-                target: {
-                    name: 'institutionType',
-                    value: selectedType.code,
-                    type: 'change',
-                    checked: false
-                }
-            } as React.ChangeEvent<HTMLInputElement>,
-            'institutionType'
-        );
-
-        setSelectedCategory(null);
-
-        setLoadingCategories(true);
-        try {
-            const response = await CategoryMuseumService.get(selectedType.code);
-            setCategories(response.map(category => ({
-                name: category.name,
-                code: category.uuid || category.id || '',
-            })));
-        } catch (error) {
-            console.error('Error al cargar categorías:', error);
-            setCategories([]);
-        } finally {
-            setLoadingCategories(false);
-        }
-    };
-
-
-    const handleCategoryChange = (e: DropdownChangeEvent) => {
-        const category = e.value;
-        setSelectedCategory(category);
-
-        onInputChange(
-            { target: { name: 'category', value: category.name } } as React.ChangeEvent<HTMLInputElement>,
-            'category',
-        );
-    };
-
-    const handleTypologyChange = (e: DropdownChangeEvent) => {
-        const selected = e.value;
-        setSelectedTypology(selected);
-
-        onInputChange(
-            { target: { name: 'typology', value: selected.name } } as React.ChangeEvent<HTMLInputElement>,
-            'typology',
-        );
-    };
-
-
-    const handleClassificationChange = (e: DropdownChangeEvent) => {
-        const selected = e.value;
-            console.log({ selected })
-        setSelectedClassification(selected);
-
-        onInputChange(
-            { target: { name: 'classification', value: selected.code } } as React.ChangeEvent<HTMLInputElement>,
-            'classification',
-        );
-    };
-
-    const isCategoryDisabled = !selectedInstitutionType || loadingCategories;
+    const {
+        handleInstitutionTypeChange,
+        handleCategoryChange,
+        handleTypologyChange,
+        handleClassificationChange,
+        isCategoryDisabled,
+    } = useInstitutionClassificationDataHandlers(setLoadingTypologies, setTypologies, data, institutionTypes, setSelectedInstitutionType, typologies, selectedTypology, setSelectedTypology, classifications, selectedClassification, setSelectedClassification, selectedInstitutionType, setLoadingCategories, setCategories, setSelectedCategory, onInputChange, loadingCategories);
 
     return (
         <Panel header="Detalles de Institución" className="p-fluid">
