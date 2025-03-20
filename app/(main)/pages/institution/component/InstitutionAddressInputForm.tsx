@@ -15,7 +15,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             </Divider>
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-5">
             <label htmlFor="street">Calle</label>
             <InputText
                 id="street"
@@ -30,7 +30,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-1">
             <label htmlFor="number">Número</label>
             <InputText
                 id="number"
@@ -45,7 +45,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="betweenStreet1">Entre Calle 1</label>
             <InputText
                 id="betweenStreet1"
@@ -55,7 +55,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             />
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-3">
             <label htmlFor="betweenStreet2">Entre Calle 2</label>
             <InputText
                 id="betweenStreet2"
@@ -65,7 +65,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             />
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-4">
             <label htmlFor="district">Distrito</label>
             <InputText
                 id="district"
@@ -75,7 +75,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             />
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-2">
             <label htmlFor="locality">Localidad</label>
             <InputText
                 id="locality"
@@ -85,7 +85,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             />
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-2">
             <label htmlFor="country">País</label>
             <DropdownField
                 id="country"
@@ -105,7 +105,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-2">
             <label htmlFor="province">Provincia</label>
             <DropdownField
                 id="province"
@@ -126,7 +126,7 @@ export function InstitutionAddressInputForm(data: InstitutionResponse, onInputCh
             )}
         </div>
 
-        <div className="field col-12 md:col-6">
+        <div className="field col-12 md:col-2">
             <label htmlFor="municipality">Municipio</label>
             <DropdownField
                 id="municipality"
