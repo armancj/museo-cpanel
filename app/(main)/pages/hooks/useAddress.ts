@@ -48,8 +48,8 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
         setSelectedMunicipality(municipality);
 
         onInputChange(
-            { target: { name: 'municipalities', value: municipality.name } } as React.ChangeEvent<HTMLInputElement>,
-            'municipalities',
+            { target: { name: 'municipality', value: municipality.name } } as React.ChangeEvent<HTMLInputElement>,
+            'municipality',
         );
     };
     return { onCountryChange, onProvincesChange, onMunicipalitiesChange };

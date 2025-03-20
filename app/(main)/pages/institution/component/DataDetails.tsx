@@ -81,12 +81,24 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     } = useAddress(countries, data, setSelectedCountry, provinces, setSelectedProvince, municipalities, setSelectedMunicipality, handleCountryChange, onInputChange, handleProvinceChange);
 
     useEffect(() => {
-        if (data.institutionType) {
-            const foundType = institutionTypes.find(type => type.name === data.institutionType);
-            if (foundType && foundType !== selectedInstitutionType) {
-                setSelectedInstitutionType(foundType);
-            }
+        if (!data || !data.institutionType || institutionTypes.length === 0) {
+            setSelectedInstitutionType(institutionTypes[0]); // Selecciona el primero como default
+            onInputChange(
+                {
+                    target: { name: 'institutionType', value: institutionTypes[0]?.code }
+                } as React.ChangeEvent<HTMLInputElement>,
+                'institutionType'
+            );
+            return;
         }
+
+        const foundType = institutionTypes.find(type => type.code
+            === data.institutionType);
+        console.log("Tipo de institución encontrado:", foundType);
+        if (foundType) {
+            setSelectedInstitutionType(foundType);
+        }
+
 
         if (data.typology) {
             const found = typologies.find(t => t.name === data.typology);
@@ -104,6 +116,8 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
     }, [data, institutionTypes, typologies, classifications, selectedInstitutionType, selectedTypology, selectedClassification]);
     const handleInstitutionTypeChange = async (e: DropdownChangeEvent) => {
         const selectedType = e.value;
+        console.log("Tipo seleccionado:", selectedType);
+
         setSelectedInstitutionType(selectedType);
         onInputChange(
             { target: { name: 'institutionType', value: selectedType.code } } as React.ChangeEvent<HTMLInputElement>,
