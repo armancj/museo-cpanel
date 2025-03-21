@@ -22,7 +22,7 @@ export const emptyTypology: TypologyResponse = {
 
 export const TypologyService = {
     getTypologies: async (active?: boolean) => {
-        let url = WebEnvConst.categoryMuseum.getAll;
+        let url = WebEnvConst.typology.getAll;
 
         if (active) {
             url = `${url}?active=${active}`;
