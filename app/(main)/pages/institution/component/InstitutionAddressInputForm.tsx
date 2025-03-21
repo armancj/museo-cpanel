@@ -7,7 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
 
-export function InstitutionAddressInputForm(data: InstitutionResponse, onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void, submitted: boolean, validateField: (field: string) => boolean, selectedCountry: AddressResponse | null, countries: AddressResponse[], onCountryChange: (e: DropdownChangeEvent) => Promise<void>, selectedProvince: AddressResponse | null, provinces: AddressResponse[], onProvincesChange: (e: DropdownChangeEvent) => Promise<void>, isProvinceDisabled: boolean, selectedMunicipality: AddressResponse | null, municipalities: AddressResponse[], onMunicipalitiesChange: (e: DropdownChangeEvent) => void, isMunicipalityDisabled: boolean) {
+export function InstitutionAddressInputForm(data: InstitutionResponse, onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void, submitted: boolean, validateField: (field: (string | undefined | null)) => '' | undefined | null | boolean, selectedCountry: AddressResponse | null, countries: AddressResponse[], onCountryChange: (e: DropdownChangeEvent) => Promise<void>, selectedProvince: AddressResponse | null, provinces: AddressResponse[], onProvincesChange: (e: DropdownChangeEvent) => Promise<void>, isProvinceDisabled: boolean, selectedMunicipality: AddressResponse | null, municipalities: AddressResponse[], onMunicipalitiesChange: (e: DropdownChangeEvent) => void, isMunicipalityDisabled: boolean) {
     return <>
         <div className="field col-12">
             <Divider align="center">

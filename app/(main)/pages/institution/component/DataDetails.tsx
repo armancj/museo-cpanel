@@ -21,7 +21,8 @@ interface DataDetailsProps {
 }
 
 export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps) {
-    const validateField = (field: string) => field.trim().length > 0;
+    const validateField = (field: string | undefined | null) => field && field.trim().length > 0;
+
     const {
         countries,
         provinces,
@@ -77,6 +78,7 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
         handleClassificationChange,
         isCategoryDisabled,
     } = useInstitutionClassificationDataHandlers(setLoadingTypologies, setTypologies, data, institutionTypes, setSelectedInstitutionType, typologies, selectedTypology, setSelectedTypology, classifications, selectedClassification, setSelectedClassification, selectedInstitutionType, setLoadingCategories, setCategories, setSelectedCategory, onInputChange, loadingCategories);
+
 
     return (
         <Panel header="Detalles de Institución" className="p-fluid">

@@ -4,7 +4,7 @@ import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 
-export function ContactInformationForm(data: InstitutionResponse, onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void, submitted: boolean, validateField: (field: string) => boolean) {
+export function ContactInformationForm(data: InstitutionResponse, onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void, submitted: boolean, validateField: (field: (string | undefined | null)) => '' | undefined | null | boolean) {
     return <>
         <div className="field col-12">
             <Divider align="center">

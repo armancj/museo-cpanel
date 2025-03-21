@@ -12,7 +12,7 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
 
     useEffect(() => {
         const loadInitialCountry = async () => {
-            if (!initialized && countries.length > 0 && data && data.country) {
+            if (!initialized && countries.length > 0 && data?.country) {
                 setInitialized(true);
                 setLoading(true);
 
@@ -29,10 +29,10 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
         };
 
         loadInitialCountry().then(() => console.log('Initial country loaded.'));
-    }, [countries, data, initialized, setSelectedCountry, handleCountryChange, onInputChange]);
+    }, [countries, data?.country, initialized, setSelectedCountry, handleCountryChange, onInputChange]);
     useEffect(() => {
         const loadInitialProvince = async () => {
-            if (initialProvinceLoaded.current && provinces.length > 0 && data && data.province && !initialMunicipalityLoaded.current) {
+            if (initialProvinceLoaded.current && provinces.length > 0 && data?.province && !initialMunicipalityLoaded.current) {
                 setLoading(true);
 
                 const provinceMatch = provinces.find(p => p.name === data.province);
@@ -49,10 +49,10 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
         };
 
         loadInitialProvince().then(() => console.log('Initial province loaded.'));
-    }, [provinces, data, setSelectedProvince, handleProvinceChange, onInputChange]);
+    }, [provinces, data?.province, setSelectedProvince, handleProvinceChange, onInputChange]);
 
     useEffect(() => {
-        if (initialMunicipalityLoaded.current && municipalities.length > 0 && data && data.municipality) {
+        if (initialMunicipalityLoaded.current && municipalities.length > 0 && data?.municipality) {
 
             const municipalityMatch = municipalities.find(m => m.name === data.municipality);
 
@@ -65,29 +65,9 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
                 );
             }
         }
-    }, [municipalities, data, setSelectedMunicipality, onInputChange]);
+    }, [municipalities, data?.municipality, setSelectedMunicipality, onInputChange]);
 
 
-    useEffect(() => {
-        if (countries.length > 0 && data.country) {
-            const country = countries.find(c => c.name === data.country);
-            if (country) setSelectedCountry(country);
-        }
-    }, [countries, data.country, setSelectedCountry]);
-
-    useEffect(() => {
-        if (provinces.length > 0 && data.province) {
-            const province = provinces.find(p => p.name === data.province);
-            if (province) setSelectedProvince(province);
-        }
-    }, [provinces, data.province, setSelectedProvince]);
-
-    useEffect(() => {
-        if (municipalities.length > 0 && data.municipality) {
-            const municipality = municipalities.find(m => m.name === data.municipality);
-            if (municipality) setSelectedMunicipality(municipality);
-        }
-    }, [municipalities, data.municipality, setSelectedMunicipality]);
 
     const onCountryChange = async (e: DropdownChangeEvent) => {
         const country = e.value as AddressResponse;
