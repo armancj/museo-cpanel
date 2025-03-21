@@ -175,7 +175,6 @@ export function useInstitutionClassificationDataHandlers(setLoadingTypologies: (
 
     const handleClassificationChange = (e: DropdownChangeEvent) => {
         const selected = e.value;
-        console.log({ selected });
         setSelectedClassification(selected);
 
         onInputChange(
