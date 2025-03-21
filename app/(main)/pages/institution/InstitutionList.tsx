@@ -41,8 +41,10 @@ export function InstitutionList() {
     const dt = useRef<DataTable<InstitutionResponse[]>>(null);
 
     const openNew = () => {
-        setData(emptyInstitution);
+        setData({ ...emptyInstitution });
         setDialog(true);
+        setSubmitted(false);
+
     };
 
     const hideDialog = () => {
@@ -184,9 +186,12 @@ export function InstitutionList() {
                         <DataForm
                             data={data}
                             onInputChange={(e, field) => {
-                                const newData = { ...data, [field]: e.target.value };
-                                setData(newData);
+                                setData((prevData) => ({
+                                    ...prevData,
+                                    [field]: e.target.value,
+                                }));
                             }}
+
                             submitted={submitted}
                         />
                     </Dialog>

@@ -93,7 +93,6 @@ export function InstitutionClassificationFields(props: InstitutionClassification
                 submitted={submitted}
                 required={!isCategoryDisabled}
                 disabled={isCategoryDisabled}
-                className={undefined}
             />
             {loadingCategories && <small className="p-text-secondary">Cargando categorías...</small>}
         </div>
