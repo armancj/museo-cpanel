@@ -42,6 +42,11 @@ export const model: AppMenuItem[] = [
                 to: '/pages/museum-categories'
             },
             {
+                label: 'Tipología de Museos',
+                icon: 'pi pi-fw pi-tags',
+                to: '/pages/typology'
+            },
+            {
                 label: 'Instrumentos',
                 icon: 'pi pi-fw pi-image',
                 to: '/pages/description-instruments'
