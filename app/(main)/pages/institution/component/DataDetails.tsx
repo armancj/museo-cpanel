@@ -86,22 +86,24 @@ export function DataDetails({ data, onInputChange, submitted }: DataDetailsProps
 
                 {/* Clasificación de Institución */}
                 {InstitutionClassificationFields(
-                    selectedInstitutionType,
-                    institutionTypes,
-                    handleInstitutionTypeChange,
-                    submitted,
-                    selectedCategory,
-                    categories,
-                    handleCategoryChange,
-                    isCategoryDisabled,
-                    loadingCategories,
-                    selectedClassification,
-                    classifications,
-                    handleClassificationChange,
-                    selectedTypology,
-                    typologies,
-                    handleTypologyChange,
-                    loadingTypologies)
+                    {
+                        selectedInstitutionType,
+                        institutionTypes,
+                        handleInstitutionTypeChange,
+                        submitted,
+                        selectedCategory,
+                        categories,
+                        handleCategoryChange,
+                        isCategoryDisabled,
+                        loadingCategories,
+                        selectedClassification,
+                        classifications,
+                        handleClassificationChange,
+                        selectedTypology,
+                        typologies,
+                        handleTypologyChange,
+                        loadingTypologies,
+                    })
                 }
 
                 {/* Dirección de Institución */}

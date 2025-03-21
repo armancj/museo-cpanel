@@ -3,19 +3,61 @@ import { Divider } from 'primereact/divider';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
 import React from 'react';
 
-export function InstitutionClassificationFields(selectedInstitutionType: any, institutionTypes: ({ name: string; code: string })[], handleInstitutionTypeChange: (e: DropdownChangeEvent) => Promise<void>, submitted: boolean, selectedCategory: {
+interface DropdownItem {
     name: string;
-    code: string
-}[] | null | undefined, categories: {
-    name: string;
-    code: string
-}[], handleCategoryChange: (e: DropdownChangeEvent) => void, isCategoryDisabled: boolean, loadingCategories: boolean, selectedClassification: any, classifications: ({
-    name: string;
-    code: string
-})[], handleClassificationChange: (e: DropdownChangeEvent) => void, selectedTypology: any, typologies: {
-    name: string;
-    code: string
-}[], handleTypologyChange: (e: DropdownChangeEvent) => void, loadingTypologies: boolean) {
+    code: string;
+}
+
+interface InstitutionClassificationFieldsProps {
+    // Tipo de Institución
+    selectedInstitutionType: DropdownItem | null;
+    institutionTypes: DropdownItem[];
+    handleInstitutionTypeChange: (e: DropdownChangeEvent) => Promise<void>;
+
+    // Estado del formulario
+    submitted: boolean;
+
+    // Categoría
+    selectedCategory: DropdownItem[] | null | undefined;
+    categories: DropdownItem[];
+    handleCategoryChange: (e: DropdownChangeEvent) => void;
+    isCategoryDisabled: boolean;
+    loadingCategories: boolean;
+
+    // Clasificación
+    selectedClassification: DropdownItem | null;
+    classifications: DropdownItem[];
+    handleClassificationChange: (e: DropdownChangeEvent) => void;
+
+    // Tipología
+    selectedTypology: DropdownItem | null;
+    typologies: DropdownItem[];
+    handleTypologyChange: (e: DropdownChangeEvent) => void;
+    loadingTypologies: boolean;
+}
+
+
+
+export function InstitutionClassificationFields(props: InstitutionClassificationFieldsProps) {
+    const {
+        selectedInstitutionType,
+        institutionTypes,
+        handleInstitutionTypeChange,
+        submitted,
+        selectedCategory,
+        categories,
+        handleCategoryChange,
+        isCategoryDisabled,
+        loadingCategories,
+        selectedClassification,
+        classifications,
+        handleClassificationChange,
+        selectedTypology,
+        typologies,
+        handleTypologyChange,
+        loadingTypologies
+    } = props;
+
     return <>
         <div className="field col-12">
             <Divider align="center">

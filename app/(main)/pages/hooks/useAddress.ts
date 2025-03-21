@@ -1,29 +1,93 @@
 import { AddressResponse } from '@/app/service/UserService';
 import { InstitutionResponse } from '@/app/service/InstitutionService';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DropdownChangeEvent } from 'primereact/dropdown';
 
 export function useAddress(countries: AddressResponse[], data: InstitutionResponse, setSelectedCountry: (value: (((prevState: (AddressResponse | null)) => (AddressResponse | null)) | AddressResponse | null)) => void, provinces: AddressResponse[], setSelectedProvince: (value: (((prevState: (AddressResponse | null)) => (AddressResponse | null)) | AddressResponse | null)) => void, municipalities: AddressResponse[], setSelectedMunicipality: (value: (((prevState: (AddressResponse | null)) => (AddressResponse | null)) | AddressResponse | null)) => void, handleCountryChange: (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => Promise<void>, onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void, handleProvinceChange: (province: AddressResponse, onInputChange?: (e: any, field: string) => void) => Promise<void>) {
+
+    const [loading, setLoading] = useState(false);
+    const [initialized, setInitialized] = useState(false);
+    const initialProvinceLoaded = useRef(false);
+    const initialMunicipalityLoaded = useRef(false);
+
+    useEffect(() => {
+        const loadInitialCountry = async () => {
+            if (!initialized && countries.length > 0 && data && data.country) {
+                setInitialized(true);
+                setLoading(true);
+
+                const countryMatch = countries.find(c => c.name === data.country);
+
+                if (countryMatch) {
+                    setSelectedCountry(countryMatch);
+                    await handleCountryChange(countryMatch, onInputChange);
+                    initialProvinceLoaded.current = true;
+                }
+
+                setLoading(false);
+            }
+        };
+
+        loadInitialCountry().then(() => console.log('Initial country loaded.'));
+    }, [countries, data, initialized, setSelectedCountry, handleCountryChange, onInputChange]);
+    useEffect(() => {
+        const loadInitialProvince = async () => {
+            if (initialProvinceLoaded.current && provinces.length > 0 && data && data.province && !initialMunicipalityLoaded.current) {
+                setLoading(true);
+
+                const provinceMatch = provinces.find(p => p.name === data.province);
+
+                if (provinceMatch) {
+                    setSelectedProvince(provinceMatch);
+
+                    await handleProvinceChange(provinceMatch, onInputChange);
+                    initialMunicipalityLoaded.current = true;
+                }
+
+                setLoading(false);
+            }
+        };
+
+        loadInitialProvince().then(() => console.log('Initial province loaded.'));
+    }, [provinces, data, setSelectedProvince, handleProvinceChange, onInputChange]);
+
+    useEffect(() => {
+        if (initialMunicipalityLoaded.current && municipalities.length > 0 && data && data.municipality) {
+
+            const municipalityMatch = municipalities.find(m => m.name === data.municipality);
+
+            if (municipalityMatch) {
+                setSelectedMunicipality(municipalityMatch);
+
+                onInputChange(
+                    { target: { name: 'municipality', value: municipalityMatch.name } } as React.ChangeEvent<HTMLInputElement>,
+                    'municipality'
+                );
+            }
+        }
+    }, [municipalities, data, setSelectedMunicipality, onInputChange]);
+
+
     useEffect(() => {
         if (countries.length > 0 && data.country) {
             const country = countries.find(c => c.name === data.country);
             if (country) setSelectedCountry(country);
         }
-    }, [countries, data.country]);
+    }, [countries, data.country, setSelectedCountry]);
 
     useEffect(() => {
         if (provinces.length > 0 && data.province) {
             const province = provinces.find(p => p.name === data.province);
             if (province) setSelectedProvince(province);
         }
-    }, [provinces, data.province]);
+    }, [provinces, data.province, setSelectedProvince]);
 
     useEffect(() => {
-        if (municipalities.length > 0 && data.municipalities) {
-            const municipality = municipalities.find(m => m.name === data.municipalities);
+        if (municipalities.length > 0 && data.municipality) {
+            const municipality = municipalities.find(m => m.name === data.municipality);
             if (municipality) setSelectedMunicipality(municipality);
         }
-    }, [municipalities, data.municipalities]);
+    }, [municipalities, data.municipality, setSelectedMunicipality]);
 
     const onCountryChange = async (e: DropdownChangeEvent) => {
         const country = e.value as AddressResponse;
@@ -31,7 +95,6 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
         setSelectedProvince(null);
         setSelectedMunicipality(null);
 
-        // Pasamos el objeto completo y la función onInputChange
         await handleCountryChange(country, onInputChange);
     };
 
@@ -52,5 +115,5 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
             'municipality',
         );
     };
-    return { onCountryChange, onProvincesChange, onMunicipalitiesChange };
+    return { onCountryChange, onProvincesChange, onMunicipalitiesChange, loading };
 }
