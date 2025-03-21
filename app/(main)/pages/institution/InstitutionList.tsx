@@ -8,7 +8,7 @@ import { ToolbarCustom } from './component/ToolbarCustom';
 import { Dialog } from 'primereact/dialog';
 import { FilterMatchMode } from 'primereact/api';
 import { DataForm } from './component/DataForm';
-import { TableCustom } from "./component/TableCustom";
+import { TableCustom } from './component/TableCustom';
 import { InstitutionResponse, emptyInstitution } from '@/app/service/InstitutionService';
 
 export function InstitutionList() {
@@ -28,7 +28,8 @@ export function InstitutionList() {
         deleteDialog,
         setDeleteDialog,
         setDatum,
-        deleteSelected
+        deleteSelected,
+        setSubmitted,
     } = useInstitutionHook();
 
     const [filters, setFilters] = useState({
@@ -55,10 +56,51 @@ export function InstitutionList() {
     const confirmDeleteSelected = async () => {
         await deleteSelected(selects);
         setDeleteDialog(true);
-        setDatum([])
+        setDatum([]);
     };
 
     const exportExcel = createdExportExcel(dt);
+
+    const validateAndSave = () => {
+        setSubmitted(true);
+
+        const requiredFields = [
+            'name',
+            'street',
+            'number',
+            'referenceCode',
+            'betweenStreet1',
+            'betweenStreet2',
+            'district',
+            'locality',
+            'province',
+            'municipality',
+            'country',
+            'phone1',
+            'phone2',
+            'email',
+            'website',
+            'institutionType',
+            'classification',
+            'typology',
+            'category'
+        ];
+
+        const allFieldsValid = requiredFields.every(field =>
+            data[field as keyof InstitutionResponse]?.toString().trim() !== '',
+        );
+
+        if (allFieldsValid) {
+            save().then(()=> console.log('Institution saved.'));
+        } else {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Por favor complete todos los campos requeridos',
+                life: 3000,
+            });
+        }
+    };
 
     const dialogFooter = (
         <>
@@ -74,7 +116,7 @@ export function InstitutionList() {
                 label="Guardar"
                 icon="pi pi-check"
                 text
-                onClick={() => save()}
+                onClick={validateAndSave}
                 className="p-button-rounded p-button-success"
             />
         </>
@@ -136,11 +178,15 @@ export function InstitutionList() {
                         setDeleteDialog={setDeleteDialog}
                         setData={setData}
                     />
-                    <Dialog visible={dialog} header="Detalles de Institución" modal className="p-fluid" footer={dialogFooter}
+                    <Dialog visible={dialog} header="Detalles de Institución" modal className="p-fluid"
+                            footer={dialogFooter}
                             onHide={hideDialog}>
                         <DataForm
                             data={data}
-                            onInputChange={(e, field) => setData({ ...data, [field]: e.target.value })}
+                            onInputChange={(e, field) => {
+                                const newData = { ...data, [field]: e.target.value };
+                                setData(newData);
+                            }}
                             submitted={submitted}
                         />
                     </Dialog>

@@ -46,6 +46,11 @@ export const WebEnvConst = {
         post: '/cultural-heritage-property',
         getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`
     },
+    typology: {
+        getAll: '/typology',
+        post: '/typology',
+        getOne: (uuid: string) => `/typology/${uuid}`,
+    },
 
     culturalPropertyDataEndpoints: (uuid: string) => ({
         entryAndLocationRecordUrl: `/entry-and-location-record/${uuid}`,
