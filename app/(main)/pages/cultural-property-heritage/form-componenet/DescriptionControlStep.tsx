@@ -9,6 +9,7 @@ interface DescriptionControlStepProps {
 }
 
 const DescriptionControlStep: React.FC<DescriptionControlStepProps> = ({ data, onChange }) => {
+    const { reviewDateTime, reviewedBy, descriptionDateTime, descriptionMadeBy } = data;
     return (
         <div className="p-fluid">
             {/* Fecha y Hora de la Revisión */}
@@ -16,8 +17,8 @@ const DescriptionControlStep: React.FC<DescriptionControlStepProps> = ({ data, o
                 <label htmlFor="reviewDateTime">Fecha y Hora de Revisión</label>
                 <Calendar
                     id="reviewDateTime"
-                    value={data.reviewDateTime}
-                    onChange={(e) => onChange('reviewDateTime', e.value ?? new Date(Date.now()) )}
+                    value={reviewDateTime?.value || null}
+                    onChange={(e) => onChange('reviewDateTime', { ...reviewDateTime, value: e.value ?? new Date(Date.now()) })}
                     showTime
                     showButtonBar
                     dateFormat="yy-mm-dd"
@@ -29,8 +30,8 @@ const DescriptionControlStep: React.FC<DescriptionControlStepProps> = ({ data, o
                 <label htmlFor="reviewedBy">Revisado por</label>
                 <InputText
                     id="reviewedBy"
-                    value={data.reviewedBy}
-                    onChange={(e) => onChange('reviewedBy', e.target.value)}
+                    value={reviewedBy.value}
+                    onChange={(e) => onChange('reviewedBy', { ...reviewedBy, value: e.target.value })}
                 />
             </div>
 
@@ -39,8 +40,8 @@ const DescriptionControlStep: React.FC<DescriptionControlStepProps> = ({ data, o
                 <label htmlFor="descriptionDateTime">Fecha y Hora de Descripción</label>
                 <Calendar
                     id="descriptionDateTime"
-                    value={data.descriptionDateTime}
-                    onChange={(e) => onChange('descriptionDateTime', e.value ?? new Date(Date.now()))}
+                    value={descriptionDateTime.value}
+                    onChange={(e) => onChange('descriptionDateTime', { ...descriptionDateTime, value: e.value ?? new Date(Date.now()) })}
                     showTime
                     showButtonBar
                     dateFormat="yy-mm-dd"
@@ -52,8 +53,8 @@ const DescriptionControlStep: React.FC<DescriptionControlStepProps> = ({ data, o
                 <label htmlFor="descriptionMadeBy">Descripción realizada por</label>
                 <InputText
                     id="descriptionMadeBy"
-                    value={data.descriptionMadeBy}
-                    onChange={(e) => onChange('descriptionMadeBy', e.target.value)}
+                    value={descriptionMadeBy.value}
+                    onChange={(e) => onChange('descriptionMadeBy', { ...descriptionMadeBy, value: e.target.value })}
                 />
             </div>
         </div>

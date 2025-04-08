@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { DataTable, DataTableExpandedRows, DataTableRowEvent, DataTableValueArray } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -38,11 +38,11 @@ export default function CulturalPropertyTable() {
         editData,
         deleteData,
         deleteDialog,
-        setDeleteDialog
+        setDeleteDialog,
     } = useHookCulturalProperty();
 
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
@@ -58,7 +58,7 @@ export default function CulturalPropertyTable() {
             severity: 'info',
             summary: 'Fila expandida',
             detail: event.data.culturalRecord.objectTitle,
-            life: 3000
+            life: 3000,
         });
     };
 
@@ -67,7 +67,7 @@ export default function CulturalPropertyTable() {
             severity: 'success',
             summary: 'Fila colapsada',
             detail: event.data.culturalRecord.objectTitle,
-            life: 3000
+            life: 3000,
         });
     };
 
@@ -100,7 +100,7 @@ export default function CulturalPropertyTable() {
     const rowExpansionTemplate = (data: CulturalPropertyModel) => {
         return (
             <div className="p-3">
-                <h5>Detalles del objeto: {data.culturalRecord.objectTitle}</h5>
+                <h5>Detalles del objeto: {data.culturalRecord.objectTitle.value}</h5>
                 <div className="p-grid p-fluid">
                     <div className="p-col-12 p-md-6">
                         <AuthorInfoPanel producerAuthor={data.producerAuthor} />
@@ -306,7 +306,7 @@ export default function CulturalPropertyTable() {
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                     {data && (
                         <span>
-                  ¿Estás seguro de que deseas eliminar a <b>{data.culturalRecord?.objectTitle}</b>?
+                  ¿Estás seguro de que deseas eliminar a <b>{data.culturalRecord?.objectTitle.value}</b>?
                 </span>
                     )}
                 </div>

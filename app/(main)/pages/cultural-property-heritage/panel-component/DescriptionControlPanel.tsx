@@ -9,30 +9,31 @@ interface Props {
 }
 
 const DescriptionControlPanel = ({ descriptionControl }: Props) => {
+    const { descriptionMadeBy, descriptionDateTime, reviewedBy, reviewDateTime } = descriptionControl;
     return (
         <Panel header="Control de Descripción" toggleable collapsed>
             <Card>
                 <div className="p-grid">
                     <div className="p-col-12">
-                        <p><b>Hecho por:</b> {descriptionControl.descriptionMadeBy}</p>
+                        <p><b>Hecho por:</b> {descriptionMadeBy?.value }</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Fecha de Descripción</b>
                     </Divider>
                     <div className="p-col-12">
-                        <p>{new Date(descriptionControl.descriptionDateTime).toLocaleDateString()}</p>
+                        <p>{new Date(descriptionDateTime?.value ).toLocaleDateString()}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Revisado por</b>
                     </Divider>
                     <div className="p-col-12">
-                        <p>{descriptionControl.reviewedBy}</p>
+                        <p>{reviewedBy?.value }</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Fecha de Revisión</b>
                     </Divider>
                     <div className="p-col-12">
-                        <p>{new Date(descriptionControl.reviewDateTime).toLocaleDateString()}</p>
+                        <p>{new Date(reviewDateTime?.value ).toLocaleDateString()}</p>
                     </div>
                 </div>
             </Card>
