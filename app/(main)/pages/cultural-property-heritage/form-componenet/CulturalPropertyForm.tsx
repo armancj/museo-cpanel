@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import {
     CulturalPropertyModel,
@@ -30,7 +30,14 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
         producerAuthor: {},
         accessAndUseConditions: {},
         associatedDocumentation: {},
-        culturalRecord: {},
+        culturalRecord: {
+            extremeDates: {
+                value: {
+                    start: null,
+                    end: null,
+                },
+            },
+        },
         entryAndLocation: {},
         descriptionControl: {},
         notes: {}
@@ -40,28 +47,32 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
 
 
 
-    const handleChange = (section: keyof CulturalPropertyModel, field: string, value: any) => {
-        setFormData((prevData) => {
-            const updatedSection = {
-                ...(prevData[section] as Record<string, any>),
-                [field]: value,
-            };
+    const handleChange = useCallback(
+        (section: keyof CulturalPropertyModel, field: string, value: any) => {
+            setFormData((prevData) => {
+                const updatedSection = {
+                    ...(prevData[section] as Record<string, any>),
+                    [field]: value,
+                };
 
-            return {
-                ...prevData,
-                [section]: updatedSection,
-            };
-        });
-        if (formErrors[section]?.[field]) {
-            setFormErrors(prev => ({
-                ...prev,
-                [section]: {
-                    ...prev[section],
-                    [field]: undefined
-                }
-            }));
-        }
-    };
+                return {
+                    ...prevData,
+                    [section]: updatedSection,
+                };
+            });
+
+            if (formErrors[section]?.[field]) {
+                setFormErrors((prev) => ({
+                    ...prev,
+                    [section]: {
+                        ...prev[section],
+                        [field]: undefined,
+                    },
+                }));
+            }
+        },
+        [formErrors]
+    );
 
     const validateProducerAuthor = validateProducerAuthorData(formData, setFormErrors);
 

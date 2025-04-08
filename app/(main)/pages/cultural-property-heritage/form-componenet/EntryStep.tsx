@@ -160,7 +160,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="storage">Almacenamiento</label>
                         <InputText
                             id="storage"
-                            value={objectLocation.value.storage}
+                            value={objectLocation?.value?.storage}
                             onChange={(e) => handleObjectLocationChange('storage', e.target.value)}
                         />
                     </div>
@@ -168,7 +168,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="box">Caja</label>
                         <InputText
                             id="box"
-                            value={objectLocation.value.box}
+                            value={objectLocation?.value?.box}
                             onChange={(e) => handleObjectLocationChange('box', e.target.value)}
                         />
                     </div>
@@ -176,7 +176,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="fileFolder">Carpeta</label>
                         <InputText
                             id="fileFolder"
-                            value={objectLocation.value.fileFolder}
+                            value={objectLocation?.value?.fileFolder}
                             onChange={(e) => handleObjectLocationChange('fileFolder', e.target.value)}
                         />
                     </div>
@@ -184,7 +184,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="floor">Piso</label>
                         <InputText
                             id="floor"
-                            value={objectLocation.value.floor}
+                            value={objectLocation?.value?.floor}
                             onChange={(e) => handleObjectLocationChange('floor', e.target.value)}
                         />
                     </div>
@@ -192,7 +192,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="shelfDrawer">Estantería</label>
                         <InputText
                             id="shelfDrawer"
-                            value={objectLocation.value.shelfDrawer}
+                            value={objectLocation?.value?.shelfDrawer}
                             onChange={(e) => handleObjectLocationChange('shelfDrawer', e.target.value)}
                         />
                     </div>
@@ -200,7 +200,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="showcaseShelf">Vitrina</label>
                         <InputText
                             id="showcaseShelf"
-                            value={objectLocation.value.showcaseShelf}
+                            value={objectLocation?.value?.showcaseShelf}
                             onChange={(e) => handleObjectLocationChange('showcaseShelf', e.target.value)}
                         />
                     </div>
@@ -208,7 +208,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="exhibitionRoom">Sala de Exhibición</label>
                         <InputText
                             id="exhibitionRoom"
-                            value={objectLocation.value.exhibitionRoom}
+                            value={objectLocation?.value?.exhibitionRoom}
                             onChange={(e) => handleObjectLocationChange('exhibitionRoom', e.target.value)}
                         />
                     </div>
