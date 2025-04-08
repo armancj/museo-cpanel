@@ -4,11 +4,12 @@ import { InputText } from 'primereact/inputtext';
 import { AccessAndUseConditions } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 
 interface AccessConditionsStepProps {
-    data: AccessAndUseConditions; // Datos del paso
+    data: AccessAndUseConditions;
     onChange: (field: keyof AccessAndUseConditions, value: any) => void; // Función de cambio
 }
 
 const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onChange }) => {
+    const { accessConditions, reproductionConditions, technicalRequirements } = data;
     return (
         <div className="card p-fluid">
             {/* Condiciones de Acceso */}
@@ -17,7 +18,7 @@ const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onCha
                 <label htmlFor="accessConditions">Condiciones de Acceso</label>
                 <Chips
                     id="accessConditions"
-                    value={data.accessConditions}
+                    value={accessConditions.value}
                     onChange={(e) => onChange('accessConditions', e.value)}
                 />
             </div>
@@ -27,7 +28,7 @@ const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onCha
                 <label htmlFor="reproductionConditions">Condiciones de Reproducción</label>
                 <Chips
                     id="reproductionConditions"
-                    value={data.reproductionConditions}
+                    value={reproductionConditions.value}
                     onChange={(e) => onChange('reproductionConditions', e.value)}
                 />
             </div>
@@ -37,7 +38,7 @@ const AccessConditionsStep: React.FC<AccessConditionsStepProps> = ({ data, onCha
                 <label htmlFor="technicalRequirements">Requisitos Técnicos</label>
                 <InputText
                     id="technicalRequirements"
-                    value={data.technicalRequirements}
+                    value={technicalRequirements.value}
                     onChange={(e) => onChange('technicalRequirements', e.target.value)}
                 />
             </div>
