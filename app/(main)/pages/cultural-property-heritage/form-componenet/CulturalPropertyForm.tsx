@@ -1,23 +1,26 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
-import {
-    CulturalPropertyModel,
-} from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import { TabMenu } from 'primereact/tabmenu';
 import { Toast } from 'primereact/toast';
 import { generateWizardMenuItems } from '@/app/(main)/pages/cultural-property-heritage/util/generateWizardMenuItems';
 import { renderFormStep } from '@/app/(main)/pages/cultural-property-heritage/form-componenet/renderFormStep';
 import {
-    validateProducerAuthorData
+    validateProducerAuthorData,
 } from '@/app/(main)/pages/cultural-property-heritage/util/validateProducerAuthorData';
+import {
+    ValidateAccessConditionsData,
+} from '@/app/(main)/pages/cultural-property-heritage/util/validateAccessConditionsData';
 
 
 interface CulturalPropertyFormProps {
-    hideDialog: () => void;
+    dialogFooter?: React.JSX.Element,
+    hideDialog: () => void,
+    dialog?: boolean
 }
 
-const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
+const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalPropertyFormProps) => {
 
     const [formData, setFormData] = useState<CulturalPropertyModel>(emptyCulturalProperty);
     const [completedSteps, setCompletedSteps] = useState<boolean[]>([true, false, false, false, false, false, false]);
@@ -40,11 +43,10 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
         },
         entryAndLocation: {},
         descriptionControl: {},
-        notes: {}
+        notes: {},
     });
 
     const [submitted, setSubmitted] = useState<boolean>(false);
-
 
 
     const handleChange = useCallback(
@@ -71,16 +73,13 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
                 }));
             }
         },
-        [formErrors]
+        [formErrors],
     );
 
     const validateProducerAuthor = validateProducerAuthorData(formData, setFormErrors);
 
     // Validaciones para las demás secciones (implementar según necesidad)
-    const validateAccessConditions = () => {
-        // Implementar validaciones
-        return true;
-    };
+    const validateAccessConditions = () => ValidateAccessConditionsData(formData, setFormErrors);
 
     const validateAssociatedDocumentation = () => {
         // Implementar validaciones
@@ -145,7 +144,7 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
                 severity: 'warn',
                 summary: 'Campos incompletos',
                 detail: 'Por favor, complete todos los campos obligatorios antes de continuar',
-                life: 3000
+                life: 3000,
             });
         }
     };
@@ -161,15 +160,14 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
                 severity: 'success',
                 summary: 'Formulario completado',
                 detail: 'Los datos se han guardado correctamente',
-                life: 3000
+                life: 3000,
             });
-            hideDialog();
         } else {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Campos incompletos',
                 detail: 'Por favor, complete todos los campos obligatorios antes de finalizar',
-                life: 3000
+                life: 3000,
             });
         }
     };
@@ -177,7 +175,21 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
 
     const wizardItems = generateWizardMenuItems(completedSteps);
 
-    const renderContent = renderFormStep(activeIndex, formData, handleChange, formErrors, validateProducerAuthor, submitted, goToNextStep, goToPreviousStep, finalizeForm);
+    const renderContent = renderFormStep({
+            activeIndex,
+            formData,
+            handleChange,
+            formErrors,
+            validateProducerAuthor,
+            submitted,
+            goToNextStep,
+            goToPreviousStep,
+            finalizeForm,
+            dialogFooter,
+            dialog,
+            hideDialog,
+        },
+    );
 
     return (
         <>
