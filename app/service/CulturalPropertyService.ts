@@ -19,10 +19,25 @@ export const CulturalPropertyService = {
 
     createCulturalProperty: async (data: CulturalPropertyModel) => {
         const urlCulturalProperty = WebEnvConst.culturalProperty.post;
+        console.log('here')
 
-        const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, data);
+        const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, {});
 
         const endpoints = WebEnvConst.culturalPropertyDataEndpoints(culturalPropertySimple.uuid)
+
+        console.log({data})
+
+        const endpointPromises = [
+            { key: 'accessAndUseConditions', url: endpoints.accessAndUseConditionsUrl, data: data.accessAndUseConditions },
+            { key: 'associatedDocumentation', url: endpoints.associatedDocumentationUrl, data: data.associatedDocumentation },
+            { key: 'culturalRecord', url: endpoints.culturalRecordUrl, data: data.culturalRecord },
+            { key: 'descriptionControl', url: endpoints.descriptionControlUrl, data: data.descriptionControl },
+            { key: 'entryAndLocation', url: endpoints.entryAndLocationRecordUrl, data: data.entryAndLocation },
+            { key: 'producerAuthor', url: endpoints.producerAuthorRecordUrl, data: data.producerAuthor },
+            { key: 'notes', url: endpoints.culturalNotesUrl, data: data.notes },
+        ]
+            .filter(({ data }) => data !== undefined)
+            .map(({ url, data }) => put<any>(url, data));
 
         const [
             accessAndUseConditions,
@@ -31,16 +46,9 @@ export const CulturalPropertyService = {
             descriptionControl,
             entryAndLocation,
             producerAuthor,
-            notes
-        ] = await Promise.all([
-            put<AccessAndUseConditions>(endpoints.accessAndUseConditionsUrl, data),
-            put<AssociatedDocumentation>(endpoints.associatedDocumentationUrl, data),
-            put<CulturalRecord>(endpoints.culturalRecordUrl, data),
-            put<DescriptionControl>(endpoints.descriptionControlUrl, data),
-            put<EntryAndLocation>(endpoints.entryAndLocationRecordUrl, data),
-            put<ProducerAuthor>(endpoints.producerAuthorRecordUrl, data),
-            put<Notes>(endpoints.culturalNotesUrl, data)
-        ]);
+            notes,
+        ] = await Promise.all(endpointPromises);
+
 
         const culturalProperty: CulturalPropertyModel = {
             ...culturalPropertySimple,

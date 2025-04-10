@@ -9,7 +9,6 @@ import DescriptionControlStep
     from '@/app/(main)/pages/cultural-property-heritage/form-componenet/DescriptionControlStep';
 import NotesStep from '@/app/(main)/pages/cultural-property-heritage/form-componenet/NotesStep';
 import React from 'react';
-import { Dialog } from 'primereact/dialog';
 
 type props = {
     activeIndex: number,
@@ -21,11 +20,21 @@ type props = {
     goToNextStep: () => void,
     goToPreviousStep: () => void,
     finalizeForm: () => void,
-    dialogFooter?: React.JSX.Element,
     hideDialog: () => void,
-    dialog?: boolean
 }
-export function renderFormStep({formData, goToNextStep, goToPreviousStep, finalizeForm, formErrors, validateProducerAuthor, submitted, dialog, dialogFooter, hideDialog, handleChange, activeIndex}: props) {
+
+export function renderFormStep({
+                                   formData,
+                                   goToNextStep,
+                                   goToPreviousStep,
+                                   finalizeForm,
+                                   formErrors,
+                                   validateProducerAuthor,
+                                   submitted,
+                                   hideDialog,
+                                   handleChange,
+                                   activeIndex,
+                               }: props) {
     const FormStepComponent = () => {
         switch (activeIndex) {
             case 0:
@@ -144,8 +153,6 @@ export function renderFormStep({formData, goToNextStep, goToPreviousStep, finali
                             goToPreviousStep={() => goToPreviousStep()}
                             finalizeForm={() => finalizeForm()}
                             showNext={false}
-                            dialog={dialog}
-                            footer={dialogFooter}
                             onHide={hideDialog}
                         />
                     </>

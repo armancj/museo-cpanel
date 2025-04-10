@@ -43,11 +43,15 @@ export const useGenericHook = <ResponseType>({
         service.fetchAll().then((data) => setSelects(data));
     }, [service]);
 
-    const save = async () => {
+    const save = async (product: string = 'Nofound') => {
+        console.log((data as any)?.notes);
+
         setSubmitted(true);
             const hasValidName = (data as any)?.name?.trim;
             const hasValidType = (data as any)?.type?.trim;
-        if (hasValidName || hasValidType) {
+            const hasValidNameProduct = product !== 'Nofound'
+
+        if (hasValidName || hasValidType || hasValidNameProduct) {
             let _data = [...selects];
 
                 if (hasValidName) {

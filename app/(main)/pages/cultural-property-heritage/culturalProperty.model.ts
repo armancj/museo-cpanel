@@ -130,6 +130,7 @@ export interface FieldMetadata<T> {
     comment?: string;
     modifiedBy: string;
     history: Array<HistoryItem<T>>;
+    [key: string]: any;
 }
 
 export type StatusObject = {

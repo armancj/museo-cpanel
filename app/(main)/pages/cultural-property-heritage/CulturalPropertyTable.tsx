@@ -128,26 +128,6 @@ export default function CulturalPropertyTable() {
         </div>
     );
 
-    const dialogFooter = (
-        <>
-            <Button
-                label="Cancelar"
-                icon="pi pi-times"
-                text
-                className="p-button-rounded p-button-danger p-button-outlined"
-                onClick={hideDialog}
-            />
-
-            <Button
-                label="Guardar"
-                icon="pi pi-check"
-                text
-                onClick={() => save()}
-                className="p-button-rounded p-button-success"
-            />
-        </>
-    );
-
     const deleteDialogFooter = (
         <>
             <Button
@@ -291,7 +271,7 @@ export default function CulturalPropertyTable() {
                         </DataTable>
                     </>
                 ) : (
-                    <CulturalPropertyForm hideDialog={hideDialog} dialogFooter={dialogFooter} dialog={dialog} />
+                    <CulturalPropertyForm hideDialog={hideDialog} save={save} />
                 )
             }
 

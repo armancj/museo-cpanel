@@ -1,6 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
-import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import {
+    CulturalPropertyModel,
+    FieldMetadata,
+} from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import { TabMenu } from 'primereact/tabmenu';
 import { Toast } from 'primereact/toast';
@@ -15,12 +18,11 @@ import {
 
 
 interface CulturalPropertyFormProps {
-    dialogFooter?: React.JSX.Element,
     hideDialog: () => void,
-    dialog?: boolean
+    save: () => Promise<void>
 }
 
-const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalPropertyFormProps) => {
+const CulturalPropertyForm = ({ hideDialog, save }: CulturalPropertyFormProps) => {
 
     const [formData, setFormData] = useState<CulturalPropertyModel>(emptyCulturalProperty);
     const [completedSteps, setCompletedSteps] = useState<boolean[]>([true, false, false, false, false, false, false]);
@@ -50,12 +52,18 @@ const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalProp
 
 
     const handleChange = useCallback(
-        (section: keyof CulturalPropertyModel, field: string, value: any) => {
+        (section: keyof CulturalPropertyModel, field: string, value: FieldMetadata<any>) => {
             setFormData((prevData) => {
                 const updatedSection = {
                     ...(prevData[section] as Record<string, any>),
-                    [field]: value,
+                    [field]: {
+                        ...((prevData[section] as Record<string, any>)[field] || {}),
+                        ...value, // Combina todas las propiedades de "value" (FieldMetadata<string>)
+                    },
                 };
+
+                console.log({here: updatedSection})
+
 
                 return {
                     ...prevData,
@@ -79,7 +87,7 @@ const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalProp
     const validateProducerAuthor = validateProducerAuthorData(formData, setFormErrors);
 
     // Validaciones para las demás secciones (implementar según necesidad)
-    const validateAccessConditions = () => ValidateAccessConditionsData(formData, setFormErrors);
+    const validateAccessConditions = ValidateAccessConditionsData(formData, setFormErrors);
 
     const validateAssociatedDocumentation = () => {
         // Implementar validaciones
@@ -154,14 +162,16 @@ const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalProp
         setSubmitted(false);
     };
 
-    const finalizeForm = () => {
+    const finalizeForm = async () => {
         if (validateCurrentStep()) {
+        console.log({here: validateCurrentStep()})
             toast.current?.show({
                 severity: 'success',
                 summary: 'Formulario completado',
                 detail: 'Los datos se han guardado correctamente',
                 life: 3000,
             });
+            await (save as any )('Nofound1')
         } else {
             toast.current?.show({
                 severity: 'warn',
@@ -185,8 +195,6 @@ const CulturalPropertyForm = ({ hideDialog, dialogFooter, dialog }: CulturalProp
             goToNextStep,
             goToPreviousStep,
             finalizeForm,
-            dialogFooter,
-            dialog,
             hideDialog,
         },
     );
