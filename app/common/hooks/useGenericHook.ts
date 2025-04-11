@@ -44,7 +44,7 @@ export const useGenericHook = <ResponseType>({
     }, [service]);
 
     const save = async (product: string = 'Nofound') => {
-        console.log((data as any)?.notes);
+        console.log({ save: data});
 
         setSubmitted(true);
             const hasValidName = (data as any)?.name?.trim;

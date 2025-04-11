@@ -31,22 +31,7 @@ const CulturalPropertyForm = ({ hideDialog, save }: CulturalPropertyFormProps) =
     const [activeIndex, setActiveIndex] = useState(0);
     const toast = useRef<Toast>(null);
 
-    const [formErrors, setFormErrors] = useState<Record<string, any>>({
-        producerAuthor: {},
-        accessAndUseConditions: {},
-        associatedDocumentation: {},
-        culturalRecord: {
-            extremeDates: {
-                value: {
-                    start: null,
-                    end: null,
-                },
-            },
-        },
-        entryAndLocation: {},
-        descriptionControl: {},
-        notes: {},
-    });
+    const [formErrors, setFormErrors] = useState<Record<string, any>>(emptyCulturalProperty);
 
     const [submitted, setSubmitted] = useState<boolean>(false);
 
@@ -62,7 +47,7 @@ const CulturalPropertyForm = ({ hideDialog, save }: CulturalPropertyFormProps) =
                     },
                 };
 
-                console.log({here: updatedSection})
+                console.log('Updated Section:', updatedSection);
 
 
                 return {
@@ -164,14 +149,14 @@ const CulturalPropertyForm = ({ hideDialog, save }: CulturalPropertyFormProps) =
 
     const finalizeForm = async () => {
         if (validateCurrentStep()) {
-        console.log({here: validateCurrentStep()})
+            console.log({ here: validateCurrentStep() });
             toast.current?.show({
                 severity: 'success',
                 summary: 'Formulario completado',
                 detail: 'Los datos se han guardado correctamente',
                 life: 3000,
             });
-            await (save as any )('Nofound1')
+            await (save as any)('Nofound');
         } else {
             toast.current?.show({
                 severity: 'warn',

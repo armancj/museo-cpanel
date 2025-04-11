@@ -19,13 +19,12 @@ export const CulturalPropertyService = {
 
     createCulturalProperty: async (data: CulturalPropertyModel) => {
         const urlCulturalProperty = WebEnvConst.culturalProperty.post;
-        console.log('here')
 
         const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, {});
 
         const endpoints = WebEnvConst.culturalPropertyDataEndpoints(culturalPropertySimple.uuid)
 
-        console.log({data})
+        console.log( {services:data})
 
         const endpointPromises = [
             { key: 'accessAndUseConditions', url: endpoints.accessAndUseConditionsUrl, data: data.accessAndUseConditions },

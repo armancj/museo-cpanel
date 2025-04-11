@@ -6,99 +6,104 @@ export const emptyCulturalProperty: CulturalPropertyModel = {
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
     accessAndUseConditions: {
-        accessConditions: [], reproductionConditions: [], technicalRequirements: ''
+        accessConditions: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        reproductionConditions: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        technicalRequirements: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
     },
     associatedDocumentation: {
-        copiesExistenceAndLocation: '',
-        originalsExistenceAndLocation: '',
-        relatedDescriptionUnits: '',
-        relatedPublicationsInformation: ''
+        copiesExistenceAndLocation: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        originalsExistenceAndLocation: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        relatedDescriptionUnits: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        relatedPublicationsInformation: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
     },
     culturalRecord: {
-        backgroundTitle: '',
-        conservationState: [],
-        descriptionInstrument: [],
-        descriptionLevel: 0,
-        extremeDates: {
-            end: new Date(Date.now()), start: new Date(Date.now())
-        },
-        geographicDescriptors: '',
-        institutionalDescriptors: '',
-        languages: [],
-        letters: [],
-        objectDescription: '',
-        objectTitle: '',
-        onomasticDescriptors: '',
-        sectionTitle: '',
-        subjectDescriptors: '',
-        supports: [],
-        valuation: 0,
-        valueGrade: '',
+        objectTitle: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        objectDescription: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        valueGrade: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        descriptionLevel: { value: 0, status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        volumesQuantities: { value: {}, status: { status: 'Pending' }, modifiedBy: '', history: [] },
         dimensions: {
-            cubicMeters: 0,
-            heightCms: 0,
-            lengthCms: 0,
-            squareMeters: 0,
-            weightKg: 0,
-            widthCms: 0
+            value: {
+                cubicMeters: 0,
+                heightCms: 0,
+                lengthCms: 0,
+                squareMeters: 0,
+                weightKg: 0,
+                widthCms: 0,
+            },
+            status: { status: 'Pending' },
+            modifiedBy: '',
+            history: [],
         },
-        volumesQuantities: {
-            books: 0,
-            engravings: 0,
-            file: 0,
-            mapsPlansSketches: 0,
-            negatives: 0,
-            objects: 0,
-            pages: 0,
-            photos: 0,
-            slides: 0
-        }
-
-    },
-    deleted: false,
-    descriptionControl: {
-        descriptionDateTime: new Date(Date.now()),
-        descriptionMadeBy: '',
-        reviewDateTime: new Date(Date.now()),
-        reviewedBy: ''
+        languages: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        supports: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        letters: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        descriptionInstrument: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        conservationState: { value: [], status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        extremeDates: {
+            value: { start: new Date(), end: new Date() },
+            status: { status: 'Pending' },
+            modifiedBy: '',
+            history: [],
+        },
     },
     entryAndLocation: {
-        auxiliaryInventory: false,
-        declarationType: '',
-        entryDate: new Date(Date.now()),
-        entryMethod: '',
-        genericClassification: '',
-        heritageType: '',
-        initialDescription: '',
-        institutionType: '',
-        inventoryNumber: '',
-        objectLocation: {
-            box: '',
-            exhibitionRoom: '',
-            fileFolder: '',
-            floor: '',
-            shelfDrawer: '',
-            showcaseShelf: '',
-            storage: ''
+        heritageType: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        declarationType: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        auxiliaryInventory: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: false },
+        entryDate: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: new Date(Date.now()) },
+        entryMethod: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: ''  },
+        genericClassification: {
+            comment: '',
+            history: [],
+            modifiedBy: '',
+            status: { status: 'Pending' },
+            value: '',
         },
-        objectName: '',
-        pieceInventory: false
-
+        initialDescription: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: '' },
+        institutionType: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: '' },
+        inventoryNumber: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: '' },
+        objectLocation: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: {
+                box: '',
+                exhibitionRoom: '',
+                fileFolder: '',
+                floor: '',
+                shelfDrawer: '',
+                showcaseShelf: '',
+                storage: ''
+            } },
+        objectName: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: '' },
+        pieceInventory: { comment: '', history: [], modifiedBy: '', status: { status: 'Pending' }, value: false },
     },
     notes: {
-        notes: ''
+        notes: {
+            value: '',
+            status: { status: 'Pending' },
+            comment: '',
+            modifiedBy: '',
+            history: [],
+        },
     },
     producerAuthor: {
-        betweenStreet1: '',
-        betweenStreet2: '',
-        district: '',
-        institutionalHistory: '',
-        locality: '',
-        municipality: '',
-        number: '',
-        objectEntryHistory: '',
-        producerAuthorNames: '',
-        province: '',
-        street: ''
+        producerAuthorNames: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        street: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        number: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        district: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        locality: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        municipality: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        province: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        betweenStreet1: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        betweenStreet2: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        institutionalHistory: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        objectEntryHistory: { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
     },
+    descriptionControl: {
+        descriptionDateTime:  { value: new Date(Date.now()), status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        descriptionMadeBy:  { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        reviewDateTime:  { value: new Date(Date.now()), status: { status: 'Pending' }, modifiedBy: '', history: [] },
+        reviewedBy:  { value: '', status: { status: 'Pending' }, modifiedBy: '', history: [] }
+
+    },
+
+    deleted: false
 };
