@@ -92,5 +92,10 @@ export const WebEnvConst = {
         getAll: '/generic-classification',
         post: '/generic-classification',
         getOne: (uuid: string) => `/generic-classification/${uuid}`
+    },
+    heritageType: {
+        getAll: '/heritage-type',
+        post: '/heritage-type',
+        getOne: (uuid: string) => `/heritage-type/${uuid}`
     }
 };

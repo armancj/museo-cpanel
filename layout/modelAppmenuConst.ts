@@ -76,6 +76,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-tag',
                 to: '/pages/generic-classification'
             },
+            {
+                label: 'Tipo de Patrimonio',
+                icon: 'pi pi-fw pi-history',
+                to: '/pages/heritage-type'
+            },
         ]
     },
     {

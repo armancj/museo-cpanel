@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements.">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration.">
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/HeritageTypeList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/component/DataForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/component/TableCustom.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/component/ToolbarCustom.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/component/util/ButtonStyles.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/component/util/tableBodyFunction.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(main)/pages/heritage-type/useHookHeritageType.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/service/HeritageTypeService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/webEnvConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/webEnvConst.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/layout/modelAppmenuConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/layout/modelAppmenuConst.ts" afterDir="false" />
@@ -97,7 +106,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1745421751232</updated>
-      <workItem from="1745421753216" duration="3386000" />
+      <workItem from="1745421753216" duration="4323000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -123,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745424416789</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration.">
+      <option name="closed" value="true" />
+      <created>1745425330408</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1745425330408</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -133,6 +150,7 @@
     <MESSAGE value="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```" />
     <MESSAGE value="Add entry form management functionality&#10;&#10;Implemented entry form CRUD operations with service, hooks, UI components, and utilities. Enhanced styles and table interaction, added navigation support, and updated `.idea` settings for better project configuration." />
     <MESSAGE value="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements." />
+    <MESSAGE value="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration." />
   </component>
 </project>
