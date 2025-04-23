@@ -82,5 +82,10 @@ export const WebEnvConst = {
         getAll: '/entry-form',
         post: '/entry-form',
         getOne: (uuid: string) => `/entry-form/${uuid}`
+    },
+    fundTitle: {
+        getAll: '/fund-title',
+        post: '/fund-title',
+        getOne: (uuid: string) => `/fund-title/${uuid}`
     }
 };

@@ -66,6 +66,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-file-edit',
                 to: '/pages/entry-form'
             },
+            {
+                label: 'Título de Fondo',
+                icon: 'pi pi-fw pi-folder',
+                to: '/pages/fund-title'
+            },
         ]
     },
     {
