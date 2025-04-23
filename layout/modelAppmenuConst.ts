@@ -56,6 +56,16 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-unlock',
                 to: '/pages/nomenclator-access-conditions'
             },
+            {
+                label: 'Estado de Conservación',
+                icon: 'pi pi-fw pi-shield',
+                to: '/pages/conservation-status'
+            },
+            {
+                label: 'Formulario de Entrada',
+                icon: 'pi pi-fw pi-file-edit',
+                to: '/pages/entry-form'
+            },
         ]
     },
     {

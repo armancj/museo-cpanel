@@ -22,7 +22,7 @@ export const emptyConservationStatus: ConservationStatusResponse = {
 
 export const ConservationStatusService = {
     getConservationStatuses: async () => {
-        let url = WebEnvConst.conservationStatus.getAll;
+        const url = WebEnvConst.conservationStatus.getAll;
         return await get<ConservationStatusResponse[]>(url);
     },
 
