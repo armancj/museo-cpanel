@@ -71,6 +71,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-folder',
                 to: '/pages/fund-title'
             },
+            {
+                label: 'Clasificación Genérica',
+                icon: 'pi pi-fw pi-tag',
+                to: '/pages/generic-classification'
+            },
         ]
     },
     {

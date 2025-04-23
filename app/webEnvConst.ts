@@ -87,5 +87,10 @@ export const WebEnvConst = {
         getAll: '/fund-title',
         post: '/fund-title',
         getOne: (uuid: string) => `/fund-title/${uuid}`
+    },
+    genericClassification: {
+        getAll: '/generic-classification',
+        post: '/generic-classification',
+        getOne: (uuid: string) => `/generic-classification/${uuid}`
     }
 };
