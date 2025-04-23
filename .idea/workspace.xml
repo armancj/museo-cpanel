@@ -18,13 +18,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layout/AppMenuitem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/layout/AppMenuitem.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feat/new" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
@@ -33,6 +41,31 @@
     "assignee": "armancj"
   }
 }]]></component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feat/add-new-nomenclators" />
+                    <option name="lastUsedInstant" value="1745428714" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feat/new" />
+                    <option name="lastUsedInstant" value="1745428713" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/armancj/museo-cpanel.git",
@@ -54,7 +87,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "#9 on feat/new",
+    "git-widget-placeholder": "feat/add-new-nomenclators",
     "javascript.nodejs.core.library.configured.version": "22.14.0",
     "javascript.nodejs.core.library.typings.version": "22.14.1",
     "js.debugger.nextJs.config.created.client": "true",
@@ -107,7 +140,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1745421751232</updated>
-      <workItem from="1745421753216" duration="5933000" />
+      <workItem from="1745421753216" duration="6617000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -165,7 +198,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745428316509</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features">
+      <option name="closed" value="true" />
+      <created>1745428663267</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745428663267</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,6 +220,8 @@
     <MESSAGE value="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature." />
     <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
     <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
+    <MESSAGE value="-Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
+    <MESSAGE value="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features" />
   </component>
 </project>
