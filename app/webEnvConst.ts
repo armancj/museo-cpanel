@@ -97,5 +97,10 @@ export const WebEnvConst = {
         getAll: '/heritage-type',
         post: '/heritage-type',
         getOne: (uuid: string) => `/heritage-type/${uuid}`
+    },
+    reproductionConditions: {
+        getAll: '/reproduction-conditions',
+        post: '/reproduction-conditions',
+        getOne: (uuid: string) => `/reproduction-conditions/${uuid}`
     }
 };

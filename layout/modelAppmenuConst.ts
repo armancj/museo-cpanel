@@ -81,6 +81,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-history',
                 to: '/pages/heritage-type'
             },
+            {
+                label: 'Condiciones de Reproducción',
+                icon: 'pi pi-fw pi-copy',
+                to: '/pages/reproduction-conditions'
+            },
         ]
     },
     {
