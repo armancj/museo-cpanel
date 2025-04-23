@@ -72,5 +72,10 @@ export const WebEnvConst = {
         getAll: '/institutions',
         post: '/institutions',
         getOne: (uuid: string) => `/institutions/${uuid}`,
+    },
+    conservationStatus: {
+        getAll: '/conservation-status',
+        post: '/conservation-status',
+        getOne: (uuid: string) => `/conservation-status/${uuid}`
     }
 };
