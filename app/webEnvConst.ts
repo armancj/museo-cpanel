@@ -99,8 +99,13 @@ export const WebEnvConst = {
         getOne: (uuid: string) => `/heritage-type/${uuid}`
     },
     reproductionConditions: {
-        getAll: '/reproduction-conditions',
-        post: '/reproduction-conditions',
+        getAll: '/nomenclator/reproduction-conditions',
+        post: '/nomenclator/reproduction-conditions',
         getOne: (uuid: string) => `/reproduction-conditions/${uuid}`
+    },
+    section: {
+        getAll: '/section',
+        post: '/section',
+        getOne: (uuid: string) => `/section/${uuid}`
     }
 };

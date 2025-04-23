@@ -86,6 +86,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-copy',
                 to: '/pages/reproduction-conditions'
             },
+            {
+                label: 'Sección',
+                icon: 'pi pi-fw pi-list',
+                to: '/pages/section'
+            },
         ]
     },
     {
