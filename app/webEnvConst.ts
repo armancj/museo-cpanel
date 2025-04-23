@@ -107,5 +107,10 @@ export const WebEnvConst = {
         getAll: '/section',
         post: '/section',
         getOne: (uuid: string) => `/section/${uuid}`
+    },
+    valueGrade: {
+        getAll: '/value-grade',
+        post: '/value-grade',
+        getOne: (uuid: string) => `/value-grade/${uuid}`
     }
 };

@@ -91,6 +91,11 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-list',
                 to: '/pages/section'
             },
+            {
+                label: 'Grado de Valor',
+                icon: 'pi pi-fw pi-star',
+                to: '/pages/value-grade'
+            },
         ]
     },
     {

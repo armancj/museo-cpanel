@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AIAssistantCustomInstructionsStorage">
+    <option name="instructions">
+      <map>
+        <entry key="AIAssistant.VCS.GenerateCommitMessage">
+          <value>
+            <AIAssistantStoredInstruction>
+              <option name="actionId" value="AIAssistant.VCS.GenerateCommitMessage" />
+              <option name="content" value="Avoid overly verbose descriptions or unnecessary details. &#10;Use Conventional Commit format&#10;Use bullet points for multiple changes" />
+            </AIAssistantStoredInstruction>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature.">
-      <change beforePath="$PROJECT_DIR$/app/webEnvConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/webEnvConst.ts" afterDir="false" />
-    </list>
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +68,7 @@
     "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
     "nodejs_package_manager_path": "pnpm",
     "npm.Next.js: server-side.executor": "Run",
-    "settings.editor.selected.configurable": "settings.nodejs",
+    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary",
     "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -95,7 +107,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1745421751232</updated>
-      <workItem from="1745421753216" duration="5614000" />
+      <workItem from="1745421753216" duration="5933000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -145,7 +157,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745427845151</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application.">
+      <option name="closed" value="true" />
+      <created>1745428316509</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745428316509</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,6 +178,7 @@
     <MESSAGE value="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration." />
     <MESSAGE value="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature." />
     <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
+    <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
   </component>
 </project>
