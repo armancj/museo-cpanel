@@ -3,22 +3,28 @@ import { es } from 'date-fns/locale';
 import { Button } from 'primereact/button';
 import React, { useState } from 'react';
 import { ColumnFilterElementTemplateOptions, ColumnProps } from 'primereact/column';
+import styles from '../../user/component/util/ButtonStyles.module.css';
 import { Calendar } from 'primereact/calendar';
 import { FilterMatchMode } from 'primereact/api';
 import { Tag } from 'primereact/tag';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { NomenclatureAccessConditionsResponse } from '@/app/service/NomenclatureAccessConditionsService';
 
+
 interface TableBodyFunctionProps {
     editData: (updatedCountry: Partial<NomenclatureAccessConditionsResponse>) => Promise<void>;
-    setDeleteDialog: (value: ((prevState: boolean) => boolean) | boolean) => void;
-    setData: (value: ((prevState: NomenclatureAccessConditionsResponse) => NomenclatureAccessConditionsResponse) | NomenclatureAccessConditionsResponse) => void;
+    setDeleteDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    setData: (value: (((prevState: NomenclatureAccessConditionsResponse) => NomenclatureAccessConditionsResponse) | NomenclatureAccessConditionsResponse)) => void
 }
 
-export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableBodyFunctionProps) {
+export function TableBodyFunction({
+                                      editData,
+                                      setData, setDeleteDialog
+                                  }: TableBodyFunctionProps) {
+
     const [statuses] = useState<{ label: string; value: boolean }[]>([
         { label: 'ACTIVADO', value: true },
-        { label: 'DESACTIVADO', value: false }
+        { label: 'DESACTIVADO', value: false },
     ]);
 
     const getSeverity = (status: boolean) => {
@@ -28,6 +34,7 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
     const statusItemTemplate = (option: { label: string; value: boolean }) => {
         return <Tag value={option.label} severity={getSeverity(option.value)} />;
     };
+
 
     const statusRowFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         return (
@@ -45,54 +52,75 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
         );
     };
 
+
     const nameBodyTemplate = (rowData: NomenclatureAccessConditionsResponse) => {
         return (
             <>
                 <span className="p-column-title">Type</span>
-                {rowData.type}
-            </>
-        );
+        {rowData.type}
+        </>
+    );
     };
+
 
     const actionBodyTemplate = (rowData: NomenclatureAccessConditionsResponse) => {
         return (
             <div>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-button-warning" tooltip="Editar Categorias de Museo" tooltipOptions={{ position: 'top' }} onClick={() => editData(rowData)} />
                 <Button
-                    icon="pi pi-trash"
-                    className="p-button-rounded p-button-text p-button-danger"
-                    tooltip="Eliminar Categorias de Museo"
-                    tooltipOptions={{ position: 'top' }}
-                    onClick={async () => {
-                        setDeleteDialog(true);
-                        setData(rowData);
-                    }}
-                />
-            </div>
-        );
+                    icon="pi pi-pencil"
+        className="p-button-rounded p-button-text p-button-warning"
+        tooltip="Editar Categorias de Museo"
+        tooltipOptions={{ position: 'top' }}
+        onClick={() => editData(rowData)}
+        />
+        <Button
+        icon="pi pi-trash"
+        className="p-button-rounded p-button-text p-button-danger"
+        tooltip="Eliminar Categorias de Museo"
+        tooltipOptions={{ position: 'top' }}
+        onClick={async () => {
+            setDeleteDialog(true);
+            setData(rowData);
+        }}
+        />
+        </div>
+    );
     };
 
     const dateBodyTemplate = (rowData: NomenclatureAccessConditionsResponse, field: keyof NomenclatureAccessConditionsResponse) => {
         const date = new Date(rowData[field]);
-        return isValid(date) ? format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es }) : 'Invalid Date';
+        return (
+            <>
+                <span className="p-column-title">{field}</span>
+        {isValid(date) ? (
+            <span className={styles.formattedDate}>
+                {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
+            </span>
+        ) : (
+            'Invalid Date'
+        )}
+        </>
+    );
     };
 
-    const calendarFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+    const calendarFilterTemplate = (options: any) => {
+
         return (
             <Calendar
                 value={options.value}
-                onChange={(e) => options.filterCallback(e.value)} // Trigger filterCallback on date change
-                dateFormat="dd/mm/yy"
-                placeholder="Seleccionar fecha"
-                showIcon
-            />
-        );
+        onChange={(e) => options.filterApplyCallback(e.value as Date)}
+        dateFormat="dd/mm/yy"
+        placeholder="Seleccionar fecha"
+        showIcon
+        />
+    );
     };
 
     const statusBodyTemplate = (rowData: NomenclatureAccessConditionsResponse) => {
         const status = rowData.active ? 'ACTIVADO' : 'DESACTIVADO';
         return <Tag value={status} severity={getSeverity(rowData.active)} />;
     };
+
 
     const columns: ColumnProps[] = [
         {
@@ -105,7 +133,7 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
             filterHeaderStyle: { minWidth: '20rem' },
             style: { whiteSpace: 'nowrap' },
             showFilterMenu: false,
-            body: nameBodyTemplate
+            body: nameBodyTemplate,
         },
         {
             field: 'description',
@@ -114,7 +142,7 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
             header: 'Descripción ',
             headerStyle: { minWidth: '5rem' },
             filterHeaderStyle: { minWidth: '20rem' },
-            showFilterMenu: false
+            showFilterMenu: false,
         },
         {
             field: 'createdAt',
@@ -123,9 +151,9 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
             filter: true,
+            filterElement: calendarFilterTemplate,
             filterHeaderStyle: { minWidth: '22rem' },
             filterMatchMode: FilterMatchMode.DATE_IS,
-            filterElement: calendarFilterTemplate,
             showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
@@ -139,9 +167,9 @@ export function TableBodyFunction({ editData, setData, setDeleteDialog }: TableB
             filterElement: calendarFilterTemplate,
             showFilterMenu: false,
             filterHeaderStyle: { minWidth: '22rem' },
-            filterMatchMode: FilterMatchMode.DATE_IS,
+            //filterMatchMode: FilterMatchMode.DATE_IS,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
-        }
+        },
     ];
 
     return { columns, actionBodyTemplate };
