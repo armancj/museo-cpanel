@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import React from 'react';
 import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
 import { ColumnProps } from 'primereact/column';
-import styles from './ButtonStyles.module.css';
+import { Calendar } from 'primereact/calendar';
 
 interface TableBodyFunctionProps {
     editData: (updatedHeritageType: Partial<HeritageTypeResponse>) => Promise<void>;
@@ -16,6 +16,17 @@ export function TableBodyFunction({
                                       editData,
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
+    const calendarFilterTemplate = (options: any) => {
+        return (
+            <Calendar
+                value={options.value}
+                onChange={(e) => options.filterApplyCallback(e.value as Date)}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccionar fecha"
+                showIcon
+            />
+        );
+    };
 
     const actionBodyTemplate = (rowData: HeritageTypeResponse) => {
         return (
@@ -47,7 +58,7 @@ export function TableBodyFunction({
             <>
                 <span className="p-column-title">{field}</span>
                 {isValid(date) ? (
-                    <span className={styles.formattedDate}>
+                    <span>
                         {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
                     </span>
                 ) : (
@@ -61,16 +72,29 @@ export function TableBodyFunction({
         {
             field: 'name',
             header: 'Nombre',
+            filter: true,
+            filterPlaceholder: 'Buscar',
             sortable: true,
             headerStyle: { minWidth: '5rem' },
-            style: { whiteSpace: 'nowrap' }
+            filterHeaderStyle: { minWidth: '20rem' },
+            showFilterMenu: false,
+            style: { whiteSpace: 'nowrap' },
         },
         {
             field: 'description',
+            filter: true,
+            filterPlaceholder: 'Buscar',
             header: 'Descripción',
             sortable: true,
-            headerStyle: { minWidth: '10rem' },
-            style: { whiteSpace: 'nowrap' }
+            headerStyle: { minWidth: '10rem', maxWidth: '20rem' }, // Agregamos maxWidth
+            style: {
+                whiteSpace: 'nowrap', // No permite saltos de línea
+                overflow: 'hidden', // Oculta el contenido que no cabe
+                textOverflow: 'ellipsis', // Muestra "..." al cortar
+                maxWidth: '20rem' // Establece el ancho máximo de la celda
+            },
+            filterHeaderStyle: { minWidth: '20rem' },
+            showFilterMenu: false,
         },
         {
             field: 'createdAt',
@@ -78,6 +102,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
         {
@@ -86,6 +114,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '22rem' },
+            showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
         }
     ];
