@@ -20,32 +20,14 @@ interface TableCustomProps {
     onGlobalFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function TableCustom({
-                                dt,
-                                selects,
-                                globalFilter,
-                                editData,
-                                setSelects,
-                                datum,
-                                onGlobalFilterChange,
-                                filters,
-                                setDeleteDialog,
-                                setData }: TableCustomProps) {
-
-    const {
-        columns,
-        actionBodyTemplate,
-    } = TableBodyFunction({ editData, setDeleteDialog, setData });
+export function TableCustom({ dt, selects, globalFilter, editData, setSelects, datum, onGlobalFilterChange, filters, setDeleteDialog, setData }: Readonly<TableCustomProps>) {
+    const { columns, actionBodyTemplate } = TableBodyFunction({ editData, setDeleteDialog, setData });
 
     return (
         <>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
-                <InputText
-                    type="search"
-                    value={globalFilter} onChange={onGlobalFilterChange}
-                    placeholder="Buscar..."
-                />
+                <InputText type="search" value={globalFilter} onChange={onGlobalFilterChange} placeholder="Buscar..." />
             </span>
             <DataTable
                 ref={dt}
@@ -71,19 +53,9 @@ export function TableCustom({
             >
                 <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
                 {columns.map((col, i) => (
-                    <Column
-                        key={i}
-                        {...col}
-                    />
+                    <Column key={i} {...col} />
                 ))}
-                <Column
-                    body={actionBodyTemplate}
-                    header="Acciones"
-                    headerStyle={{ minWidth: '10rem' }}
-                    bodyStyle={{ overflow: 'visible' }}
-                    className={styles.stickyColumn}
-                    headerClassName={styles.stickyHeader}
-                />
+                <Column body={actionBodyTemplate} header="Acciones" headerStyle={{ minWidth: '10rem' }} bodyStyle={{ overflow: 'visible' }} className={styles.stickyColumn} headerClassName={styles.stickyHeader} />
             </DataTable>
         </>
     );
