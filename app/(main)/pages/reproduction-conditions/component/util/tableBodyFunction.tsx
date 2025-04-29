@@ -1,10 +1,13 @@
 import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Button } from 'primereact/button';
-import React from 'react';
+import React, { useState } from 'react';
 import { ReproductionConditionsResponse } from '@/app/service/ReproductionConditionsService';
-import { ColumnProps } from 'primereact/column';
-import styles from './ButtonStyles.module.css';
+import { ColumnFilterElementTemplateOptions, ColumnProps } from 'primereact/column';
+import { Calendar } from 'primereact/calendar';
+import { Tag } from 'primereact/tag';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { MuseumCategoriesResponse } from '@/app/service/CategoryMuseumService';
 
 interface TableBodyFunctionProps {
     editData: (updatedReproductionConditions: Partial<ReproductionConditionsResponse>) => Promise<void>;
@@ -16,6 +19,50 @@ export function TableBodyFunction({
                                       editData,
                                       setData, setDeleteDialog
                                   }: TableBodyFunctionProps) {
+
+    const [statuses] = useState<{ label: string; value: boolean }[]>([
+        { label: 'ACTIVADO', value: true },
+        { label: 'DESACTIVADO', value: false },
+    ]);
+
+    const getSeverity = (status: boolean) => {
+        return status ? 'success' : 'danger';
+    };
+
+    const statusItemTemplate = (option: { label: string; value: boolean }) => {
+        return <Tag value={option.label} severity={getSeverity(option.value)} />;
+    };
+
+
+    const statusRowFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        return (
+            <Dropdown
+                value={options.value}
+                options={statuses}
+                onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
+                optionLabel="label"
+                placeholder="Selecciona uno"
+                className="p-column-filter"
+                showClear
+                style={{ minWidth: '12rem' }}
+                itemTemplate={statusItemTemplate}
+            />
+        );
+    };
+
+    const calendarFilterTemplate = (options: any) => {
+
+        return (
+            <Calendar
+                value={options.value}
+                onChange={(e) => options.filterApplyCallback(e.value as Date)}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccionar fecha"
+                showIcon
+            />
+        );
+    };
+
 
     const actionBodyTemplate = (rowData: ReproductionConditionsResponse) => {
         return (
@@ -47,7 +94,7 @@ export function TableBodyFunction({
             <>
                 <span className="p-column-title">{field}</span>
                 {isValid(date) ? (
-                    <span className={styles.formattedDate}>
+                    <span>
                         {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
                     </span>
                 ) : (
@@ -57,20 +104,50 @@ export function TableBodyFunction({
         );
     };
 
+    const statusBodyTemplate = (rowData: MuseumCategoriesResponse) => {
+        const status = rowData.active ? 'ACTIVADO' : 'DESACTIVADO';
+        return <Tag value={status} severity={getSeverity(rowData.active)} />;
+    };
+
     const columns: ColumnProps[] = [
         {
             field: 'name',
             header: 'Nombre',
+            filter: true,
+            filterPlaceholder: 'Buscar',
             sortable: true,
             headerStyle: { minWidth: '5rem' },
-            style: { whiteSpace: 'nowrap' }
+            filterHeaderStyle: { minWidth: '15rem' },
+            showFilterMenu: false,
+            style: { whiteSpace: 'nowrap' },
         },
         {
             field: 'description',
+            filter: true,
+            filterPlaceholder: 'Buscar',
             header: 'Descripción',
             sortable: true,
-            headerStyle: { minWidth: '10rem' },
-            style: { whiteSpace: 'nowrap' }
+            headerStyle: { minWidth: '10rem', maxWidth: '20rem' }, // Agregamos maxWidth
+            style: {
+                whiteSpace: 'nowrap', // No permite saltos de línea
+                overflow: 'hidden', // Oculta el contenido que no cabe
+                textOverflow: 'ellipsis', // Muestra "..." al cortar
+                maxWidth: '20rem' // Establece el ancho máximo de la celda
+            },
+            filterHeaderStyle: { minWidth: '15rem' },
+            showFilterMenu: false,
+        },
+        {
+            field: "active",
+            header:"Estado",
+            filter: true,
+            showFilterMenu: false,
+            body: statusBodyTemplate,
+            sortable: true,
+            headerStyle:{ minWidth: '5rem'},
+            filterElement: statusRowFilterTemplate,
+            filterHeaderStyle: { minWidth: '15rem' },
+            style: { minWidth: '12rem' }
         },
         {
             field: 'createdAt',
@@ -78,6 +155,10 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '15rem' },
+            showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'createdAt')
         },
         {
@@ -86,9 +167,12 @@ export function TableBodyFunction({
             sortable: true,
             headerStyle: { minWidth: '10rem' },
             style: { whiteSpace: 'nowrap' },
+            filter: true,
+            filterElement: calendarFilterTemplate,
+            filterHeaderStyle: { minWidth: '15rem' },
+            showFilterMenu: false,
             body: (rowData) => dateBodyTemplate(rowData, 'updatedAt')
         }
     ];
-
     return { columns, actionBodyTemplate };
 }
