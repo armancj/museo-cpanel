@@ -36,7 +36,7 @@ export function useInstitutionClassificationDataHandlers(setLoadingTypologies: (
         const fetchTypologies = async () => {
             setLoadingTypologies(true);
             try {
-                const response = await TypologyService.getTypologies();
+                const response = await TypologyService.getTypologies(true);
                 const formattedTypologies = response.map(typology => ({
                     name: typology.name,
                     code: typology.uuid,
@@ -175,7 +175,6 @@ export function useInstitutionClassificationDataHandlers(setLoadingTypologies: (
 
     const handleClassificationChange = (e: DropdownChangeEvent) => {
         const selected = e.value;
-        console.log({ selected });
         setSelectedClassification(selected);
 
         onInputChange(

@@ -1,124 +1,146 @@
 export interface CulturalPropertyModel {
-    createdAt:               Date;
-    deleted:                 boolean;
-    producerAuthor:          ProducerAuthor;
-    accessAndUseConditions:  AccessAndUseConditions;
+    createdAt: Date;
+    deleted: boolean;
+    producerAuthor: ProducerAuthor;
+    accessAndUseConditions: AccessAndUseConditions;
     associatedDocumentation: AssociatedDocumentation;
-    culturalRecord:          CulturalRecord;
-    entryAndLocation:        EntryAndLocation;
-    descriptionControl:      DescriptionControl;
-    notes:                   Notes;
-    updatedAt:               Date;
-    uuid:                    string;
+    culturalRecord: CulturalRecord;
+    entryAndLocation: EntryAndLocation;
+    descriptionControl: DescriptionControl;
+    notes: Notes;
+    updatedAt: Date;
+    uuid: string;
 }
 
 export interface AccessAndUseConditions {
-    accessConditions:       string[];
-    reproductionConditions: string[];
-    technicalRequirements:  string;
+    accessConditions: FieldMetadata<string[]>;
+    reproductionConditions: FieldMetadata<string[]>;
+    technicalRequirements: FieldMetadata<string>;
 }
 
 export interface AssociatedDocumentation {
-    copiesExistenceAndLocation:     string;
-    originalsExistenceAndLocation:  string;
-    relatedDescriptionUnits:        string;
-    relatedPublicationsInformation: string;
+    copiesExistenceAndLocation: FieldMetadata<string>;
+    originalsExistenceAndLocation?: FieldMetadata<string>;
+    relatedDescriptionUnits?: FieldMetadata<string>;
+    relatedPublicationsInformation?: FieldMetadata<string>;
 }
 
 export interface CulturalRecord {
-    objectTitle:              string;
-    objectDescription:        string;
-    onomasticDescriptors:     string;
-    geographicDescriptors:    string;
-    institutionalDescriptors: string;
-    subjectDescriptors:       string;
-    extremeDates:             ExtremeDates;
-    valueGrade:               string;
-    descriptionLevel:         number;
-    valuation:                number;
-    volumesQuantities:        VolumesQuantities;
-    dimensions:               Dimensions;
-    languages:                string[];
-    supports:                 string[];
-    letters:                  string[];
-    descriptionInstrument:    string[];
-    conservationState:        string[];
-    backgroundTitle:          string;
-    sectionTitle:             string;
+    objectTitle: FieldMetadata<string>;
+    objectDescription: FieldMetadata<string>;
+    onomasticDescriptors?: FieldMetadata<string>;
+    geographicDescriptors?: FieldMetadata<string>;
+    institutionalDescriptors?: FieldMetadata<string>;
+    subjectDescriptors?: FieldMetadata<string>;
+    extremeDates?: FieldMetadata<ExtremeDates>;
+    valueGrade: FieldMetadata<string>;
+    descriptionLevel: FieldMetadata<number>;
+    valuation?: FieldMetadata<number>;
+    volumesQuantities: FieldMetadata<VolumesQuantities>;
+    dimensions: FieldMetadata<Dimensions>;
+    languages: FieldMetadata<string[]>;
+    supports: FieldMetadata<string[]>;
+    letters: FieldMetadata<string[]>;
+    descriptionInstrument: FieldMetadata<string[]>;
+    conservationState: FieldMetadata<string[]>;
+    backgroundTitle?: FieldMetadata<string>;
+    sectionTitle?: FieldMetadata<string>;
 }
 
 export interface Dimensions {
-    heightCms:    number;
-    widthCms:     number;
-    lengthCms:    number;
+    heightCms: number;
+    widthCms: number;
+    lengthCms: number;
     squareMeters: number;
-    cubicMeters:  number;
-    weightKg:     number;
+    cubicMeters: number;
+    weightKg: number;
 }
 
 export interface ExtremeDates {
     start: Date;
-    end:   Date;
+    end: Date;
 }
 
 export interface VolumesQuantities {
-    file:              number;
-    pages:             number;
-    books:             number;
-    objects:           number;
-    photos:            number;
-    engravings:        number;
-    slides:            number;
-    negatives:         number;
-    mapsPlansSketches: number;
+    file?: number;
+    pages?: number;
+    books?: number;
+    objects?: number;
+    photos?: number;
+    engravings?: number;
+    slides?: number;
+    negatives?: number;
+    mapsPlansSketches?: number;
 }
 
 export interface DescriptionControl {
-    reviewDateTime: Date;
-    reviewedBy: string;
-    descriptionDateTime: Date;
-    descriptionMadeBy: string;
+    descriptionMadeBy: FieldMetadata<string>;
+    descriptionDateTime: FieldMetadata<Date>;
+    reviewedBy: FieldMetadata<string>;
+    reviewDateTime: FieldMetadata<Date>;
 }
 
 export interface EntryAndLocation {
-    auxiliaryInventory:    boolean;
-    declarationType:       string;
-    entryDate:             Date;
-    entryMethod:           string;
-    genericClassification: string;
-    heritageType:          string;
-    initialDescription:    string;
-    institutionType:       string;
-    inventoryNumber:       string;
-    objectLocation:        ObjectLocation;
-    objectName:            string;
-    pieceInventory:        boolean;
+    heritageType: FieldMetadata<string>;
+    declarationType: FieldMetadata<string>;
+    inventoryNumber: FieldMetadata<string>;
+    genericClassification: FieldMetadata<string>;
+    pieceInventory: FieldMetadata<boolean>;
+    auxiliaryInventory: FieldMetadata<boolean>;
+    objectName: FieldMetadata<string>;
+    initialDescription: FieldMetadata<string>;
+    entryMethod: FieldMetadata<string>;
+    entryDate: FieldMetadata<Date>;
+    objectLocation: FieldMetadata<ObjectLocation>;
+    institutionType: FieldMetadata<string>;
 }
 
 export interface ObjectLocation {
-    box:            string;
+    box: string;
     exhibitionRoom: string;
-    fileFolder:     string;
-    floor:          string;
-    shelfDrawer:    string;
-    showcaseShelf:  string;
-    storage:        string;
+    fileFolder: string;
+    floor: string;
+    shelfDrawer: string;
+    showcaseShelf: string;
+    storage: string;
 }
 
 export interface Notes {
-    notes: string;
+    notes: FieldMetadata<string>;
 }
 
 export interface ProducerAuthor {
-    betweenStreet1:       string;
-    betweenStreet2:       string;
-    district:             string;
-    institutionalHistory: string;
-    locality:             string;
-    municipality:         string;
-    number:               string;
-    objectEntryHistory:   string;
-    producerAuthorNames:  string;
-    province:             string;
-    street:               string;
+    producerAuthorNames: FieldMetadata<string>;
+    street: FieldMetadata<string>;
+    number: FieldMetadata<string>;
+    betweenStreet1: FieldMetadata<string>;
+    betweenStreet2: FieldMetadata<string>;
+    district: FieldMetadata<string>;
+    locality: FieldMetadata<string>;
+    municipality: FieldMetadata<string>;
+    province: FieldMetadata<string>;
+    institutionalHistory?: FieldMetadata<string>;
+    objectEntryHistory?: FieldMetadata<string>;
+}
+
+
+export interface FieldMetadata<T> {
+    value: T;
+    status: StatusObject;
+    comment?: string;
+    modifiedBy: string;
+    history: Array<HistoryItem<T>>;
+    [key: string]: any;
+}
+
+export type StatusObject = {
+    status: 'Pending' | 'To Review' | 'Reviewed' | 'Has Issue';
+};
+
+export interface HistoryItem<T> {
+    modifiedBy: string;
+    previousValue: T;
+    modifiedAt: Date;
+    comment?: string;
+    status: StatusObject;
 }

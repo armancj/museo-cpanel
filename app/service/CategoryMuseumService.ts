@@ -39,14 +39,12 @@ export const CategoryMuseumService  =   {
     },
 
     update: async (uuid: string, updated: Partial<MuseumCategories>)=> {
-        console.log({updated})
         const url = WebEnvConst.categoryMuseum.getOne(uuid);
         await patch<MuseumCategoriesResponse>(url, validateRegisterBookSummaryData(updated));
         return true;
     },
 
     create: async (data: MuseumCategories) =>{
-        console.log({data: validateRegisterBookSummaryData(data)})
         return await post<MuseumCategoriesResponse>(WebEnvConst.categoryMuseum.post, validateRegisterBookSummaryData(data))
     },
 

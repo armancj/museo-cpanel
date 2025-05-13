@@ -1,21 +1,24 @@
 import { Button } from 'primereact/button';
 import React from 'react';
 
+type props = {
+    goToPreviousStep?: () => void,
+    goToNextStep?: () => void,
+    finalizeForm?: () => void,
+    showPrevious?: boolean,
+    showNext?: boolean,
+    showFinalize?: boolean,
+    onHide?: () => void,
+}
+
 export function NavigationButtons({
                                       goToPreviousStep,
                                       goToNextStep,
                                       finalizeForm,
                                       showPrevious = true,
                                       showNext = true,
-                                      showFinalize = true
-                                  }: {
-                                      goToPreviousStep?: () => void,
-                                      goToNextStep?: () => void,
-                                      finalizeForm?: () => void,
-                                      showPrevious?: boolean,
-                                      showNext?: boolean,
-                                      showFinalize?: boolean
-                                  }
+                                      showFinalize = true,
+                                  }: Readonly<props>,
 ) {
     return <div className="flex justify-content-between pt-4">
         {showPrevious && goToPreviousStep && (

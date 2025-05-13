@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import {
     CulturalPropertyModel,
+    FieldMetadata,
 } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { emptyCulturalProperty } from '@/app/service/utilities/culturalproperty.data';
 import { TabMenu } from 'primereact/tabmenu';
@@ -9,15 +10,19 @@ import { Toast } from 'primereact/toast';
 import { generateWizardMenuItems } from '@/app/(main)/pages/cultural-property-heritage/util/generateWizardMenuItems';
 import { renderFormStep } from '@/app/(main)/pages/cultural-property-heritage/form-componenet/renderFormStep';
 import {
-    validateProducerAuthorData
+    validateProducerAuthorData,
 } from '@/app/(main)/pages/cultural-property-heritage/util/validateProducerAuthorData';
+import {
+    ValidateAccessConditionsData,
+} from '@/app/(main)/pages/cultural-property-heritage/util/validateAccessConditionsData';
 
 
 interface CulturalPropertyFormProps {
-    hideDialog: () => void;
+    hideDialog: () => void,
+    save: () => Promise<void>
 }
 
-const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
+const CulturalPropertyForm = ({ hideDialog, save }: CulturalPropertyFormProps) => {
 
     const [formData, setFormData] = useState<CulturalPropertyModel>(emptyCulturalProperty);
     const [completedSteps, setCompletedSteps] = useState<boolean[]>([true, false, false, false, false, false, false]);
@@ -26,50 +31,48 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const toast = useRef<Toast>(null);
 
-    const [formErrors, setFormErrors] = useState<Record<string, any>>({
-        producerAuthor: {},
-        accessAndUseConditions: {},
-        associatedDocumentation: {},
-        culturalRecord: {},
-        entryAndLocation: {},
-        descriptionControl: {},
-        notes: {}
-    });
+    const [formErrors, setFormErrors] = useState<Record<string, any>>(emptyCulturalProperty);
 
     const [submitted, setSubmitted] = useState<boolean>(false);
 
 
+    const handleChange = useCallback(
+        (section: keyof CulturalPropertyModel, field: string, value: FieldMetadata<any>) => {
+            setFormData((prevData) => {
+                const updatedSection = {
+                    ...(prevData[section] as Record<string, any>),
+                    [field]: {
+                        ...((prevData[section] as Record<string, any>)[field] || {}),
+                        ...value, // Combina todas las propiedades de "value" (FieldMetadata<string>)
+                    },
+                };
 
-    const handleChange = (section: keyof CulturalPropertyModel, field: string, value: any) => {
-        setFormData((prevData) => {
-            const updatedSection = {
-                ...(prevData[section] as Record<string, any>),
-                [field]: value,
-            };
+                console.log('Updated Section:', updatedSection);
 
-            return {
-                ...prevData,
-                [section]: updatedSection,
-            };
-        });
-        if (formErrors[section]?.[field]) {
-            setFormErrors(prev => ({
-                ...prev,
-                [section]: {
-                    ...prev[section],
-                    [field]: undefined
-                }
-            }));
-        }
-    };
+
+                return {
+                    ...prevData,
+                    [section]: updatedSection,
+                };
+            });
+
+            if (formErrors[section]?.[field]) {
+                setFormErrors((prev) => ({
+                    ...prev,
+                    [section]: {
+                        ...prev[section],
+                        [field]: undefined,
+                    },
+                }));
+            }
+        },
+        [formErrors],
+    );
 
     const validateProducerAuthor = validateProducerAuthorData(formData, setFormErrors);
 
     // Validaciones para las demás secciones (implementar según necesidad)
-    const validateAccessConditions = () => {
-        // Implementar validaciones
-        return true;
-    };
+    const validateAccessConditions = ValidateAccessConditionsData(formData, setFormErrors);
 
     const validateAssociatedDocumentation = () => {
         // Implementar validaciones
@@ -134,7 +137,7 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
                 severity: 'warn',
                 summary: 'Campos incompletos',
                 detail: 'Por favor, complete todos los campos obligatorios antes de continuar',
-                life: 3000
+                life: 3000,
             });
         }
     };
@@ -144,21 +147,22 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
         setSubmitted(false);
     };
 
-    const finalizeForm = () => {
+    const finalizeForm = async () => {
         if (validateCurrentStep()) {
+            console.log({ here: validateCurrentStep() });
             toast.current?.show({
                 severity: 'success',
                 summary: 'Formulario completado',
                 detail: 'Los datos se han guardado correctamente',
-                life: 3000
+                life: 3000,
             });
-            hideDialog();
+            await (save as any)('Nofound');
         } else {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Campos incompletos',
                 detail: 'Por favor, complete todos los campos obligatorios antes de finalizar',
-                life: 3000
+                life: 3000,
             });
         }
     };
@@ -166,7 +170,19 @@ const CulturalPropertyForm = ({ hideDialog }: CulturalPropertyFormProps) => {
 
     const wizardItems = generateWizardMenuItems(completedSteps);
 
-    const renderContent = renderFormStep(activeIndex, formData, handleChange, formErrors, validateProducerAuthor, submitted, goToNextStep, goToPreviousStep, finalizeForm);
+    const renderContent = renderFormStep({
+            activeIndex,
+            formData,
+            handleChange,
+            formErrors,
+            validateProducerAuthor,
+            submitted,
+            goToNextStep,
+            goToPreviousStep,
+            finalizeForm,
+            hideDialog,
+        },
+    );
 
     return (
         <>

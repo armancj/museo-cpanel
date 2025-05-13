@@ -8,6 +8,9 @@ interface NotesStepProps {
 }
 
 const NotesStep: React.FC<NotesStepProps> = ({ data, onChange }) => {
+    const { notes } = data;
+    console.log('NotesStep receiving:', data);
+
     return (
         <div className="p-fluid">
             {/* Notas */}
@@ -15,8 +18,11 @@ const NotesStep: React.FC<NotesStepProps> = ({ data, onChange }) => {
                 <label htmlFor="notes">Notas</label>
                 <InputTextarea
                     id="notes"
-                    value={data.notes}
-                    onChange={(e) => onChange('notes', e.target.value)}
+                    value={notes?.value || ''}
+                    onChange={(e) => {
+                        console.log('NotesStep Sending:', { ...notes, value: e.target.value });
+                        onChange('notes', { ...notes, value: e.target.value });
+                    }}
                     rows={10}
                     cols={30}
                     autoResize

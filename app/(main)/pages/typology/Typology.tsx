@@ -1,19 +1,20 @@
-import { useRef, useState } from 'react';
-import { useInstitutionHook } from './useInstitutionHook';
-import { DataTable } from 'primereact/datatable';
+import React, { useRef, useState } from 'react';
+import {
+    DataTable,
+    DataTableFilterMeta,
+} from 'primereact/datatable';
+import { FilterMatchMode } from 'primereact/api';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { ToolbarCustom } from './component/ToolbarCustom';
 import { Dialog } from 'primereact/dialog';
-import { FilterMatchMode } from 'primereact/api';
-import { DataForm } from './component/DataForm';
+import { ToolbarCustom } from './component/ToolbarCustom';
 import { TableCustom } from './component/TableCustom';
-import { InstitutionResponse, emptyInstitution } from '@/app/service/InstitutionService';
-
-export function InstitutionList() {
-    const [selects, setSelects] = useState<InstitutionResponse[]>([]);
-
+import { emptyTypology, TypologyResponse } from '@/app/service/TypologyService';
+import Form from './component/Form';
+import { useHookTypology } from './useHookTypology';
+export default function Typology() {
+    const [selects, setSelects] = useState<TypologyResponse[]>([]);
     const {
         datum,
         dialog,
@@ -22,29 +23,29 @@ export function InstitutionList() {
         data,
         setData,
         submitted,
+        setSubmitted,
         toast,
         editData,
         deleteData,
         deleteDialog,
-        setDeleteDialog,
-        setDatum,
-        deleteSelected,
-        setSubmitted,
-    } = useInstitutionHook();
+        setDeleteDialog
+    } = useHookTypology()
 
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        country: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
+        description: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
+        active: { value: null, matchMode: FilterMatchMode.EQUALS },
+        createdAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
+        updatedAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
     });
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
-    const dt = useRef<DataTable<InstitutionResponse[]>>(null);
+    const dt = useRef<DataTable<TypologyResponse[]>>(null);
 
     const openNew = () => {
-        setData({ ...emptyInstitution });
+        setData(emptyTypology);
         setDialog(true);
-        setSubmitted(false);
-
     };
 
     const hideDialog = () => {
@@ -55,54 +56,11 @@ export function InstitutionList() {
         setDeleteDialog(false);
     };
 
-    const confirmDeleteSelected = async () => {
-        await deleteSelected(selects);
+    const confirmDeleteSelected = () => {
         setDeleteDialog(true);
-        setDatum([]);
     };
 
     const exportExcel = createdExportExcel(dt);
-
-    const validateAndSave = () => {
-        setSubmitted(true);
-
-        const requiredFields = [
-            'name',
-            'street',
-            'number',
-            'referenceCode',
-            'betweenStreet1',
-            'betweenStreet2',
-            'district',
-            'locality',
-            'province',
-            'municipality',
-            'country',
-            'phone1',
-            'phone2',
-            'email',
-            'website',
-            'institutionType',
-            'classification',
-            'typology',
-            'category'
-        ];
-
-        const allFieldsValid = requiredFields.every(field =>
-            data[field as keyof InstitutionResponse]?.toString().trim() !== '',
-        );
-
-        if (allFieldsValid) {
-            save().then(()=> console.log('Institution saved.'));
-        } else {
-            toast.current?.show({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: 'Por favor complete todos los campos requeridos',
-                life: 3000,
-            });
-        }
-    };
 
     const dialogFooter = (
         <>
@@ -118,7 +76,7 @@ export function InstitutionList() {
                 label="Guardar"
                 icon="pi pi-check"
                 text
-                onClick={validateAndSave}
+                onClick={() => save()}
                 className="p-button-rounded p-button-success"
             />
         </>
@@ -146,15 +104,28 @@ export function InstitutionList() {
         </>
     );
 
-    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            global: { value, matchMode: FilterMatchMode.CONTAINS }
+        }));
         setGlobalFilter(value);
     };
+
+    function getOnInputChange() {
+        return (e: any, field: any) => {
+            let value: string | boolean;
+
+            if (field === 'active' && e.target instanceof HTMLInputElement) {
+                value = e.target.checked;
+            } else {
+                value = e.target.value;
+            }
+
+            setData({ ...data, [field]: value });
+        };
+    }
 
     return (
         <div className="grid crud-demo">
@@ -176,25 +147,26 @@ export function InstitutionList() {
                         globalFilter={globalFilter}
                         filters={filters}
                         editData={editData}
-                        onGlobalFilterChange={onGlobalFilterChange}
                         setDeleteDialog={setDeleteDialog}
                         setData={setData}
+                        onGlobalFilterChange={onGlobalFilterChange}
                     />
-                    <Dialog visible={dialog} header="Detalles de Institución" modal className="p-fluid"
-                            footer={dialogFooter}
-                            onHide={hideDialog}>
-                        <DataForm
+                    <Dialog
+                        visible={dialog}
+                        header="Detalles de la Categoría"
+                        modal
+                        className="p-fluid"
+                        footer={dialogFooter}
+                        onHide={hideDialog}
+                    >
+                        <Form
                             data={data}
-                            onInputChange={(e, field) => {
-                                setData((prevData) => ({
-                                    ...prevData,
-                                    [field]: e.target.value,
-                                }));
-                            }}
-
                             submitted={submitted}
+                            setSubmitted={setSubmitted}
+                            onInputChange={getOnInputChange()}
                         />
                     </Dialog>
+
                     <Dialog
                         visible={deleteDialog}
                         header="Confirmar Eliminación"
@@ -206,11 +178,12 @@ export function InstitutionList() {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {data && (
                                 <span>
-                                    ¿Estás seguro de que deseas eliminar a <b>{data.name}</b>?
-                                </span>
+                  ¿Estás seguro de que deseas eliminar a <b>{data.name}</b>?
+                </span>
                             )}
                         </div>
                     </Dialog>
+
                 </div>
             </div>
         </div>

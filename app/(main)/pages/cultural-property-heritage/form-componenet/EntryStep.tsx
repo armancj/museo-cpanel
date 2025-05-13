@@ -14,10 +14,25 @@ interface EntryStepProps {
 }
 
 const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
+    const {
+        entryDate,
+        entryMethod,
+        pieceInventory,
+        inventoryNumber,
+        auxiliaryInventory,
+        objectLocation,
+        objectName,
+        initialDescription,
+        institutionType,
+        declarationType,
+        heritageType,
+        genericClassification,
+    } = data;
+
     // Submanejador para propiedades anidadas (ObjectLocation)
     const handleObjectLocationChange = (field: keyof ObjectLocation, value: string) => {
         const updatedObjectLocation = {
-            ...data.objectLocation,
+            ...objectLocation,
             [field]: value,
         };
         onChange('objectLocation', updatedObjectLocation);
@@ -42,8 +57,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="objectName">Nombre del Objeto</label>
                 <InputText
                     id="objectName"
-                    value={data.objectName}
-                    onChange={(e) => onChange('objectName', e.target.value)}
+                    value={objectName.value}
+                    onChange={(e) => onChange('objectName', { ...objectName, value: e.target.value })}
                 />
             </div>
 
@@ -52,7 +67,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="heritageType">Tipo de Patrimonio</label>
                 <Dropdown
                     id="heritageType"
-                    value={data.heritageType}
+                    value={heritageType.value}
                     options={heritageTypes}
                     onChange={(e) => onChange('heritageType', e.value)}
                     placeholder="Seleccione un tipo"
@@ -64,7 +79,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="institutionType">Tipo de Institución</label>
                 <Dropdown
                     id="institutionType"
-                    value={data.institutionType}
+                    value={institutionType.value}
                     options={institutionTypes}
                     onChange={(e) => onChange('institutionType', e.value)}
                     placeholder="Seleccione un tipo"
@@ -76,8 +91,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="inventoryNumber">Número de Inventario</label>
                 <InputText
                     id="inventoryNumber"
-                    value={data.inventoryNumber}
-                    onChange={(e) => onChange('inventoryNumber', e.target.value)}
+                    value={inventoryNumber.value}
+                    onChange={(e) => onChange('inventoryNumber', {...inventoryNumber, value: e.target.value })}
                 />
             </div>
 
@@ -86,8 +101,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="genericClassification">Clasificación Genérica</label>
                 <InputText
                     id="genericClassification"
-                    value={data.genericClassification}
-                    onChange={(e) => onChange('genericClassification', e.target.value)}
+                    value={genericClassification.value}
+                    onChange={(e) => onChange('genericClassification', { ...genericClassification, value: e.target.value })}
                 />
             </div>
 
@@ -96,8 +111,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="entryDate">Fecha de Entrada</label>
                 <Calendar
                     id="entryDate"
-                    value={data.entryDate}
-                    onChange={(e) => onChange('entryDate', e.value ?? new Date(Date.now()))}
+                    value={entryDate?.value}
+                    onChange={(e) => onChange('entryDate', { ...entryDate, value: e.value ?? new Date(Date.now()) })}
                     showButtonBar
                     dateFormat="yy-mm-dd"
                 />
@@ -108,8 +123,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                 <label htmlFor="initialDescription">Descripción Inicial</label>
                 <InputText
                     id="initialDescription"
-                    value={data.initialDescription}
-                    onChange={(e) => onChange('initialDescription', e.target.value)}
+                    value={initialDescription.value}
+                    onChange={(e) => onChange('initialDescription', { ...initialDescription, value: e.target.value })}
                 />
             </div>
 
@@ -120,8 +135,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="auxiliaryInventory">Inventario Auxiliar</label>
                         <InputSwitch
                             id="auxiliaryInventory"
-                            checked={data.auxiliaryInventory}
-                            onChange={(e) => onChange('auxiliaryInventory', e.value)}
+                            checked={auxiliaryInventory.value}
+                            onChange={(e) => onChange('auxiliaryInventory', { ...auxiliaryInventory, value: e.value })}
                         />
                     </div>
                 </div>
@@ -130,8 +145,8 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="pieceInventory">Inventario de Piezas</label>
                         <InputSwitch
                             id="pieceInventory"
-                            checked={data.pieceInventory}
-                            onChange={(e) => onChange('pieceInventory', e.value)}
+                            checked={pieceInventory.value}
+                            onChange={(e) => onChange('pieceInventory', { ...pieceInventory, value: e.value })}
                         />
                     </div>
                 </div>
@@ -145,7 +160,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="storage">Almacenamiento</label>
                         <InputText
                             id="storage"
-                            value={data.objectLocation.storage}
+                            value={objectLocation?.value?.storage}
                             onChange={(e) => handleObjectLocationChange('storage', e.target.value)}
                         />
                     </div>
@@ -153,7 +168,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="box">Caja</label>
                         <InputText
                             id="box"
-                            value={data.objectLocation.box}
+                            value={objectLocation?.value?.box}
                             onChange={(e) => handleObjectLocationChange('box', e.target.value)}
                         />
                     </div>
@@ -161,7 +176,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="fileFolder">Carpeta</label>
                         <InputText
                             id="fileFolder"
-                            value={data.objectLocation.fileFolder}
+                            value={objectLocation?.value?.fileFolder}
                             onChange={(e) => handleObjectLocationChange('fileFolder', e.target.value)}
                         />
                     </div>
@@ -169,7 +184,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="floor">Piso</label>
                         <InputText
                             id="floor"
-                            value={data.objectLocation.floor}
+                            value={objectLocation?.value?.floor}
                             onChange={(e) => handleObjectLocationChange('floor', e.target.value)}
                         />
                     </div>
@@ -177,7 +192,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="shelfDrawer">Estantería</label>
                         <InputText
                             id="shelfDrawer"
-                            value={data.objectLocation.shelfDrawer}
+                            value={objectLocation?.value?.shelfDrawer}
                             onChange={(e) => handleObjectLocationChange('shelfDrawer', e.target.value)}
                         />
                     </div>
@@ -185,7 +200,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="showcaseShelf">Vitrina</label>
                         <InputText
                             id="showcaseShelf"
-                            value={data.objectLocation.showcaseShelf}
+                            value={objectLocation?.value?.showcaseShelf}
                             onChange={(e) => handleObjectLocationChange('showcaseShelf', e.target.value)}
                         />
                     </div>
@@ -193,7 +208,7 @@ const EntryStep: React.FC<EntryStepProps> = ({ data, onChange }) => {
                         <label htmlFor="exhibitionRoom">Sala de Exhibición</label>
                         <InputText
                             id="exhibitionRoom"
-                            value={data.objectLocation.exhibitionRoom}
+                            value={objectLocation?.value?.exhibitionRoom}
                             onChange={(e) => handleObjectLocationChange('exhibitionRoom', e.target.value)}
                         />
                     </div>

@@ -7,11 +7,12 @@ interface Props {
 }
 
 const NotesPanel = ({ notes }: Props) => {
+    const { notes: nota } = notes;
     return (
         <Panel header="Notas" toggleable collapsed>
             <div className="p-grid">
                 <div className="p-col-12">
-                    <p>{notes.notes}</p>
+                    <p>{nota?.value}</p>
                 </div>
             </div>
         </Panel>

@@ -10,7 +10,31 @@ import DescriptionControlStep
 import NotesStep from '@/app/(main)/pages/cultural-property-heritage/form-componenet/NotesStep';
 import React from 'react';
 
-export function renderFormStep(activeIndex: number, formData: CulturalPropertyModel, handleChange: (section: keyof CulturalPropertyModel, field: string, value: any) => void, formErrors: Record<string, any>, validateProducerAuthor: () => boolean, submitted: boolean, goToNextStep: () => void, goToPreviousStep: () => void, finalizeForm: () => void) {
+type props = {
+    activeIndex: number,
+    formData: CulturalPropertyModel,
+    handleChange: (section: keyof CulturalPropertyModel, field: string, value: any) => void,
+    formErrors: Record<string, any>,
+    validateProducerAuthor: () => boolean,
+    submitted: boolean,
+    goToNextStep: () => void,
+    goToPreviousStep: () => void,
+    finalizeForm: () => void,
+    hideDialog: () => void,
+}
+
+export function renderFormStep({
+                                   formData,
+                                   goToNextStep,
+                                   goToPreviousStep,
+                                   finalizeForm,
+                                   formErrors,
+                                   validateProducerAuthor,
+                                   submitted,
+                                   hideDialog,
+                                   handleChange,
+                                   activeIndex,
+                               }: props) {
     const FormStepComponent = () => {
         switch (activeIndex) {
             case 0:
@@ -125,11 +149,11 @@ export function renderFormStep(activeIndex: number, formData: CulturalPropertyMo
                             data={formData.notes}
                             onChange={(field, value) => handleChange('notes', field, value)}
                         />
-
                         <NavigationButtons
                             goToPreviousStep={() => goToPreviousStep()}
                             finalizeForm={() => finalizeForm()}
                             showNext={false}
+                            onHide={hideDialog}
                         />
                     </>
                 );

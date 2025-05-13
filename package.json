@@ -18,7 +18,7 @@
         "chart.js": "4.2.1",
         "date-fns": "^4.1.0",
         "jwt-decode": "^4.0.0",
-        "next": "13.4.20-canary.13",
+        "next": "15.2.3",
         "nextjs-cors": "^2.2.0",
         "primeflex": "^3.3.1",
         "primeicons": "^6.0.1",
@@ -33,6 +33,6 @@
         "eslint": "8.43.0",
         "eslint-config-next": "13.4.6",
         "prettier": "^2.8.8",
-        "sass": "^1.63.4"
+        "sass": "^1.79.3"
     }
 }

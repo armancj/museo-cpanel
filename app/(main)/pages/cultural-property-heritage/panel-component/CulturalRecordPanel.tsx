@@ -9,75 +9,100 @@ interface Props {
 }
 
 const CulturalRecordPanel = ({ culturalRecord }: Props) => {
+    const {
+        objectTitle,
+        backgroundTitle,
+        objectDescription,
+        descriptionInstrument,
+        descriptionLevel,
+        sectionTitle,
+        dimensions,
+        volumesQuantities,
+        extremeDates,
+        institutionalDescriptors,
+        geographicDescriptors,
+        onomasticDescriptors,
+        subjectDescriptors,
+        languages,
+        conservationState,
+        supports,
+        valueGrade,
+        valuation,
+        letters,
+    } = culturalRecord;
     return (
         <Panel header="Registro Cultural" toggleable collapsed>
             <Card>
                 <div className="p-grid">
                     <div className="p-col-12 p-md-6">
-                        <p><b>Título:</b> {culturalRecord.objectTitle}</p>
+                        <p><b>Título:</b> {objectTitle?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Descripción:</b> {culturalRecord.objectDescription}</p>
+                        <p><b>Descripción:</b> {objectDescription?.value}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Descriptores</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Onomásticos:</b> {culturalRecord.onomasticDescriptors}</p>
+                        <p><b>Onomásticos:</b> {onomasticDescriptors?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Geográficos:</b> {culturalRecord.geographicDescriptors}</p>
+                        <p><b>Geográficos:</b> {geographicDescriptors?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Institucionales:</b> {culturalRecord.institutionalDescriptors}</p>
+                        <p><b>Institucionales:</b> {institutionalDescriptors?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Temáticos:</b> {culturalRecord.subjectDescriptors}</p>
+                        <p><b>Temáticos:</b> {subjectDescriptors?.value}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Fechas Extremas</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p>{`${new Date(culturalRecord.extremeDates.start).toLocaleDateString()} - ${new Date(culturalRecord.extremeDates.end).toLocaleDateString()}`}</p>
+                        <p>{`${extremeDates?.value?.start ? new Date(extremeDates.value.start).toLocaleDateString() : 'N/A'} - ${extremeDates?.value?.end ? new Date(extremeDates.value.end).toLocaleDateString() : 'N/A'}`}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Grado y Nivel</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Grado de Valoración:</b> {culturalRecord.valueGrade}</p>
+                        <p><b>Grado de Valoración:</b> {valueGrade?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Nivel de Descripción:</b> {culturalRecord.descriptionLevel}</p>
+                        <p><b>Nivel de Descripción:</b> {descriptionLevel?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Valoración:</b> {culturalRecord.valuation}</p>
+                        <p><b>Valoración:</b> {valuation?.value}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Idiomas y Soportes</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Idiomas:</b> {culturalRecord.languages.join(', ')}</p>
+                        <p><b>Idiomas:</b> {languages?.value.join(', ')}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Soportes:</b> {culturalRecord.supports.join(', ')}</p>
+                        <p><b>Soportes:</b> {supports?.value.join(', ')}</p>
+                    </div>
+                    <div className="p-col-12 p-md-6">
+                        <p><b>Letras:</b> {letters?.value.join(', ')}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Instrumentos y Conservación</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Instrumentos de Descripción:</b> {culturalRecord.descriptionInstrument.join(', ')}</p>
+                        <p><b>Instrumentos de Descripción:</b> {descriptionInstrument?.value.join(', ')}
+                        </p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Estado de Conservación:</b> {culturalRecord.conservationState.join(', ')}</p>
+                        <p><b>Estado de Conservación:</b> {conservationState?.value.join(', ')}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Títulos</b>
                     </Divider>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Título del Fondo:</b> {culturalRecord.backgroundTitle}</p>
+                        <p><b>Título del Fondo:</b> {backgroundTitle?.value}</p>
                     </div>
                     <div className="p-col-12 p-md-6">
-                        <p><b>Título de la Sección:</b> {culturalRecord.sectionTitle}</p>
+                        <p><b>Título de la Sección:</b> {sectionTitle?.value}</p>
                     </div>
                     <Divider align="center" type="dashed">
                         <b>Volúmenes y Cantidades</b>
@@ -85,31 +110,33 @@ const CulturalRecordPanel = ({ culturalRecord }: Props) => {
                     <Panel header="Volúmenes y Cantidades" toggleable collapsed>
                         <div className="p-grid">
                             <div className="p-col-12 p-md-6">
-                                <p><b>Archivos:</b> {culturalRecord.volumesQuantities.file}</p>
+                                <p><b>Archivos:</b> {volumesQuantities?.value.file}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Páginas:</b> {culturalRecord.volumesQuantities.pages}</p>
+                                <p><b>Páginas:</b> {volumesQuantities?.value.pages}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Libros:</b> {culturalRecord.volumesQuantities.books}</p>
+                                <p><b>Libros:</b> {volumesQuantities?.value.books}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Objetos:</b> {culturalRecord.volumesQuantities.objects}</p>
+                                <p><b>Objetos:</b> {volumesQuantities?.value.objects}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Fotos:</b> {culturalRecord.volumesQuantities.photos}</p>
+                                <p><b>Fotos:</b> {volumesQuantities?.value.photos}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Grabados:</b> {culturalRecord.volumesQuantities.engravings}</p>
+                                <p><b>Grabados:</b> {volumesQuantities?.value.engravings}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Diapositivas:</b> {culturalRecord.volumesQuantities.slides}</p>
+                                <p><b>Diapositivas:</b> {volumesQuantities?.value.slides}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Negativos:</b> {culturalRecord.volumesQuantities.negatives}</p>
+                                <p><b>Negativos:</b> {volumesQuantities?.value.negatives}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Mapas/Planos/Bocetos:</b> {culturalRecord.volumesQuantities.mapsPlansSketches}</p>
+                                <p>
+                                    <b>Mapas/Planos/Bocetos:</b> {volumesQuantities?.value.mapsPlansSketches}
+                                </p>
                             </div>
                         </div>
                     </Panel>
@@ -119,22 +146,22 @@ const CulturalRecordPanel = ({ culturalRecord }: Props) => {
                     <Panel header="Dimensiones" toggleable collapsed>
                         <div className="p-grid">
                             <div className="p-col-12 p-md-6">
-                                <p><b>Altura (cm):</b> {culturalRecord.dimensions.heightCms}</p>
+                                <p><b>Altura (cm):</b> {dimensions?.value.heightCms}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Ancho (cm):</b> {culturalRecord.dimensions.widthCms}</p>
+                                <p><b>Ancho (cm):</b> {dimensions?.value.widthCms}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Longitud (cm):</b> {culturalRecord.dimensions.lengthCms}</p>
+                                <p><b>Longitud (cm):</b> {dimensions?.value.lengthCms}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Metros Cuadrados:</b> {culturalRecord.dimensions.squareMeters}</p>
+                                <p><b>Metros Cuadrados:</b> {dimensions?.value.squareMeters}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Metros Cúbicos:</b> {culturalRecord.dimensions.cubicMeters}</p>
+                                <p><b>Metros Cúbicos:</b> {dimensions?.value.cubicMeters}</p>
                             </div>
                             <div className="p-col-12 p-md-6">
-                                <p><b>Peso (kg):</b> {culturalRecord.dimensions.weightKg}</p>
+                                <p><b>Peso (kg):</b> {dimensions?.value.weightKg}</p>
                             </div>
                         </div>
                     </Panel>

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
-import {
-    ProducerAuthor,
-} from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import { ProducerAuthor } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import { classNames } from 'primereact/utils';
 import { InputNumber } from 'primereact/inputnumber';
 
@@ -21,6 +19,19 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                                                                    onValidate,
                                                                    submitted,
                                                                }) => {
+    const {
+        producerAuthorNames,
+        betweenStreet2,
+        betweenStreet1,
+        street,
+        institutionalHistory,
+        objectEntryHistory,
+        number,
+        locality,
+        province,
+        municipality,
+        district,
+    } = data;
 
     useEffect(() => {
         if (submitted) {
@@ -36,7 +47,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 >Nombres del Productor/Autor</label>
                 <InputText
                     id="producerAuthorNames"
-                    value={data.producerAuthorNames}
+                    value={producerAuthorNames.value}
                     onChange={(e) => onChange('producerAuthorNames', e.target.value)}
                     className={classNames({ 'p-invalid': errors.producerAuthorNames })}
                 />
@@ -45,10 +56,11 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
 
             {/* Historia Institucional */}
             <div className="field col-12 md:col-4">
-                <label htmlFor="institutionalHistory" className={classNames({ 'p-error': errors.institutionalHistory })}>Historia Institucional</label>
+                <label htmlFor="institutionalHistory"
+                       className={classNames({ 'p-error': errors.institutionalHistory })}>Historia Institucional</label>
                 <InputText
                     id="institutionalHistory"
-                    value={data.institutionalHistory}
+                    value={institutionalHistory?.value}
                     onChange={(e) => onChange('institutionalHistory', e.target.value)}
                     className={classNames({ 'p-error': errors.institutionalHistory })}
                 />
@@ -57,10 +69,11 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
 
             {/* Historia de Entrada del Objeto */}
             <div className="field col-12 md:col-4">
-                <label htmlFor="objectEntryHistory" className={classNames({ 'p-error': errors.objectEntryHistory })}>Historia de Entrada del Objeto</label>
+                <label htmlFor="objectEntryHistory" className={classNames({ 'p-error': errors.objectEntryHistory })}>Historia
+                    de Entrada del Objeto</label>
                 <InputText
                     id="objectEntryHistory"
-                    value={data.objectEntryHistory}
+                    value={objectEntryHistory?.value}
                     onChange={(e) => onChange('objectEntryHistory', e.target.value)}
                     className={classNames({ 'p-invalid': errors.objectEntryHistory })}
                 />
@@ -72,7 +85,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 <label htmlFor="street" className={classNames({ 'p-error': errors.street })}>Calle</label>
                 <InputText
                     id="street"
-                    value={data.street}
+                    value={street.value}
                     onChange={(e) => onChange('street', e.target.value)}
                     className={classNames({ 'p-invalid': errors.street })}
                 />
@@ -82,7 +95,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 <label htmlFor="number" className={classNames({ 'p-error': errors.number })}>Número</label>
                 <InputNumber
                     id="number"
-                    value={data?.number ? parseInt(data.number): 0}
+                    value={number.value ? parseInt(number.value) : 0}
                     onChange={(e) => onChange('number', `${e.value!}`)}
                     className={classNames({ 'p-invalid': errors.number })}
                     useGrouping={false}
@@ -92,20 +105,22 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
 
             {/* Entre calles */}
             <div className="field col-12 md:col-6">
-                <label htmlFor="betweenStreet1" className={classNames({ 'p-error': errors.betweenStreet1 })}>Entre Calle 1</label>
+                <label htmlFor="betweenStreet1" className={classNames({ 'p-error': errors.betweenStreet1 })}>Entre Calle
+                    1</label>
                 <InputText
                     id="betweenStreet1"
-                    value={data.betweenStreet1}
+                    value={betweenStreet1.value}
                     onChange={(e) => onChange('betweenStreet1', e.target.value)}
                     className={classNames({ 'p-invalid': errors.betweenStreet1 })}
                 />
                 {errors.betweenStreet1 && <small className="p-error">{errors.betweenStreet1}</small>}
             </div>
             <div className="field col-12 md:col-6">
-                <label htmlFor="betweenStreet2" className={classNames({ 'p-error': errors.betweenStreet2 })}>Entre Calle 2</label>
+                <label htmlFor="betweenStreet2" className={classNames({ 'p-error': errors.betweenStreet2 })}>Entre Calle
+                    2</label>
                 <InputText
                     id="betweenStreet2"
-                    value={data.betweenStreet2}
+                    value={betweenStreet2.value}
                     onChange={(e) => onChange('betweenStreet2', e.target.value)}
                     className={classNames({ 'p-invalid': errors.betweenStreet2 })}
                 />
@@ -117,17 +132,18 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 <label htmlFor="province" className={classNames({ 'p-error': errors.province })}>Provincia</label>
                 <InputText
                     id="province"
-                    value={data.province}
+                    value={province.value}
                     onChange={(e) => onChange('province', e.target.value)}
                     className={classNames({ 'p-invalid': errors.province })}
                 />
                 {errors.province && <small className="p-error">{errors.province}</small>}
             </div>
             <div className="field col-12 md:col-3">
-                <label htmlFor="municipality" className={classNames({ 'p-error': errors.municipality })}>Municipio</label>
+                <label htmlFor="municipality"
+                       className={classNames({ 'p-error': errors.municipality })}>Municipio</label>
                 <InputText
                     id="municipality"
-                    value={data.municipality}
+                    value={municipality.value}
                     onChange={(e) => onChange('municipality', e.target.value)}
                     className={classNames({ 'p-invalid': errors.municipality })}
                 />
@@ -139,7 +155,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 <label htmlFor="district" className={classNames({ 'p-error': errors.district })}>Distrito</label>
                 <InputText
                     id="district"
-                    value={data.district}
+                    value={district.value}
                     onChange={(e) => onChange('district', e.target.value)}
                     className={classNames({ 'p-invalid': errors.district })}
                 />
@@ -149,7 +165,7 @@ const ProducerAuthorStep: React.FC<ProducerAuthorStepProps> = ({
                 <label htmlFor="locality" className={classNames({ 'p-error': errors.locality })}>Localidad</label>
                 <InputText
                     id="locality"
-                    value={data.locality}
+                    value={locality.value}
                     onChange={(e) => onChange('locality', e.target.value)}
                     className={classNames({ 'p-invalid': errors.locality })}
                 />

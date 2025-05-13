@@ -21,15 +21,21 @@ export const emptyTypology: TypologyResponse = {
 };
 
 export const TypologyService = {
-    getTypologies: async () => {
-        const url = WebEnvConst.typology.getAll;
+    getTypologies: async (active?: boolean) => {
+        let url = WebEnvConst.typology.getAll;
+
+        if (active) {
+            url = `${url}?active=${active}`;
+        }
+
         return await get<TypologyResponse[]>(url);
     },
 
     async updateTypology(uuid: string, updated: Omit<TypologyResponse, 'uuid'>) {
         const url = WebEnvConst.typology.getOne(uuid);
         const { name, description, active } = updated;
-        return await patch<TypologyResponse[]>(url, { name, description, active });
+        await patch<TypologyResponse[]>(url, { name, description, active });
+        return true
     },
 
     async create(data: TypologyResponse) {
@@ -39,7 +45,7 @@ export const TypologyService = {
 
     async deleteTypology(uuid: string) {
         const url = WebEnvConst.typology.getOne(uuid);
-        return await del<TypologyResponse[]>(url);
+        return await del<void>(url);
     },
 
     async getTypologyById(uuid: string) {
