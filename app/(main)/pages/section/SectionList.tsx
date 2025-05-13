@@ -31,9 +31,21 @@ export function SectionList() {
         setDeleteDialog
     } = useHookSection();
 
+    const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
+        ...item,
+        // Convert only if they are not already Date objects
+        createdAt: typeof item.createdAt === 'string' ? new Date(item.createdAt) : item.createdAt,
+        updatedAt: typeof item.updatedAt === 'string' ? new Date(item.updatedAt) : item.updatedAt,
+    }));
+
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
+        description: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
+        createdAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
+        updatedAt: {value: null, matchMode: FilterMatchMode.DATE_IS},
     });
+
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
     const dt = useRef<DataTable<SectionResponse[]>>(null);
@@ -123,7 +135,7 @@ export function SectionList() {
                     />
                     <TableCustom
                         dt={dt}
-                        datum={Array.isArray(datum) ? datum : []}
+                        datum={processedDatum}
                         selects={selects}
                         setSelects={setSelects}
                         globalFilter={globalFilter}

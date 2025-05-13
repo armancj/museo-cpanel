@@ -101,7 +101,7 @@ export const WebEnvConst = {
     reproductionConditions: {
         getAll: '/nomenclator/reproduction-conditions',
         post: '/nomenclator/reproduction-conditions',
-        getOne: (uuid: string) => `/reproduction-conditions/${uuid}`
+        getOne: (uuid: string) => `/nomenclator/reproduction-conditions/${uuid}`
     },
     section: {
         getAll: '/section',

@@ -6,7 +6,6 @@ import { ConservationStatusResponse } from '@/app/service/ConservationStatusServ
 import { ColumnProps } from 'primereact/column';
 import styles from './ButtonStyles.module.css';
 import { CountryResponse } from '@/app/service/CountryService';
-import { FilterMatchMode } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
 
 interface TableBodyFunctionProps {

@@ -29,7 +29,6 @@ export const ReproductionConditionsService = {
     async updateReproductionConditions(uuid: string, reproductionConditionsUpdated: Omit<ReproductionConditionsResponse, 'uuid' | 'deleted'>) {
         const url = WebEnvConst.reproductionConditions.getOne(uuid);
         const { name, description } = reproductionConditionsUpdated;
-
         return await patch<boolean>(url, { name, description });
     },
 
