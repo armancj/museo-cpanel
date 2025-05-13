@@ -1,9 +1,8 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Ripple } from 'primereact/ripple';
 import { classNames } from 'primereact/utils';
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 // @ts-ignore
 import { CSSTransition } from 'react-transition-group';
 import { MenuContext } from './context/menucontext';
@@ -14,10 +13,13 @@ const AppMenuitem = (props: AppMenuItemProps) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { activeMenu, setActiveMenu } = useContext(MenuContext);
+
     const item = props.item;
     const key = props.parentKey ? props.parentKey + '-' + props.index : String(props.index);
     const isActiveRoute = item!.to && pathname === item!.to;
     const active = activeMenu === key || activeMenu.startsWith(key + '-');
+    const nodeRef = useRef<HTMLUListElement>(null);
+
     const onRouteChange = (url: string) => {
         if (item!.to && item!.to === url) {
             setActiveMenu(key);
@@ -47,8 +49,13 @@ const AppMenuitem = (props: AppMenuItemProps) => {
     };
 
     const subMenu = item!.items && item!.visible !== false && (
-        <CSSTransition timeout={{ enter: 1000, exit: 450 }} classNames="layout-submenu" in={props.root ? true : active} key={item!.label}>
-            <ul>
+        <CSSTransition
+            timeout={{ enter: 1000, exit: 450 }}
+            classNames="layout-submenu"
+            in={props.root ? true : active}
+            nodeRef={nodeRef}
+        >
+            <ul ref={nodeRef}>
                 {item!.items.map((child, i) => {
                     return <AppMenuitem item={child} index={i} className={child.badgeClass} parentKey={key} key={child.label} />;
                 })}

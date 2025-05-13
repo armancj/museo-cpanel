@@ -72,5 +72,45 @@ export const WebEnvConst = {
         getAll: '/institutions',
         post: '/institutions',
         getOne: (uuid: string) => `/institutions/${uuid}`,
+    },
+    conservationStatus: {
+        getAll: '/conservation-status',
+        post: '/conservation-status',
+        getOne: (uuid: string) => `/conservation-status/${uuid}`
+    },
+    entryForm: {
+        getAll: '/entry-form',
+        post: '/entry-form',
+        getOne: (uuid: string) => `/entry-form/${uuid}`
+    },
+    fundTitle: {
+        getAll: '/fund-title',
+        post: '/fund-title',
+        getOne: (uuid: string) => `/fund-title/${uuid}`
+    },
+    genericClassification: {
+        getAll: '/generic-classification',
+        post: '/generic-classification',
+        getOne: (uuid: string) => `/generic-classification/${uuid}`
+    },
+    heritageType: {
+        getAll: '/heritage-type',
+        post: '/heritage-type',
+        getOne: (uuid: string) => `/heritage-type/${uuid}`
+    },
+    reproductionConditions: {
+        getAll: '/nomenclator/reproduction-conditions',
+        post: '/nomenclator/reproduction-conditions',
+        getOne: (uuid: string) => `/reproduction-conditions/${uuid}`
+    },
+    section: {
+        getAll: '/section',
+        post: '/section',
+        getOne: (uuid: string) => `/section/${uuid}`
+    },
+    valueGrade: {
+        getAll: '/value-grade',
+        post: '/value-grade',
+        getOne: (uuid: string) => `/value-grade/${uuid}`
     }
 };

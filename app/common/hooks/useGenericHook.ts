@@ -41,7 +41,7 @@ export const useGenericHook = <ResponseType>({
 
     useEffect(() => {
         service.fetchAll().then((data) => setSelects(data));
-    }, [service]);
+    }, []);
 
     const save = async (product: string = 'Nofound') => {
         console.log({ save: data});

@@ -38,6 +38,13 @@ export default function NomenclatureAccessConditions() {
         setDeleteDialog
     } = useHookNomenclatureAccessConditions()
 
+    const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
+        ...item,
+        // Convert only if they are not already Date objects
+        createdAt: typeof item.createdAt === 'string' ? new Date(item.createdAt) : item.createdAt,
+        updatedAt: typeof item.updatedAt === 'string' ? new Date(item.updatedAt) : item.updatedAt,
+    }));
+
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         type: { value: null, matchMode: FilterMatchMode.STARTS_WITH},
@@ -147,7 +154,7 @@ export default function NomenclatureAccessConditions() {
                     />
                     <TableCustom
                         dt={dt}
-                        datum={Array.isArray(datum) ? datum : []}
+                        datum={processedDatum}
                         selects={selects}
                         setSelects={setSelects}
                         globalFilter={globalFilter}

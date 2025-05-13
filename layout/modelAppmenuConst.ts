@@ -56,6 +56,46 @@ export const model: AppMenuItem[] = [
                 icon: 'pi pi-fw pi-unlock',
                 to: '/pages/nomenclator-access-conditions'
             },
+            {
+                label: 'Estado de Conservación',
+                icon: 'pi pi-fw pi-shield',
+                to: '/pages/conservation-status'
+            },
+            {
+                label: 'Formulario de Entrada',
+                icon: 'pi pi-fw pi-file-edit',
+                to: '/pages/entry-form'
+            },
+            {
+                label: 'Título de Fondo',
+                icon: 'pi pi-fw pi-folder',
+                to: '/pages/fund-title'
+            },
+            {
+                label: 'Clasificación Genérica',
+                icon: 'pi pi-fw pi-tag',
+                to: '/pages/generic-classification'
+            },
+            {
+                label: 'Tipo de Patrimonio',
+                icon: 'pi pi-fw pi-history',
+                to: '/pages/heritage-type'
+            },
+            {
+                label: 'Condiciones de Reproducción',
+                icon: 'pi pi-fw pi-copy',
+                to: '/pages/reproduction-conditions'
+            },
+            {
+                label: 'Sección',
+                icon: 'pi pi-fw pi-list',
+                to: '/pages/section'
+            },
+            {
+                label: 'Grado de Valor',
+                icon: 'pi pi-fw pi-star',
+                to: '/pages/value-grade'
+            },
         ]
     },
     {

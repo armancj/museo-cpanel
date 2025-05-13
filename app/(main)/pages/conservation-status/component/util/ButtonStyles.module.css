@@ -1,0 +1,22 @@
+/* ButtonStyles.module.scss */
+
+/* Estilo para el botón activo en estado de hover */
+.p-button-danger:hover {
+    background-color: red !important;
+    border-color: red !important;
+}
+
+/* Estilo para el botón inactivo en estado de hover */
+.p-button-success:hover {
+    background-color: green !important;
+    border-color: green !important;
+}
+
+
+.formattedDate {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #f4f4f4;
+    color: #333;
+}
