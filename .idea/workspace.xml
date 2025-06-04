@@ -18,13 +18,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`">
-      <change afterPath="$PROJECT_DIR$/docs/tasks.md" afterDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/service/DashboardService.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/service/utilities/ConservationStatusEnum.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -108,6 +119,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "develop",
     "ignore.virus.scanning.warn.message": "true",
@@ -124,12 +136,18 @@
     "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
     "nodejs_package_manager_path": "pnpm",
     "npm.Next.js: server-side.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "settings.nodejs",
     "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mongo"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
@@ -170,7 +188,7 @@
       <workItem from="1745421753216" duration="6998000" />
       <workItem from="1745450739794" duration="3089000" />
       <workItem from="1745801749691" duration="147000" />
-      <workItem from="1749053002579" duration="1101000" />
+      <workItem from="1749053002579" duration="11135000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -284,7 +302,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749054502239</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements">
+      <option name="closed" value="true" />
+      <created>1749054712809</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1749054712809</updated>
+    </task>
+    <task id="LOCAL-00016" summary="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes">
+      <option name="closed" value="true" />
+      <created>1749054905798</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1749054905798</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,6 +353,8 @@
     <MESSAGE value="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props" />
     <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`" />
+    <MESSAGE value="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements" />
+    <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
   </component>
 </project>
