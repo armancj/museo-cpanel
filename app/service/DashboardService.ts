@@ -129,8 +129,6 @@ export const DashboardService = {
             })
             .slice(0, 5);
 
-        console.log(latestEntries)
-
         return {
             totalObjects,
             recentEntries,
@@ -146,6 +144,8 @@ export const DashboardService = {
     // Get heritage type distribution for charts
     getHeritageTypeDistribution: async (): Promise<HeritageTypeCount[]> => {
         const stats = await DashboardService.getDashboardStats();
+
+        console.log('heritage type',stats.objectsByHeritageType);
         return Object.entries(stats.objectsByHeritageType).map(([name, count]) => ({
             name,
             count

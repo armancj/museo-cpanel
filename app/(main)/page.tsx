@@ -154,6 +154,7 @@ const Dashboard = () => {
 
                 // Obtener distribución por tipo de patrimonio
                 const heritageTypes = await DashboardService.getHeritageTypeDistribution();
+                console.log('heritage', heritageTypes);
                 setHeritageTypeData(heritageTypes);
 
                 const labels = stats.objectsByConservationStatusWithColors.map(item => item.state);

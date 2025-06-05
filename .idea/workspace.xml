@@ -18,8 +18,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/DashboardService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/DashboardService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,6 +188,7 @@
       <workItem from="1745801749691" duration="147000" />
       <workItem from="1749053002579" duration="11354000" />
       <workItem from="1749073401209" duration="134000" />
+      <workItem from="1749150839579" duration="3105000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -323,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749065669519</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management">
+      <option name="closed" value="true" />
+      <created>1749150855679</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1749150855679</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -361,6 +372,7 @@
     <MESSAGE value="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements" />
     <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
     <MESSAGE value="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization" />
+    <MESSAGE value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
   </component>
 </project>
