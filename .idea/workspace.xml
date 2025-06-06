@@ -18,11 +18,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management">
-      <change afterPath="$PROJECT_DIR$/app/common/component/CulturalPropertyTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings">
+      <change afterPath="$PROJECT_DIR$/app/common/component/RecentActivityCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/DashboardService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/DashboardService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +189,7 @@
       <workItem from="1749053002579" duration="11354000" />
       <workItem from="1749073401209" duration="134000" />
       <workItem from="1749150839579" duration="3221000" />
-      <workItem from="1749210797918" duration="4704000" />
+      <workItem from="1749210797918" duration="5680000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -345,7 +343,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749156015664</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings">
+      <option name="closed" value="true" />
+      <created>1749215568132</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1749215568132</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -384,6 +390,7 @@
     <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
     <MESSAGE value="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization" />
     <MESSAGE value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
+    <MESSAGE value="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings" />
   </component>
 </project>

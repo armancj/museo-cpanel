@@ -17,6 +17,7 @@ import { Card } from 'primereact/card';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
 import CulturalPropertyTable from '@/app/common/component/CulturalPropertyTable';
+import RecentActivityCard from '@/app/common/component/RecentActivityCard';
 
 // Datos iniciales para los gráficos (se actualizarán con datos reales)
 const initialLineData: ChartData = {
@@ -368,46 +369,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="card">
-                    <div className="flex align-items-center justify-content-between mb-4">
-                        <h5>Actividad Reciente</h5>
-                        <div>
-                            <Button type="button" icon="pi pi-ellipsis-v" rounded text className="p-button-plain" onClick={(event) => menu2.current?.toggle(event)} />
-                            <Menu
-                                ref={menu2}
-                                popup
-                                model={[
-                                    { label: 'Exportar', icon: 'pi pi-fw pi-file-export' },
-                                    { label: 'Actualizar', icon: 'pi pi-fw pi-refresh' }
-                                ]}
-                            />
-                        </div>
-                    </div>
-
-                    <span className="block text-600 font-medium mb-3">ÚLTIMOS INGRESOS</span>
-                    <ul className="p-0 mx-0 mt-0 mb-4 list-none">
-                        {loading ? (
-                            <div className="flex justify-content-center p-3">
-                                <i className="pi pi-spin pi-spinner" style={{ fontSize: '1.5rem' }}></i>
-                            </div>
-                        ) : latestEntries.length > 0 ? (
-                            latestEntries.slice(0, 2).map((entry) => (
-                                <li key={entry.uuid} className="flex align-items-center py-2 border-bottom-1 surface-border">
-                                    <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                                        <i className="pi pi-box text-xl text-blue-500" />
-                                    </div>
-                                    <span className="text-900 line-height-3">
-                                        <span className="font-medium">{entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}</span>
-                                        <span className="text-700">
-                                            {' '}
-                                            ha sido ingresado como <span className="text-blue-500">{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
-                                        </span>
-                                    </span>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="text-center p-3">No hay ingresos recientes</li>
-                        )}
-                    </ul>
+                    < RecentActivityCard />
 
                     <span className="block text-600 font-medium mb-3">ESTADÍSTICAS</span>
                     <ul className="p-0 m-0 list-none">
