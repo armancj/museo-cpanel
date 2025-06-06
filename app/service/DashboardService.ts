@@ -97,13 +97,14 @@ export const DashboardService = {
                 const uniqueColors = new Set<string>();
 
                 if (state.includes('Bueno')) {
-                    color = '#28a745'; // Verde
+                    color = '#22c55e'; // Verde
                 } else if (state.includes('Regular')) {
-                    color = '#ffc107'; // Amarillo
+                    color = '#f97316'; //
                 } else if (state.includes('Malo')) {
-                    color = '#dc3545';
+                    color = '#dc2626';
                 } else {
-                    color = generateRandomColor(uniqueColors);
+                    //color = generateRandomColor(uniqueColors);
+                    color = '#0ea5e9'
                 }
                 return { state, count, color };
             }
@@ -144,8 +145,6 @@ export const DashboardService = {
     // Get heritage type distribution for charts
     getHeritageTypeDistribution: async (): Promise<HeritageTypeCount[]> => {
         const stats = await DashboardService.getDashboardStats();
-
-        console.log('heritage type',stats.objectsByHeritageType);
         return Object.entries(stats.objectsByHeritageType).map(([name, count]) => ({
             name,
             count

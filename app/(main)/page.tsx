@@ -16,6 +16,7 @@ import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heri
 import { Card } from 'primereact/card';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
+import CulturalPropertyTable from '@/app/common/component/CulturalPropertyTable';
 
 // Datos iniciales para los gráficos (se actualizarán con datos reales)
 const initialLineData: ChartData = {
@@ -42,6 +43,7 @@ const Dashboard = () => {
     const [lineData, setLineData] = useState<ChartData>(initialLineData);
     const [pieData, setPieData] = useState<ChartData>({ labels: [], datasets: [] });
     const [loading, setLoading] = useState<boolean>(true);
+
 
     // Referencias para los menús
     const menu1 = useRef<Menu | null>(null);
@@ -154,7 +156,6 @@ const Dashboard = () => {
 
                 // Obtener distribución por tipo de patrimonio
                 const heritageTypes = await DashboardService.getHeritageTypeDistribution();
-                console.log('heritage', heritageTypes);
                 setHeritageTypeData(heritageTypes);
 
                 const labels = stats.objectsByConservationStatusWithColors.map(item => item.state);
@@ -291,77 +292,7 @@ const Dashboard = () => {
             </div>
 
             <div className="col-12 xl:col-6">
-                <div className="card">
-                    <h5 className="p-mb-3" style={{ display: 'flex', alignItems: 'center', color: '#495057' }}>
-                        <i className="pi pi-clock p-mr-2" style={{ fontSize: '1.5rem', color: '#007ad9' }}></i>
-                        Ingresos Recientes de Objetos Museables
-                    </h5>
-
-                    <DataTable
-                        value={latestEntries}
-                        rows={5}
-                        paginator
-                        scrollable
-                        scrollHeight="400px"
-                        loading={loading}
-                        stripedRows
-                        responsiveLayout="scroll"
-                        emptyMessage="¡No hay objetos recientes por mostrar!"
-                        className="p-datatable-striped"
-                        style={{ fontSize: '0.95rem' }}
-                    >
-                        <Column
-                            field="culturalRecord.objectTitle.value"
-                            header="🥇 Nombre"
-                            sortable
-                            style={{ width: '35%', fontWeight: 'bold' }}
-                            body={(data) => (
-                                <span style={{ color: '#007ad9', fontWeight: '500' }}>{data?.culturalRecord?.objectTitle?.value}</span>
-                            )}
-                        />
-                        <Column
-                            field="culturalRecord.heritageType.value"
-                            header="🎨 Tipo"
-                            sortable
-                            style={{ width: '25%', fontWeight: 'bold' }}
-                            body={(data) => (
-                                <Tag
-                                    value={data?.culturalRecord?.heritageType?.value}
-                                    severity="success"
-                                    style={{ fontSize: '0.88rem' }}
-                                />
-                            )}
-                        />
-                        <Column
-                            field="culturalRecord.entryDate.value"
-                            header="📅 Fecha"
-                            sortable
-                            body={(data) => (
-                                <Tag
-                                    value={formatDate(data?.createdAt)}
-                                    severity="info"
-
-                                    style={{ fontSize: '0.88rem' }}
-                                />
-                            )}
-                            style={{ width: '25%', fontWeight: 'bold' }}
-                        />
-                        <Column
-                            header="🔍 Acción"
-                            body={(data) => (
-                                <Link href={`/cultural-property-heritage/${data.uuid}`}>
-                                    <Button
-                                        icon="pi pi-search"
-                                        label="Ver"
-                                        className="p-button-rounded p-button-text p-button-help"
-                                        style={{ fontSize: '0.9rem' }}
-                                    />
-                                </Link>
-                            )}
-                            style={{ width: '15%', textAlign: 'center' }}
-                        />
-                    </DataTable>
-                </div>
+                <CulturalPropertyTable latestEntries={latestEntries} loading={loading} />
 
                 <div className="card">
                     <div className="flex justify-content-between align-items-center mb-5">
@@ -465,7 +396,7 @@ const Dashboard = () => {
                                         <i className="pi pi-box text-xl text-blue-500" />
                                     </div>
                                     <span className="text-900 line-height-3">
-                                        <span className="font-medium">{entry.entryAndLocation?.objectName?.value || 'Objeto Museable'}</span>
+                                        <span className="font-medium">{entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}</span>
                                         <span className="text-700">
                                             {' '}
                                             ha sido ingresado como <span className="text-blue-500">{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
