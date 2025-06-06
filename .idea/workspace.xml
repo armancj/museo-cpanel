@@ -18,9 +18,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="- feat: add `RecentActivityCard` component and integrate into the main page&#10;&#10;  - Extract recent activity functionality into the new reusable `RecentActivityCard` component&#10;  - Add export to CSV and refresh functionalities within the component&#10;  - Replace inline activity implementation in the main page with `RecentActivityCard` usage&#10;&#10;- chore: update `.idea` workspace configuration&#10;&#10;  - Synchronize workspace settings with recent project changes&#10;  - Update task details and entries for improved development tracking">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking">
       <change beforePath="$PROJECT_DIR$/app/common/component/RecentActivityCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/component/RecentActivityCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/DashboardService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/DashboardService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +188,7 @@
       <workItem from="1749053002579" duration="11354000" />
       <workItem from="1749073401209" duration="134000" />
       <workItem from="1749150839579" duration="3221000" />
-      <workItem from="1749210797918" duration="8908000" />
+      <workItem from="1749210797918" duration="9857000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -359,7 +358,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749216546567</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking">
+      <option name="closed" value="true" />
+      <created>1749219788013</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1749219788013</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -400,7 +407,9 @@
     <MESSAGE value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
     <MESSAGE value="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings" />
     <MESSAGE value="- feat: add `RecentActivityCard` component and integrate into the main page&#10;&#10;  - Extract recent activity functionality into the new reusable `RecentActivityCard` component&#10;  - Add export to CSV and refresh functionalities within the component&#10;  - Replace inline activity implementation in the main page with `RecentActivityCard` usage&#10;&#10;- chore: update `.idea` workspace configuration&#10;&#10;  - Synchronize workspace settings with recent project changes&#10;  - Update task details and entries for improved development tracking" />
-    <option name="LAST_COMMIT_MESSAGE" value="- feat: add `RecentActivityCard` component and integrate into the main page&#10;&#10;  - Extract recent activity functionality into the new reusable `RecentActivityCard` component&#10;  - Add export to CSV and refresh functionalities within the component&#10;  - Replace inline activity implementation in the main page with `RecentActivityCard` usage&#10;&#10;- chore: update `.idea` workspace configuration&#10;&#10;  - Synchronize workspace settings with recent project changes&#10;  - Update task details and entries for improved development tracking" />
+    <MESSAGE value="- feat: enhance `RecentActivityCard` with dynamic heritage type icons and improved entries display&#10;&#10;  - Add dynamic icons and styles for heritage types via `getHeritageData` function&#10;  - Increase recent entries limit from 2 to 4 with proper icon and style rendering&#10;  - Refactor entry loop logic for cleaner and more flexible implementation&#10;  - Simplify sorting logic in `DashboardService` for latest entries retrieval" />
+    <MESSAGE value="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking" />
+    <option name="LAST_COMMIT_MESSAGE" value="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

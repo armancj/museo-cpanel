@@ -5,37 +5,38 @@ import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 import { DashboardService } from '@/app/service/DashboardService';
 import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import * as XLSX from 'xlsx';
 
 // Función para exportar datos en formato CSV
-const exportToCSV = (data: CulturalPropertyModel[], fileName: string) => {
+const exportToExcel = (data: CulturalPropertyModel[], fileName: string) => {
     if (data.length === 0) {
         alert('No hay actividades recientes para exportar.');
         return;
     }
 
-    // Generar contenido CSV
-    const csvRows = [
-        ['UUID', 'Nombre del Objeto', 'Tipo de Patrimonio', 'Fecha de Creación'], // Encabezado
-        ...data.map((entry) => [
-            entry.uuid,
-            entry.culturalRecord?.objectTitle?.value || 'N/A',
-            entry.entryAndLocation?.heritageType?.value || 'N/A',
-            new Date(entry.createdAt).toLocaleDateString('es-ES') // Formatear fecha
-        ])
-    ];
+    // Generar los encabezados y las filas de datos
+    const headers = ['Nombre del Objeto', 'Tipo de Patrimonio', 'Fecha de Creación'];
+    const rows = data.map((entry) => [
+        entry.culturalRecord?.objectTitle?.value || 'N/A',
+        entry.entryAndLocation?.heritageType?.value || 'N/A',
+        new Date(entry.createdAt).toLocaleDateString('es-ES')
+    ]);
 
-    const csvContent = csvRows.map((row) => row.join(',')).join('\n');
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
 
-    // Crear un enlace para la descarga
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', fileName);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const columnWidths = headers.map((header, index) =>
+        Math.max(
+            header.length, // Largo del encabezado
+            ...rows.map((row) => row[index]?.toString().length || 0) // Largo de cada celda en esa columna
+        )
+    );
+
+    worksheet['!cols'] = columnWidths.map((width) => ({ wch: width + 2 })); // +2 para agregar un margen adicional
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos Exportados');
+
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
 };
 
 // Función que retorna el icono basado en el valor de heritageType
@@ -120,7 +121,8 @@ const RecentActivityCard = () => {
                             {
                                 label: 'Exportar',
                                 icon: 'pi pi-fw pi-file-export',
-                                command: () => exportToCSV(latestEntries, 'actividades_recientes.csv') // Exportar
+                                command: () => exportToExcel
+                                (latestEntries, 'actividades_recientes')
                             },
                             {
                                 label: 'Actualizar',
