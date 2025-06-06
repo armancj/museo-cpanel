@@ -163,7 +163,6 @@ const RecentActivityCard = () => {
                             </li>
                         );
                     })}
-
                 </ul>
             ) : (
                 <p className="text-center">No hay ingresos recientes</p>
