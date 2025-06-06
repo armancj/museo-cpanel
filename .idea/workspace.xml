@@ -18,7 +18,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="chore: remove redundant whitespace in `RecentActivityCard` component">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context">
+      <change afterPath="$PROJECT_DIR$/app/common/component/LogoLanding.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(full-page)/landing/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/landing/page.tsx" afterDir="false" />
     </list>
@@ -189,7 +190,7 @@
       <workItem from="1749053002579" duration="11354000" />
       <workItem from="1749073401209" duration="134000" />
       <workItem from="1749150839579" duration="3221000" />
-      <workItem from="1749210797918" duration="13575000" />
+      <workItem from="1749210797918" duration="16557000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -383,7 +384,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749220802326</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context">
+      <option name="closed" value="true" />
+      <created>1749224501245</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1749224501245</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -401,7 +410,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements." />
     <MESSAGE value="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration." />
     <MESSAGE value="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature." />
     <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
@@ -426,7 +434,8 @@
     <MESSAGE value="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking" />
     <MESSAGE value="feat: update export functionality in `RecentActivityCard`&#10;&#10;- Replace CSV export method with Excel export using `xlsx` library&#10;- Add formatted headers and dynamic column widths for improved output readability&#10;- Update export command to integrate new Excel export functionality" />
     <MESSAGE value="chore: remove redundant whitespace in `RecentActivityCard` component" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: remove redundant whitespace in `RecentActivityCard` component" />
+    <MESSAGE value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
