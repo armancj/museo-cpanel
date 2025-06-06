@@ -16,7 +16,7 @@ const BlogPage = () => {
     const [searchValue, setSearchValue] = useState('');
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Artículos de blog de ejemplo

@@ -15,7 +15,7 @@ const DocumentacionPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Estado para los filtros

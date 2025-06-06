@@ -15,7 +15,7 @@ const PreguntasFrecuentesPage = () => {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Categorías de preguntas

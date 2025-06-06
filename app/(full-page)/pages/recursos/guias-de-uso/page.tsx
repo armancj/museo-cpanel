@@ -11,7 +11,7 @@ const GuiasDeUsoPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Guías de ejemplo

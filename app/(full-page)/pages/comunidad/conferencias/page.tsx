@@ -13,7 +13,7 @@ const ConferenciasPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Conferencias de ejemplo

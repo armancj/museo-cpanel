@@ -20,7 +20,7 @@ const ContactoPage = () => {
     const [departamento, setDepartamento] = useState(null);
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     const departamentos = [

@@ -12,7 +12,7 @@ const EventosPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Eventos de ejemplo
