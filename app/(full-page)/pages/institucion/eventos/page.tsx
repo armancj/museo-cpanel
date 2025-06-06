@@ -6,12 +6,13 @@ import { useRouter } from 'next/navigation';
 import { Timeline } from 'primereact/timeline';
 import { Card } from 'primereact/card';
 import { Badge } from 'primereact/badge';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const EventosPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Eventos de ejemplo
@@ -85,7 +86,7 @@ const EventosPage = () => {
         }
     };
 
-    const customizedMarker = (item) => {
+    const customizedMarker = (item: { icono: string | undefined }) => {
         return (
             <span className="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1" style={{ backgroundColor: '#926941' }}>
                 <i className={item.icono}></i>
@@ -93,14 +94,24 @@ const EventosPage = () => {
         );
     };
 
-    const customizedContent = (item) => {
+    const customizedContent = (item: {
+        estado: string;
+        titulo: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+        fecha: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+        lugar: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+        descripcion: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+    }) => {
         return (
             <Card className="mb-3" style={{ borderLeft: `4px solid ${item.estado === 'Próximo' ? '#2196F3' : item.estado === 'Activo' ? '#4CAF50' : '#9E9E9E'}` }}>
                 <div className="flex justify-content-between align-items-center mb-2">
-                    <h3 className="m-0" style={{ color: '#926941' }}>{item.titulo}</h3>
+                    <h3 className="m-0" style={{ color: '#926941' }}>
+                        {item.titulo}
+                    </h3>
                     <Badge value={item.estado} severity={getStatusColor(item.estado)}></Badge>
                 </div>
-                <p className="text-700 text-sm m-0 mb-2">{item.fecha} | {item.lugar}</p>
+                <p className="text-700 text-sm m-0 mb-2">
+                    {item.fecha} | {item.lugar}
+                </p>
                 <p className="line-height-3 text-700 mb-3">{item.descripcion}</p>
                 <Button label="Ver detalles" className="p-button-outlined" style={{ color: '#926941', borderColor: '#926941' }} />
             </Card>

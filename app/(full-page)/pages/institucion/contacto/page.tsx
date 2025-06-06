@@ -1,13 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const ContactoPage = () => {
     const router = useRouter();
@@ -20,7 +20,7 @@ const ContactoPage = () => {
     const [departamento, setDepartamento] = useState(null);
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     const departamentos = [
@@ -32,11 +32,12 @@ const ContactoPage = () => {
         { name: 'Relaciones Institucionales', code: 'RI' }
     ];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         // Validación básica
         if (!nombre || !email || !asunto || !mensaje || !departamento) {
+            // @ts-ignore
             toast.current.show({
                 severity: 'error',
                 summary: 'Error',
@@ -47,6 +48,7 @@ const ContactoPage = () => {
         }
 
         // Simulación de envío exitoso
+        // @ts-ignore
         toast.current.show({
             severity: 'success',
             summary: 'Mensaje Enviado',

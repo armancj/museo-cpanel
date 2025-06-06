@@ -7,6 +7,7 @@ import { Accordion, AccordionTab } from 'primereact/accordion';
 import { InputText } from 'primereact/inputtext';
 import { Divider } from 'primereact/divider';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const PreguntasFrecuentesPage = () => {
     const router = useRouter();
@@ -14,7 +15,7 @@ const PreguntasFrecuentesPage = () => {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Categorías de preguntas

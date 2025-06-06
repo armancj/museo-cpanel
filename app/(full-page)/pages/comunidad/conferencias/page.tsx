@@ -7,12 +7,13 @@ import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
 import { Timeline } from 'primereact/timeline';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const ConferenciasPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Conferencias de ejemplo
@@ -145,7 +146,7 @@ const ConferenciasPage = () => {
         }
     ];
 
-    const getModalidadSeverity = (modalidad) => {
+    const getModalidadSeverity = (modalidad: any) => {
         switch (modalidad) {
             case 'Presencial':
                 return 'success';
@@ -158,26 +159,36 @@ const ConferenciasPage = () => {
         }
     };
 
-    const getEstadoSeverity = (estado) => {
+    const getEstadoSeverity = (estado: string) => {
         return estado === 'Próxima' ? 'warning' : 'success';
     };
 
-    const header = (conferencia) => (
+    const header = (
+        conference:
+            | { id: number; titulo: string; fecha: string; hora: string; lugar: string; modalidad: string; ponente: string; cargo: string; descripcion: string; imagen: string; estado: string; grabacion?: undefined }
+            | { id: number; titulo: string; fecha: string; hora: string; lugar: string; modalidad: string; ponente: string; cargo: string; descripcion: string; imagen: string; estado: string; grabacion: string }
+    ) => (
         <div className="relative">
-            <img src={conferencia.imagen} alt={conferencia.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
+            <img src={conference.imagen} alt={conference.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
             <div className="absolute flex gap-2" style={{ top: '10px', right: '10px' }}>
-                <Tag value={conferencia.modalidad} severity={getModalidadSeverity(conferencia.modalidad)} />
-                <Tag value={conferencia.estado} severity={getEstadoSeverity(conferencia.estado)} />
+                <Tag value={conference.modalidad} severity={getModalidadSeverity(conference.modalidad)} />
+                <Tag value={conference.estado} severity={getEstadoSeverity(conference.estado)} />
             </div>
         </div>
     );
 
-    const footer = (conferencia) => (
+    const footer = (
+        conference:
+            | { id: number; titulo: string; fecha: string; hora: string; lugar: string; modalidad: string; ponente: string; cargo: string; descripcion: string; imagen: string; estado: string; grabacion?: undefined }
+            | { id: number; titulo: string; fecha: string; hora: string; lugar: string; modalidad: string; ponente: string; cargo: string; descripcion: string; imagen: string; estado: string; grabacion: string }
+    ) => (
         <div className="flex justify-content-between align-items-center">
-            <span className="text-sm text-500">{conferencia.fecha} | {conferencia.hora}</span>
+            <span className="text-sm text-500">
+                {conference.fecha} | {conference.hora}
+            </span>
             <Button
-                label={conferencia.estado === 'Próxima' ? 'Inscribirse' : 'Ver Grabación'}
-                icon={conferencia.estado === 'Próxima' ? 'pi pi-calendar-plus' : 'pi pi-video'}
+                label={conference.estado === 'Próxima' ? 'Inscribirse' : 'Ver Grabación'}
+                icon={conference.estado === 'Próxima' ? 'pi pi-calendar-plus' : 'pi pi-video'}
                 className="p-button-rounded"
                 style={{ backgroundColor: '#926941', border: 'none' }}
             />
@@ -192,7 +203,10 @@ const ConferenciasPage = () => {
         );
     };
 
-    const customizedContent = (item) => {
+    const customizedContent = (item: {
+        fecha: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+        eventos: any[];
+    }) => {
         return (
             <div className="mb-5">
                 <h5 className="m-0 font-bold">{item.fecha}</h5>
@@ -206,9 +220,7 @@ const ConferenciasPage = () => {
                             <p className="text-700 m-0 mb-2">Ponente: {evento.ponente}</p>
                             <div className="flex justify-content-between align-items-center">
                                 <span className="text-sm text-500">{evento.fecha}</span>
-                                {evento.grabacion && (
-                                    <Button label="Ver Grabación" icon="pi pi-video" className="p-button-text p-button-sm" style={{ color: '#926941' }} />
-                                )}
+                                {evento.grabacion && <Button label="Ver Grabación" icon="pi pi-video" className="p-button-text p-button-sm" style={{ color: '#926941' }} />}
                             </div>
                         </div>
                     ))}

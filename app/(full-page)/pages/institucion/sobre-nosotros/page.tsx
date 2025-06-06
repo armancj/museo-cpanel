@@ -7,7 +7,7 @@ const SobreNosotrosPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     return (

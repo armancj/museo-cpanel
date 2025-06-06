@@ -11,7 +11,7 @@ const NoticiasPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Noticias de ejemplo

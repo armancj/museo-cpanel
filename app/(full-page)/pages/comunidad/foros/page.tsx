@@ -11,12 +11,13 @@ import { Badge } from 'primereact/badge';
 import { Avatar } from 'primereact/avatar';
 import { Divider } from 'primereact/divider';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const ForosPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Estado para los filtros
@@ -131,7 +132,7 @@ const ForosPage = () => {
         { nombre: 'Sugerencias', temas: 18, mensajes: 145 }
     ];
 
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
         const value = e.target.value;
         let _filters = { ...filters };
 
@@ -155,7 +156,10 @@ const ForosPage = () => {
 
     const header = renderHeader();
 
-    const autorBodyTemplate = (rowData) => {
+    const autorBodyTemplate = (rowData: {
+        avatar: string | undefined;
+        autor: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+    }) => {
         return (
             <div className="flex align-items-center gap-2">
                 <Avatar image={rowData.avatar} shape="circle" size="small" />
@@ -164,10 +168,8 @@ const ForosPage = () => {
         );
     };
 
-    const estadoBodyTemplate = (rowData) => {
-        return (
-            <Badge value={rowData.estado} severity={rowData.estado === 'Activo' ? 'success' : 'info'} />
-        );
+    const estadoBodyTemplate = (rowData: { estado: string }) => {
+        return <Badge value={rowData.estado} severity={rowData.estado === 'Activo' ? 'success' : 'info'} />;
     };
 
     const accionesBodyTemplate = () => {

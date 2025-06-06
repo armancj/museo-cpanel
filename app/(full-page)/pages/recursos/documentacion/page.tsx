@@ -9,12 +9,13 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
 import { useState } from 'react';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const DocumentacionPage = () => {
     const router = useRouter();
 
     const handleBackClick = () => {
-        router.push('/landing');
+        router.push('/landing#about');
     };
 
     // Estado para los filtros
@@ -131,7 +132,7 @@ const DocumentacionPage = () => {
         }
     ];
 
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
         const value = e.target.value;
         let _filters = { ...filters };
 
@@ -154,21 +155,11 @@ const DocumentacionPage = () => {
 
     const header = renderHeader();
 
-    const formatoBodyTemplate = (rowData) => {
-        return (
-            <Tag
-                value={rowData.formato}
-                severity={
-                    rowData.formato === 'PDF' ? 'danger' :
-                    rowData.formato === 'DOCX' ? 'info' :
-                    rowData.formato === 'XLSX' ? 'success' :
-                    rowData.formato === 'PPTX' ? 'warning' : 'primary'
-                }
-            />
-        );
+    const formatoBodyTemplate = (rowData: { formato: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.PromiseLikeOfReactNode | null | undefined }) => {
+        return <Tag value={rowData.formato} severity={rowData.formato === 'PDF' ? 'danger' : rowData.formato === 'DOCX' ? 'info' : rowData.formato === 'XLSX' ? 'success' : rowData.formato === 'PPTX' ? 'warning' : 'primary'} />;
     };
 
-    const iconoBodyTemplate = (rowData) => {
+    const iconoBodyTemplate = (rowData: { icono: string | undefined }) => {
         return <i className={rowData.icono} style={{ fontSize: '1.5rem', color: '#926941' }}></i>;
     };
 
@@ -214,8 +205,6 @@ const DocumentacionPage = () => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     );
