@@ -119,15 +119,10 @@ export const DashboardService = {
             }
             return acc;
         }, {} as Record<string, number>);
-
-        // Get latest entries (sorted by entry date)
+        ;
         const latestEntries = [...culturalProperties]
-            .filter(item => item?.culturalRecord)
-            .sort((a, b) => {
-                const dateA = new Date(a.createdAt);
-                const dateB = new Date(b.createdAt);
-                return dateB.getTime() - dateA.getTime();
-            })
+            .filter(item => item)
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 5);
 
         return {

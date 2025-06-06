@@ -38,6 +38,44 @@ const exportToCSV = (data: CulturalPropertyModel[], fileName: string) => {
     document.body.removeChild(link);
 };
 
+// Función que retorna el icono basado en el valor de heritageType
+const heritageMap = new Map<string, { icon: string; color: string; bgColor: string }>([
+    ['Nombre', { icon: 'pi pi-question-circle', color: 'text-gray-500', bgColor: 'bg-gray-100' }],
+    ['Natural', { icon: 'pi pi-leaf', color: 'text-green-500', bgColor: 'bg-green-100' }],
+    ['Tangible', { icon: 'pi pi-box', color: 'text-orange-500', bgColor: 'bg-orange-100' }],
+    ['Mixto', { icon: 'pi pi-clone', color: 'text-purple-500', bgColor: 'bg-purple-100' }],
+    ['Mueble', { icon: 'pi pi-home', color: 'text-teal-500', bgColor: 'bg-teal-100' }],
+    ['Intangible', { icon: 'pi pi-sliders-h', color: 'text-yellow-500', bgColor: 'bg-yellow-100' }],
+    ['Inmueble', { icon: 'pi pi-building', color: 'text-blue-500', bgColor: 'bg-blue-100' }],
+    ['Documental', { icon: 'pi pi-file', color: 'text-red-500', bgColor: 'bg-red-100' }],
+    ['Digital', { icon: 'pi pi-desktop', color: 'text-indigo-500', bgColor: 'bg-indigo-100' }],
+    ['Industrial', { icon: 'pi pi-cog', color: 'text-gray-700', bgColor: 'bg-gray-200' }],
+    ['Arqueológico', { icon: 'pi pi-globe', color: 'text-brown-500', bgColor: 'bg-yellow-200' }],
+    ['Subacuático', { icon: 'pi pi-compass', color: 'text-cyan-500', bgColor: 'bg-cyan-100' }],
+    ['Local', { icon: 'pi pi-map-marker', color: 'text-pink-500', bgColor: 'bg-pink-100' }],
+    ['Mundial', { icon: 'pi pi-world', color: 'text-amber-500', bgColor: 'bg-amber-100' }],
+    ['Nacional', { icon: 'pi pi-flag', color: 'text-lime-500', bgColor: 'bg-lime-100' }],
+    ['Cultural', { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200' }],
+    ['Otro', { icon: 'pi pi-question-circle', color: 'text-gray-400', bgColor: 'bg-gray-100' }]
+]);
+
+
+const getHeritageData = (heritageType: string | undefined): { icon: string; color: string, bgColor: string } => {
+    if (!heritageType) return { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200' };
+
+    // @ts-ignore
+    for (const [key, data] of heritageMap.entries()) {
+        if (heritageType.includes(key)) {
+            return data;
+        }
+    }
+
+    // Si no hay coincidencias, valores por defecto
+    return { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200'  };
+};
+
+
+
 // Componente de "Actividad Reciente"
 const RecentActivityCard = () => {
     const menuRef = useRef<Menu | null>(null);
@@ -103,20 +141,27 @@ const RecentActivityCard = () => {
                 </div>
             ) : latestEntries.length > 0 ? (
                 <ul className="p-0 mx-0 mt-0 mb-4 list-none">
-                    {latestEntries.slice(0, 2).map((entry) => (
-                        <li key={entry.uuid} className="flex align-items-center py-2 border-bottom-1 surface-border">
-                            <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                                <i className="pi pi-box text-xl text-blue-500" />
-                            </div>
-                            <span className="text-900 line-height-3">
-                                <span className="font-medium">{entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}</span>
-                                <span className="text-700">
-                                    {' '}
-                                    ha sido ingresado como <span className="text-blue-500">{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
-                                </span>
-                            </span>
-                        </li>
-                    ))}
+                    {latestEntries.slice(0, 4).map((entry) => {
+                        const { icon, color, bgColor } = getHeritageData(entry.entryAndLocation?.heritageType?.value);
+                        return (
+                            <li key={entry.uuid} className="flex align-items-center py-2 border-bottom-1 surface-border">
+                                <div
+                                    className={`w-3rem h-3rem flex align-items-center justify-content-center ${bgColor} border-circle mr-3 flex-shrink-0`}
+                                >
+                                    {/* Ícono dinámico con color */}
+                                    <i className={`${icon} text-xl ${color}`} />
+                                </div>
+                                <span className="text-900 line-height-3">
+                    <span className="font-medium">{entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}</span>
+                    <span className="text-700">
+                        {' '}
+                        ha sido ingresado como <span className={color}>{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
+                    </span>
+                </span>
+                            </li>
+                        );
+                    })}
+
                 </ul>
             ) : (
                 <p className="text-center">No hay ingresos recientes</p>
