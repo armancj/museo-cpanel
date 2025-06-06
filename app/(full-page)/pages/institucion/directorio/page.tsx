@@ -7,6 +7,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const DirectorioPage = () => {
     const router = useRouter();
@@ -120,7 +121,7 @@ const DirectorioPage = () => {
         }
     ];
 
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
         const value = e.target.value;
         let _filters = { ...filters };
 
@@ -143,13 +144,11 @@ const DirectorioPage = () => {
 
     const header = renderHeader();
 
-    const fotoBodyTemplate = (rowData) => {
-        return (
-            <img src={rowData.foto} alt={rowData.nombre} className="w-3rem h-3rem border-circle shadow-2" />
-        );
+    const fotoBodyTemplate = (rowData: { foto: string | undefined; nombre: string | undefined }) => {
+        return <img src={rowData.foto} alt={rowData.nombre} className="w-3rem h-3rem border-circle shadow-2" />;
     };
 
-    const emailBodyTemplate = (rowData) => {
+    const emailBodyTemplate = (rowData: { email: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }) => {
         return (
             <a href={`mailto:${rowData.email}`} className="text-primary" style={{ color: '#926941' }}>
                 {rowData.email}

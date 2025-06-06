@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
 import { Tag } from 'primereact/tag';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const PublicacionesPage = () => {
     const router = useRouter();
@@ -97,8 +97,8 @@ const PublicacionesPage = () => {
         }
     };
 
-    const getTipoSeverity = (tipo) => {
-        switch (tipo) {
+    const getTipoSeverity = (type: any) => {
+        switch (type) {
             case 'Revista':
                 return 'info';
             case 'Catálogo':
@@ -116,22 +116,27 @@ const PublicacionesPage = () => {
         }
     };
 
-    const header = (publicacion) => (
+    const header = (publication: { id?: number; titulo: any; descripcion?: string; imagen: any; fecha?: string; autor?: string; tipo: any; tags?: string[] }) => (
         <div className="relative">
-            <img src={publicacion.imagen} alt={publicacion.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
-            <Tag value={publicacion.tipo} severity={getTipoSeverity(publicacion.tipo)} className="absolute" style={{ top: '10px', right: '10px' }} />
+            <img src={publication.imagen} alt={publication.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
+            <Tag value={publication.tipo} severity={getTipoSeverity(publication.tipo)} className="absolute" style={{ top: '10px', right: '10px' }} />
         </div>
     );
 
-    const footer = (publicacion) => (
+    const footer = (publication: { id?: number; titulo?: string; descripcion?: string; imagen?: string; fecha: any; autor?: string; tipo?: string; tags: any }) => (
         <div>
             <div className="flex flex-wrap gap-2 mb-3">
-                {publicacion.tags.map((tag, index) => (
-                    <Tag key={index} value={tag} severity={getTagSeverity(tag)} />
-                ))}
+                {publication.tags.map(
+                    (
+                        tag: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined,
+                        index: React.Key | null | undefined
+                    ) => (
+                        <Tag key={index} value={tag} severity={getTagSeverity(tag)} />
+                    )
+                )}
             </div>
             <div className="flex justify-content-between align-items-center">
-                <span className="text-sm text-500">{publicacion.fecha}</span>
+                <span className="text-sm text-500">{publication.fecha}</span>
                 <Button label="Leer más" icon="pi pi-arrow-right" className="p-button-text" style={{ color: '#926941' }} />
             </div>
         </div>
@@ -181,8 +186,6 @@ const PublicacionesPage = () => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { Avatar } from 'primereact/avatar';
 import { Chip } from 'primereact/chip';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const BlogPage = () => {
     const router = useRouter();
@@ -151,16 +152,18 @@ const BlogPage = () => {
         { nombre: 'Lic. Juan Martínez Soto', cargo: 'Jefe de Catalogación', articulos: 9, avatar: '/demo/images/login/museo-left.jpg' }
     ];
 
-    const filteredArticulos = searchValue.trim() === ''
-        ? articulos
-        : articulos.filter(articulo =>
-            articulo.titulo.toLowerCase().includes(searchValue.toLowerCase()) ||
-            articulo.resumen.toLowerCase().includes(searchValue.toLowerCase()) ||
-            articulo.autor.toLowerCase().includes(searchValue.toLowerCase()) ||
-            articulo.categorias.some(cat => cat.toLowerCase().includes(searchValue.toLowerCase()))
-        );
+    const filteredArticulos =
+        searchValue.trim() === ''
+            ? articulos
+            : articulos.filter(
+                  (articulo) =>
+                      articulo.titulo.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      articulo.resumen.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      articulo.autor.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      articulo.categorias.some((cat) => cat.toLowerCase().includes(searchValue.toLowerCase()))
+              );
 
-    const getCategorySeverity = (category) => {
+    const getCategorySeverity = (category: any) => {
         switch(category) {
             case 'Digitalización':
             case 'Tecnología':
@@ -182,7 +185,7 @@ const BlogPage = () => {
         }
     };
 
-    const header = (articulo) => (
+    const header = (articulo: { id?: number; titulo: any; resumen?: string; contenido?: string; imagen: any; fecha?: string; autor?: string; cargo?: string; avatar?: string; categorias?: string[]; destacado: any }) => (
         <div className="relative">
             <img src={articulo.imagen} alt={articulo.titulo} className="w-full" style={{ height: '250px', objectFit: 'cover' }} />
             {articulo.destacado && (
@@ -193,12 +196,17 @@ const BlogPage = () => {
         </div>
     );
 
-    const footer = (articulo) => (
+    const footer = (articulo: { id?: number; titulo?: string; resumen?: string; contenido?: string; imagen?: string; fecha: any; autor?: string; cargo?: string; avatar?: string; categorias: any; destacado?: boolean }) => (
         <div>
             <div className="flex flex-wrap gap-2 mb-3">
-                {articulo.categorias.map((categoria, index) => (
-                    <Tag key={index} value={categoria} severity={getCategorySeverity(categoria)} />
-                ))}
+                {articulo.categorias.map(
+                    (
+                        categoria: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined,
+                        index: React.Key | null | undefined
+                    ) => (
+                        <Tag key={index} value={categoria} severity={getCategorySeverity(categoria)} />
+                    )
+                )}
             </div>
             <div className="flex justify-content-between align-items-center">
                 <span className="text-sm text-500">{articulo.fecha}</span>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Card } from 'primereact/card';
+import { LogoLanding } from '@/app/common/component/LogoLanding';
 
 const GuiasDeUsoPage = () => {
     const router = useRouter();
@@ -59,7 +60,7 @@ const GuiasDeUsoPage = () => {
         }
     ];
 
-    const header = (guia) => (
+    const header = (guia: { id: number; titulo: string; descripcion: string; icono: string; color: string }) => (
         <div className="flex align-items-center gap-2 p-3">
             <div className="flex align-items-center justify-content-center" style={{ width: '3rem', height: '3rem', borderRadius: '50%', backgroundColor: guia.color }}>
                 <i className={`${guia.icono} text-white text-xl`}></i>

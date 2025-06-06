@@ -3,6 +3,7 @@ import React from 'react';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
 import Link from 'next/link';
+import { BackToLanding } from '@/app/common/component/BackToLanding';
 
 const PoliticaDePrivacidadPage = () => {
     return (
@@ -52,11 +53,7 @@ const PoliticaDePrivacidadPage = () => {
                         y la protección de los datos.
                     </p>
 
-                    <div className="flex justify-content-center mt-6">
-                        <Link href="/" className="p-button font-bold px-5 py-3 p-button-rounded p-button-lg" style={{ backgroundColor: '#926941', color: 'white', textDecoration: 'none' }}>
-                            Volver a Inicio
-                        </Link>
-                    </div>
+                  <BackToLanding />
                 </Card>
             </div>
         </div>
