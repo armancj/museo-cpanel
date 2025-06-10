@@ -18,18 +18,49 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalPropertyTable.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/culturalProperty.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/AccessConditionsStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/CulturalPropertyForm.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/CulturalRecordStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/DescriptionControlStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/DocumentationStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/EntryStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/NavigationButtons.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/NotesStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/ProducerAuthorStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/form-componenet/renderFormStep.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/AccessAndUseConditionsPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/AuthorInfoPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/CulturalRecordPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/DescriptionControlPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/EntryAndLocationPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/panel-component/NotesPanel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/usehookCulturalProperty.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/util/generateWizardMenuItems.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/util/validateAccessConditionsData.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/util/validateProducerAuthorData.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feat/add-new-nomenclators" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -48,6 +79,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1749051320" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="feat/change-ui-nomenclators" />
                     <option name="lastUsedInstant" value="1745848218" />
@@ -85,6 +120,10 @@
     &quot;repository&quot;: &quot;museo-cpanel&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -94,32 +133,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "#11 on feat/change-ui-nomenclators",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "22.14.0",
-    "javascript.nodejs.core.library.typings.version": "22.14.1",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "H:/projects/museum/museo-cpanel",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.Next.js: server-side.executor": "Run",
-    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary",
-    "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;H:/projects/museum/museo-cpanel&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/arman/AppData/Roaming/fnm/aliases/default/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Pomodoro&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\projects\museum\museo-cpanel" />
@@ -143,7 +193,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-WS-251.23774.424" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
       </set>
     </attachedChunks>
   </component>
@@ -157,6 +208,11 @@
       <workItem from="1745421753216" duration="6998000" />
       <workItem from="1745450739794" duration="3089000" />
       <workItem from="1745801749691" duration="147000" />
+      <workItem from="1749053002579" duration="11354000" />
+      <workItem from="1749073401209" duration="134000" />
+      <workItem from="1749150839579" duration="3221000" />
+      <workItem from="1749210797918" duration="16557000" />
+      <workItem from="1749563844655" duration="4816000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -262,7 +318,103 @@
       <option name="project" value="LOCAL" />
       <updated>1745848362397</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`">
+      <option name="closed" value="true" />
+      <created>1749054502239</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1749054502239</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements">
+      <option name="closed" value="true" />
+      <created>1749054712809</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1749054712809</updated>
+    </task>
+    <task id="LOCAL-00016" summary="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes">
+      <option name="closed" value="true" />
+      <created>1749054905798</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1749054905798</updated>
+    </task>
+    <task id="LOCAL-00017" summary="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization">
+      <option name="closed" value="true" />
+      <created>1749065669519</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1749065669519</updated>
+    </task>
+    <task id="LOCAL-00018" summary="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management">
+      <option name="closed" value="true" />
+      <created>1749150855679</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1749150855679</updated>
+    </task>
+    <task id="LOCAL-00019" summary="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management">
+      <option name="closed" value="true" />
+      <created>1749156015664</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1749156015664</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings">
+      <option name="closed" value="true" />
+      <created>1749215568132</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1749215568132</updated>
+    </task>
+    <task id="LOCAL-00021" summary="- feat: add `RecentActivityCard` component and integrate into the main page&#10;&#10;  - Extract recent activity functionality into the new reusable `RecentActivityCard` component&#10;  - Add export to CSV and refresh functionalities within the component&#10;  - Replace inline activity implementation in the main page with `RecentActivityCard` usage&#10;&#10;- chore: update `.idea` workspace configuration&#10;&#10;  - Synchronize workspace settings with recent project changes&#10;  - Update task details and entries for improved development tracking">
+      <option name="closed" value="true" />
+      <created>1749216546567</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1749216546567</updated>
+    </task>
+    <task id="LOCAL-00022" summary="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking">
+      <option name="closed" value="true" />
+      <created>1749219788013</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1749219788013</updated>
+    </task>
+    <task id="LOCAL-00023" summary="feat: update export functionality in `RecentActivityCard`&#10;&#10;- Replace CSV export method with Excel export using `xlsx` library&#10;- Add formatted headers and dynamic column widths for improved output readability&#10;- Update export command to integrate new Excel export functionality">
+      <option name="closed" value="true" />
+      <created>1749220725154</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1749220725154</updated>
+    </task>
+    <task id="LOCAL-00024" summary="chore: remove redundant whitespace in `RecentActivityCard` component">
+      <option name="closed" value="true" />
+      <created>1749220802326</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1749220802326</updated>
+    </task>
+    <task id="LOCAL-00025" summary="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context">
+      <option name="closed" value="true" />
+      <created>1749224501245</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1749224501245</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -280,13 +432,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```" />
-    <MESSAGE value="Add entry form management functionality&#10;&#10;Implemented entry form CRUD operations with service, hooks, UI components, and utilities. Enhanced styles and table interaction, added navigation support, and updated `.idea` settings for better project configuration." />
-    <MESSAGE value="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements." />
     <MESSAGE value="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration." />
     <MESSAGE value="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature." />
     <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
-    <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="-Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features" />
     <MESSAGE value="feat(app-menu): enhance AppMenuitem with `useRef` for CSSTransition&#10;&#10;- Added `useRef` to manage `nodeRef` in `CSSTransition` for submenu&#10;- Improved submenu rendering by referencing `ul` elements&#10;- Refactored imports for better organization" />
@@ -296,6 +444,23 @@
     <MESSAGE value="feat: enhance table components with date processing and filtering&#10;&#10;- Add date processing to ensure consistent Date objects for `createdAt` and `updatedAt` fields across multiple components&#10;- Improve table filtering by introducing date and text filters for better searchability&#10;- Simplify `TableCustom` component props and improve code readability&#10;- Refactor column configurations for reusability and cleaner implementation" />
     <MESSAGE value="feat: enhance table components and add date field processing&#10;&#10;- Process `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Add filtering for `createdAt` and `updatedAt` with date pickers across multiple data tables&#10;- Simplify `TableCustom` and `tableBodyFunction` by refactoring props and improving code readability&#10;- Enhance table features with scrollable layout and row filtering display" />
     <MESSAGE value="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props" />
+    <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
+    <MESSAGE value="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`" />
+    <MESSAGE value="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements" />
+    <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
+    <MESSAGE value="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization" />
+    <MESSAGE value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
+    <MESSAGE value="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings" />
+    <MESSAGE value="- feat: add `RecentActivityCard` component and integrate into the main page&#10;&#10;  - Extract recent activity functionality into the new reusable `RecentActivityCard` component&#10;  - Add export to CSV and refresh functionalities within the component&#10;  - Replace inline activity implementation in the main page with `RecentActivityCard` usage&#10;&#10;- chore: update `.idea` workspace configuration&#10;&#10;  - Synchronize workspace settings with recent project changes&#10;  - Update task details and entries for improved development tracking" />
+    <MESSAGE value="- feat: enhance `RecentActivityCard` with dynamic heritage type icons and improved entries display&#10;&#10;  - Add dynamic icons and styles for heritage types via `getHeritageData` function&#10;  - Increase recent entries limit from 2 to 4 with proper icon and style rendering&#10;  - Refactor entry loop logic for cleaner and more flexible implementation&#10;  - Simplify sorting logic in `DashboardService` for latest entries retrieval" />
+    <MESSAGE value="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking" />
+    <MESSAGE value="feat: update export functionality in `RecentActivityCard`&#10;&#10;- Replace CSV export method with Excel export using `xlsx` library&#10;- Add formatted headers and dynamic column widths for improved output readability&#10;- Update export command to integrate new Excel export functionality" />
+    <MESSAGE value="chore: remove redundant whitespace in `RecentActivityCard` component" />
+    <MESSAGE value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
