@@ -1,9 +1,7 @@
 import { get, post, put, patch, del } from '@/adapter/httpAdapter';
-import {
-    AccessAndUseConditions, AssociatedDocumentation,
-    CulturalPropertyModel, CulturalRecord, DescriptionControl, EntryAndLocation, Notes, ProducerAuthor
-} from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+
 import { WebEnvConst } from '@/app/webEnvConst';
+import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 
 export interface CulturalPropertySimpleModel {
     createdAt: Date;
@@ -14,10 +12,10 @@ export interface CulturalPropertySimpleModel {
 
 export const CulturalPropertyService = {
     getCulturalProperties: async () => {
-        return await get<CulturalPropertyModel[]>(WebEnvConst.culturalProperty.getAll);
+        return await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
     },
 
-    createCulturalProperty: async (data: CulturalPropertyModel) => {
+    createCulturalProperty: async (data: CulturalHeritageProperty) => {
         const urlCulturalProperty = WebEnvConst.culturalProperty.post;
 
         const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, {});
@@ -49,7 +47,7 @@ export const CulturalPropertyService = {
         ] = await Promise.all(endpointPromises);
 
 
-        const culturalProperty: CulturalPropertyModel = {
+        const culturalProperty: CulturalHeritageProperty = {
             ...culturalPropertySimple,
             accessAndUseConditions,
             associatedDocumentation,
@@ -63,7 +61,7 @@ export const CulturalPropertyService = {
         return culturalProperty;
     },
 
-    updateCulturalProperty: async (uuid: string, updatedData: Partial<CulturalPropertyModel>) => {
+    updateCulturalProperty: async (uuid: string, updatedData: Partial<CulturalHeritageProperty>) => {
         const endpoints = WebEnvConst.culturalPropertyDataEndpoints(uuid);
 
         const updatePromises = [

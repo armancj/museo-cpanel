@@ -211,6 +211,7 @@ export const CulturalRecordForm = ({
                             />
                         </div>
                         <div className="col-12 md:col-6">
+                            <label style={{ visibility: 'hidden' }}>Grado</label>
                             <FieldWithHistory
                                 label="Grado de Valor"
                                 field={data.culturalRecord.valueGrade}

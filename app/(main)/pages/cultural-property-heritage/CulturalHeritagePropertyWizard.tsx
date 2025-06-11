@@ -17,7 +17,16 @@ import { DescriptionControlForm } from './component/DescriptionControlForm';
 import { NotesForm } from './component/NotesForm';
 import { HistoryDialog } from './component/HistoryDialog';
 
-export const CulturalHeritagePropertyWizard = ({ onBackToList }: { onBackToList?: () => void }) => {
+
+interface CulturalHeritagePropertyWizardProps {
+    onBackToList?: () => void;
+    hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+}
+
+export const CulturalHeritagePropertyWizard = ({
+                                                   onBackToList,
+                                                   hookData
+                                               }: CulturalHeritagePropertyWizardProps) => {
     // Get the current user role - in a real app, this would come from authentication
     // For this example, we'll use a state that can be changed for testing
     const [currentUserRole, setCurrentUserRole] = useState<UserRoles>(UserRoles.employee);
@@ -40,10 +49,10 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList }: { onBackToList?
         setData,
         save,
         submitted,
-        toast: hookToast,
-    } = useHookCulturalHeritageProperty();
+        toast,
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+    } = hookData || useHookCulturalHeritageProperty();
 
-    const toast = useRef<Toast>(null);
 
     // Define the steps for the wizard
     const wizardItems: MenuItem[] = [

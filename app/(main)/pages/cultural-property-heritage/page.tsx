@@ -3,9 +3,15 @@ import { useState } from 'react';
 import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
 import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
+import {
+    useHookCulturalHeritageProperty
+} from '@/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty';
 
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
+
+    const hookData = useHookCulturalHeritageProperty();
+
 
     const handleAddNew = () => {
         setShowWizard(true);
@@ -14,6 +20,16 @@ const CulturalHeritagePropertyPage = () => {
     const handleBackToList = () => {
         setShowWizard(false);
     };
+
+    const handleSaveAndReturn = async () => {
+        try {
+            await hookData.save();
+            setShowWizard(false);
+        } catch (error) {
+            console.error('Error al guardar:', error);
+        }
+    };
+
 
     return (
         <div>
@@ -27,10 +43,14 @@ const CulturalHeritagePropertyPage = () => {
                             onClick={handleBackToList}
                         />
                     </div>
-                    <CulturalHeritagePropertyWizard onBackToList={handleBackToList} />
+                    <CulturalHeritagePropertyWizard onBackToList={handleBackToList}
+                                                    onSave={handleSaveAndReturn}
+                                                    hookData={hookData}
+
+                    />
                 </div>
             ) : (
-                <CulturalHeritagePropertyList onAddNew={handleAddNew} />
+                <CulturalHeritagePropertyList onAddNew={handleAddNew} hookData={hookData} />
             )}
         </div>
     );
