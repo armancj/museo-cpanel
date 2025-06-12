@@ -130,6 +130,8 @@ export interface DimensionsValue {
     widthCms: number;
     lengthCms: number;
     weightKg: number;
+    cubicMeters: number;
+    squareMeters: number;
     _id: string;
 }
 
@@ -317,6 +319,8 @@ export const emptyCulturalHeritageProperty: CulturalHeritageProperty = {
                 widthCms: 0,
                 lengthCms: 0,
                 weightKg: 0,
+                squareMeters: 0,
+                cubicMeters: 0,
                 _id: ''
             },
             modifiedBy: '',

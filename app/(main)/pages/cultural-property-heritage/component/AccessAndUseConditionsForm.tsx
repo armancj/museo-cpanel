@@ -143,6 +143,17 @@ export const AccessAndUseConditionsForm = ({
         { label: 'Reproducción con Fines Educativos', value: 'educational_reproduction' }
     ];
 
+
+    // 🔍 DEBUGGING: Log the access conditions field data
+    useEffect(() => {
+        if (data.accessAndUseConditions?.accessConditions) {
+            console.log('🔍 ACCESS FORM - accessConditions field:', data.accessAndUseConditions.accessConditions);
+            console.log('🔍 ACCESS FORM - accessConditions history:', data.accessAndUseConditions.accessConditions.history);
+            console.log('🔍 ACCESS FORM - history length:', data.accessAndUseConditions.accessConditions.history?.length);
+        }
+    }, [data.accessAndUseConditions?.accessConditions]);
+
+
     // If accessAndUseConditions is not initialized yet, show loading or return null
     if (!data.accessAndUseConditions) {
         return <div>Cargando...</div>;

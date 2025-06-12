@@ -1,9 +1,8 @@
 import { get, post, put, patch, del } from '@/adapter/httpAdapter';
-import {
-    AccessAndUseConditions, AssociatedDocumentation,
-    CulturalPropertyModel, CulturalRecord, DescriptionControl, EntryAndLocation, Notes, ProducerAuthor
-} from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+
 import { WebEnvConst } from '@/app/webEnvConst';
+import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
+import { cleanFieldData, validateCleanedData } from '@/app/service/utilities/cleanFieldData';
 
 export interface CulturalPropertySimpleModel {
     createdAt: Date;
@@ -14,42 +13,53 @@ export interface CulturalPropertySimpleModel {
 
 export const CulturalPropertyService = {
     getCulturalProperties: async () => {
-        return await get<CulturalPropertyModel[]>(WebEnvConst.culturalProperty.getAll);
+        return await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
     },
 
-    createCulturalProperty: async (data: CulturalPropertyModel) => {
-        const urlCulturalProperty = WebEnvConst.culturalProperty.post;
-
-        const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, {});
-
-        const endpoints = WebEnvConst.culturalPropertyDataEndpoints(culturalPropertySimple.uuid)
-
-        console.log( {services:data})
-
+    async addCulturalRecordDetails(
+        endpoints: {
+            entryAndLocationRecordUrl: string;
+            producerAuthorRecordUrl: string;
+            culturalRecordUrl: string;
+            accessAndUseConditionsUrl: string;
+            associatedDocumentationUrl: string;
+            descriptionControlUrl: string;
+            culturalNotesUrl: string;
+        },
+        cleanedData: any,
+        culturalPropertySimple: CulturalPropertySimpleModel
+    ) {
         const endpointPromises = [
-            { key: 'accessAndUseConditions', url: endpoints.accessAndUseConditionsUrl, data: data.accessAndUseConditions },
-            { key: 'associatedDocumentation', url: endpoints.associatedDocumentationUrl, data: data.associatedDocumentation },
-            { key: 'culturalRecord', url: endpoints.culturalRecordUrl, data: data.culturalRecord },
-            { key: 'descriptionControl', url: endpoints.descriptionControlUrl, data: data.descriptionControl },
-            { key: 'entryAndLocation', url: endpoints.entryAndLocationRecordUrl, data: data.entryAndLocation },
-            { key: 'producerAuthor', url: endpoints.producerAuthorRecordUrl, data: data.producerAuthor },
-            { key: 'notes', url: endpoints.culturalNotesUrl, data: data.notes },
+            {
+                key: 'accessAndUseConditions',
+                url: endpoints.accessAndUseConditionsUrl,
+                data: cleanedData.accessAndUseConditions
+            },
+            {
+                key: 'associatedDocumentation',
+                url: endpoints.associatedDocumentationUrl,
+                data: cleanedData.associatedDocumentation
+            },
+            { key: 'culturalRecord', url: endpoints.culturalRecordUrl, data: cleanedData.culturalRecord },
+            {
+                key: 'descriptionControl',
+                url: endpoints.descriptionControlUrl,
+                data: cleanedData.descriptionControl
+            },
+            {
+                key: 'entryAndLocation',
+                url: endpoints.entryAndLocationRecordUrl,
+                data: cleanedData.entryAndLocation
+            },
+            { key: 'producerAuthor', url: endpoints.producerAuthorRecordUrl, data: cleanedData.producerAuthor },
+            { key: 'notes', url: endpoints.culturalNotesUrl, data: cleanedData.notes }
         ]
             .filter(({ data }) => data !== undefined)
             .map(({ url, data }) => put<any>(url, data));
 
-        const [
-            accessAndUseConditions,
-            associatedDocumentation,
-            culturalRecord,
-            descriptionControl,
-            entryAndLocation,
-            producerAuthor,
-            notes,
-        ] = await Promise.all(endpointPromises);
+        const [accessAndUseConditions, associatedDocumentation, culturalRecord, descriptionControl, entryAndLocation, producerAuthor, notes] = await Promise.all(endpointPromises);
 
-
-        const culturalProperty: CulturalPropertyModel = {
+        const culturalProperty: CulturalHeritageProperty = {
             ...culturalPropertySimple,
             accessAndUseConditions,
             associatedDocumentation,
@@ -58,34 +68,52 @@ export const CulturalPropertyService = {
             entryAndLocation,
             producerAuthor,
             notes
-        }
+        };
 
         return culturalProperty;
     },
 
-    updateCulturalProperty: async (uuid: string, updatedData: Partial<CulturalPropertyModel>) => {
+    createCulturalProperty: async (data: CulturalHeritageProperty) => {
+        const urlCulturalProperty = WebEnvConst.culturalProperty.post;
+
+        const culturalPropertySimple = await post<CulturalPropertySimpleModel>(urlCulturalProperty, {});
+
+        try {
+            const endpoints = WebEnvConst.culturalPropertyDataEndpoints(culturalPropertySimple.uuid);
+
+            const cleanedData = cleanFieldData(data);
+
+            const validation = validateCleanedData(cleanedData);
+            if (!validation.isValid) {
+                console.warn('Advertencias de validación:', validation.errors);
+                throw new Error(`Errores de validación: ${validation.errors.join(', ')}`);
+            }
+
+            console.log('Cleaned data:', cleanedData);
+
+            return await CulturalPropertyService.addCulturalRecordDetails(endpoints, cleanedData, culturalPropertySimple);
+
+        } catch (error) {
+            if (culturalPropertySimple.uuid) {
+                await CulturalPropertyService.deleteCulturalProperty(culturalPropertySimple.uuid);
+            }
+            throw new Error(`Error creating cultural property`);
+        }
+    },
+
+    updateCulturalProperty: async (uuid: string, updatedData: Partial<CulturalHeritageProperty>) => {
         const endpoints = WebEnvConst.culturalPropertyDataEndpoints(uuid);
 
-        const updatePromises = [
-            { key: "accessAndUseConditions", url: endpoints.accessAndUseConditionsUrl, data: updatedData.accessAndUseConditions },
-            { key: "associatedDocumentation", url: endpoints.associatedDocumentationUrl, data: updatedData.associatedDocumentation },
-            { key: "culturalRecord", url: endpoints.culturalRecordUrl, data: updatedData.culturalRecord },
-            { key: "descriptionControl", url: endpoints.descriptionControlUrl, data: updatedData.descriptionControl },
-            { key: "entryAndLocation", url: endpoints.entryAndLocationRecordUrl, data: updatedData.entryAndLocation },
-            { key: "producerAuthor", url: endpoints.producerAuthorRecordUrl, data: updatedData.producerAuthor },
-            { key: "notes", url: endpoints.culturalNotesUrl, data: updatedData.notes }
-        ]
-            .filter(({ data }) => data !== undefined)
-            .map(({ url, data }) => patch(url, data));
+        const cleanedData = cleanFieldData(updatedData as CulturalHeritageProperty);
 
-        await Promise.all(updatePromises);
+         await CulturalPropertyService.addCulturalRecordDetails(endpoints, cleanedData, {uuid} as CulturalPropertySimpleModel);
 
         return true;
     },
 
-    deleteCulturalProperty: async (uuid: string,)=> {
+    deleteCulturalProperty: async (uuid: string) => {
         const url = WebEnvConst.culturalProperty.getOne(uuid);
-        console.log({url})
+        console.log({ url });
         return await del<void>(url);
     }
 };

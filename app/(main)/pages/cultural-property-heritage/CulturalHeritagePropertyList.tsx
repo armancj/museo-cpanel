@@ -14,23 +14,26 @@ import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 
-export function CulturalHeritagePropertyList({ onAddNew }: { onAddNew: () => void }) {
+interface CulturalHeritagePropertyListProps {
+    onAddNew: () => void;
+    hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+}
+
+
+export function CulturalHeritagePropertyList({ onAddNew, hookData }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
 
     const {
         datum,
-        dialog,
-        setDialog,
-        save,
         data,
         setData,
-        submitted,
         toast,
         editData,
         deleteData,
         deleteDialog,
         setDeleteDialog
-    } = useHookCulturalHeritageProperty();
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+    } = hookData || useHookCulturalHeritageProperty();
 
     const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
         ...item,

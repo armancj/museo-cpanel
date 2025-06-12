@@ -1,15 +1,15 @@
 import { CulturalHeritageProperty, emptyCulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
-import { CulturalHeritagePropertyService } from '@/app/service/CulturalHeritagePropertyService';
 import { capitalize } from '@/app/(main)/pages/util/export.functions';
 import { useGenericHook } from '@/app/common/hooks/useGenericHook';
+import { CulturalPropertyService } from '@/app/service/CulturalPropertyService';
 
 export const useHookCulturalHeritageProperty = () => {
     return useGenericHook<CulturalHeritageProperty>({
         service: {
-            fetchAll: CulturalHeritagePropertyService.getCulturalHeritageProperties,
-            create: CulturalHeritagePropertyService.createCulturalHeritageProperty,
-            update: CulturalHeritagePropertyService.updateCulturalHeritageProperty,
-            delete: CulturalHeritagePropertyService.deleteCulturalHeritageProperty,
+            fetchAll: CulturalPropertyService.getCulturalProperties,
+            create: CulturalPropertyService.createCulturalProperty,
+            update: CulturalPropertyService.updateCulturalProperty,
+            delete: CulturalPropertyService.deleteCulturalProperty,
             emptyItem: emptyCulturalHeritageProperty,
         },
         capitalizeFunc: capitalize,
