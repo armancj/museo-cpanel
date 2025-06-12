@@ -16,11 +16,12 @@ import { Toolbar } from 'primereact/toolbar';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
+    onEditOrView?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
 
     const {
@@ -187,7 +188,11 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData }: CulturalHer
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         setData(rowData);
-                        onAddNew(); // Navigate to the wizard view with the selected item
+                        if (onEditOrView) {
+                            onEditOrView();
+                        } else {
+                            onAddNew(); // Fallback para compatibilidad
+                        }
                     }}
                 />
                 <Button
@@ -197,7 +202,11 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData }: CulturalHer
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         editData(rowData);
-                        onAddNew(); // Navigate to the wizard view with the selected item
+                        if (onEditOrView) {
+                            onEditOrView();
+                        } else {
+                            onAddNew(); // Fallback para compatibilidad
+                        }
                     }}
                 />
                 <Button

@@ -18,13 +18,6 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
     const [users, setUsers] = useState<Map<string, UsersDatum>>(new Map());
     const [loading, setLoading] = useState(false);
 
-    // 🔍 DEBUGGING: Verificar qué está pasando
-    console.log('🚨 DEBUGGING - Raw field prop:', field);
-    console.log('🚨 DEBUGGING - Field keys:', field ? Object.keys(field) : 'null');
-    console.log('🚨 DEBUGGING - History exists?', !!field?.history);
-    console.log('🚨 DEBUGGING - History length:', field?.history?.length);
-    console.log('🚨 DEBUGGING - History content:', field?.history);
-
     const formatDate = (date: Date | string | number): string => {
         try {
             let dateObj: Date;
@@ -345,11 +338,6 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
                     <small className="text-muted">
                         <i className="pi pi-info-circle mr-1"></i>
                         Historial ordenado por fecha (más reciente primero)
-                        {field.history.length < 4 && (
-                            <span className="text-orange-500 ml-2">
-                                ⚠️ Posiblemente faltan registros
-                            </span>
-                        )}
                     </small>
                     <div>
                         <button

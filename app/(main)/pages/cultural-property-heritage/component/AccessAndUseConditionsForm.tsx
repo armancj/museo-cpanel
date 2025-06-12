@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 interface AccessAndUseConditionsFormProps {
     data: CulturalHeritageProperty;
@@ -32,6 +34,17 @@ export const AccessAndUseConditionsForm = ({
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for the panel
+    const [accessAndUseStatus, setAccessAndUseStatus] = useState<Status | null>(null);
+
+    // Status options for dropdown
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Initialize accessAndUseConditions if it doesn't exist
     useEffect(() => {
@@ -128,6 +141,30 @@ export const AccessAndUseConditionsForm = ({
         });
     };
 
+    // Update all fields in the access and use conditions panel
+    const updateAllAccessAndUseFields = (status: Status) => {
+        if (!status || !data.accessAndUseConditions) return;
+
+        setData({
+            ...data,
+            accessAndUseConditions: {
+                ...data.accessAndUseConditions,
+                accessConditions: {
+                    ...data.accessAndUseConditions.accessConditions,
+                    status
+                },
+                reproductionConditions: {
+                    ...data.accessAndUseConditions.reproductionConditions,
+                    status
+                },
+                technicalRequirements: {
+                    ...data.accessAndUseConditions.technicalRequirements,
+                    status
+                }
+            }
+        });
+    };
+
     // Sample options for dropdowns
     const accessConditionsOptions = [
         { label: 'Acceso Libre', value: 'free_access' },
@@ -162,7 +199,48 @@ export const AccessAndUseConditionsForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Condiciones de Acceso y Uso" toggleable>
+                <Panel
+                    header="Condiciones de Acceso y Uso"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Condiciones de Acceso y Uso</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={accessAndUseStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setAccessAndUseStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (accessAndUseStatus) {
+                                                    updateAllAccessAndUseFields(accessAndUseStatus);
+                                                    setAccessAndUseStatus(null);
+                                                }
+                                            }}
+                                            disabled={!accessAndUseStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory

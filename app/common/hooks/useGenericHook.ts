@@ -193,14 +193,16 @@ export const useGenericHook = <ResponseType>({
         const finalData = smartMerge(service.emptyItem, updatedData) as ResponseType;
 
         setData(finalData);
-        setDialog(true);
     };
 
     const closeDialog = () => {
         setDialog(false);
         setData(service.emptyItem);
         setCurrentEditingUuid(null);
+        setSubmitted(false);
     };
+
+
 
     return {
         datum: selects,

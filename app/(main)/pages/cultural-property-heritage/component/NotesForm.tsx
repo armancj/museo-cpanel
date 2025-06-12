@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 interface NotesFormProps {
     data: CulturalHeritageProperty;
@@ -32,6 +34,17 @@ export const NotesForm = ({
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for the panel
+    const [notesStatus, setNotesStatus] = useState<Status | null>(null);
+
+    // Status options for dropdown
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Initialize notes if it doesn't exist
     useEffect(() => {
@@ -122,6 +135,22 @@ export const NotesForm = ({
         });
     };
 
+    // Update all fields in the notes panel
+    const updateAllNotesFields = (status: Status) => {
+        if (!status || !data.notes) return;
+
+        setData({
+            ...data,
+            notes: {
+                ...data.notes,
+                notes: {
+                    ...data.notes.notes,
+                    status
+                }
+            }
+        });
+    };
+
     // If notes is not initialized yet, show loading or return null
     if (!data.notes) {
         return <div>Cargando...</div>;
@@ -130,7 +159,48 @@ export const NotesForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Notas Adicionales" toggleable>
+                <Panel
+                    header="Notas Adicionales"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Notas Adicionales</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={notesStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setNotesStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (notesStatus) {
+                                                    updateAllNotesFields(notesStatus);
+                                                    setNotesStatus(null);
+                                                }
+                                            }}
+                                            disabled={!notesStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12">
                             <FieldWithHistory
