@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
 import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
@@ -10,15 +10,26 @@ import {
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
 
+    const isEditModeRef = useRef(false);
+
+
     const hookData = useHookCulturalHeritageProperty();
 
 
     const handleAddNew = () => {
+        isEditModeRef.current = false;
         hookData.closeDialog();
         setShowWizard(true);
     };
 
+    const handleEditOrView = () => {
+        isEditModeRef.current = true;
+        setShowWizard(true);
+    };
+
+
     const handleBackToList = () => {
+        isEditModeRef.current = false;
         hookData.closeDialog();
         setShowWizard(false);
     };
@@ -41,7 +52,9 @@ const CulturalHeritagePropertyPage = () => {
                     />
                 </div>
             ) : (
-                <CulturalHeritagePropertyList onAddNew={handleAddNew} hookData={hookData} />
+                <CulturalHeritagePropertyList onAddNew={handleAddNew}
+                                              onEditOrView={handleEditOrView}
+                                              hookData={hookData} />
             )}
         </div>
     );
