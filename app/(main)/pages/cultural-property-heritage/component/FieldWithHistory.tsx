@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -45,6 +45,18 @@ export const FieldWithHistory = ({
 }: FieldWithHistoryProps) => {
     const [showComment, setShowComment] = useState(false);
 
+    // 🔍 DEBUGGING: Log field data when it changes
+    useEffect(() => {
+        if (label === 'Condiciones de Acceso') {
+            console.log('🔍 FIELD WITH HISTORY - Field data for "Condiciones de Acceso":', field);
+            console.log('🔍 FIELD WITH HISTORY - Field keys:', field ? Object.keys(field) : 'null');
+            console.log('🔍 FIELD WITH HISTORY - History exists?', !!field?.history);
+            console.log('🔍 FIELD WITH HISTORY - History length:', field?.history?.length);
+            console.log('🔍 FIELD WITH HISTORY - Full history array:', field?.history);
+        }
+    }, [field, label]);
+
+
     // Status options for dropdown
     const statusOptions = [
         { label: 'Pendiente', value: Status.Pending },
@@ -84,6 +96,16 @@ export const FieldWithHistory = ({
                 return 'bg-gray-100 text-gray-900';
         }
     };
+
+    const handleHistoryClick = () => {
+        console.log('🔍 FIELD WITH HISTORY - History button clicked');
+        console.log('🔍 FIELD WITH HISTORY - About to call openHistoryDialog with:', field);
+        console.log('🔍 FIELD WITH HISTORY - Label:', label);
+        console.log('🔍 FIELD WITH HISTORY - Field history before calling:', field?.history);
+
+        openHistoryDialog(field, label);
+    };
+
 
     // Render the appropriate input based on type
     const renderInput = () => {
@@ -295,6 +317,16 @@ export const FieldWithHistory = ({
                     />
                 </div>
             )}
+
+            {/*/!* Debug info *!/*/}
+            {/*{label === 'Condiciones de Acceso' && (*/}
+            {/*    <div className="mt-2 p-2 bg-yellow-50 border-round text-xs">*/}
+            {/*        <strong>🔍 DEBUG INFO:</strong><br/>*/}
+            {/*        History Length: {field?.history?.length || 0}<br/>*/}
+            {/*        Button Visible: {canViewHistory && field.history && field.history.length > 0 ? 'Sí' : 'No'}*/}
+            {/*    </div>*/}
+            {/*)}*/}
+
         </div>
     );
 };
