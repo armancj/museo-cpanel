@@ -1,21 +1,48 @@
-"use client";
-import React from 'react';
-import CulturalPropertyTable from '@/app/(main)/pages/cultural-property-heritage/CulturalPropertyTable';
+'use client';
+import { useState } from 'react';
+import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
+import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
+import {
+    useHookCulturalHeritageProperty
+} from '@/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty';
 
-const culturalPropertyHeritage = () => {
+const CulturalHeritagePropertyPage = () => {
+    const [showWizard, setShowWizard] = useState(false);
+
+    const hookData = useHookCulturalHeritageProperty();
+
+
+    const handleAddNew = () => {
+        setShowWizard(true);
+    };
+
+    const handleBackToList = () => {
+        setShowWizard(false);
+    };
 
     return (
-        <div className="grid">
-            <div className="col-12">
-                <div className="card">
-                    <h5>Patrimonio de Bienes Culturales</h5>
-                    <p>El patrimonio de bienes culturales abarca todos aquellos elementos que, por su valor histórico, artístico, arqueológico o etnográfico, representan la identidad y la memoria cultural de una comunidad o nación. Estos bienes incluyen monumentos, edificios históricos, obras de arte, manuscritos, objetos arqueológicos y otros elementos que son considerados de importancia cultural y deben ser preservados para las generaciones futuras.</p>
+        <div>
+            {showWizard ? (
+                <div>
+                    <div className="flex justify-content-between align-items-center mb-3">
+                        <Button
+                            label="Volver al Listado"
+                            icon="pi pi-arrow-left"
+                            className="p-button-secondary"
+                            onClick={handleBackToList}
+                        />
+                    </div>
+                    <CulturalHeritagePropertyWizard onBackToList={handleBackToList}
+                                                    hookData={hookData}
+
+                    />
                 </div>
-                <CulturalPropertyTable />
-            </div>
+            ) : (
+                <CulturalHeritagePropertyList onAddNew={handleAddNew} hookData={hookData} />
+            )}
         </div>
     );
 };
 
-export default culturalPropertyHeritage;
+export default CulturalHeritagePropertyPage;
