@@ -21,16 +21,6 @@ const CulturalHeritagePropertyPage = () => {
         setShowWizard(false);
     };
 
-    const handleSaveAndReturn = async () => {
-        try {
-            await hookData.save();
-            setShowWizard(false);
-        } catch (error) {
-            console.error('Error al guardar:', error);
-        }
-    };
-
-
     return (
         <div>
             {showWizard ? (
@@ -44,7 +34,6 @@ const CulturalHeritagePropertyPage = () => {
                         />
                     </div>
                     <CulturalHeritagePropertyWizard onBackToList={handleBackToList}
-                                                    onSave={handleSaveAndReturn}
                                                     hookData={hookData}
 
                     />
