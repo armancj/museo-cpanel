@@ -161,16 +161,8 @@ export const CulturalHeritagePropertyWizard = ({
             setData(updatedData);
         }
 
-        await save();
-        toast.current?.show({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: isEditMode
-                ? 'Bien patrimonial cultural actualizado correctamente'
-                : 'Bien patrimonial cultural guardado correctamente',
-            life: 3000
-        });
-
+        // Pass "cultural-property" as the product parameter to bypass validation in useGenericHook
+        await save("cultural-property");
         // Navigate back to list after saving if onBackToList is provided
         if (onBackToList) {
             // Short delay to allow the toast to be seen
@@ -204,6 +196,14 @@ export const CulturalHeritagePropertyWizard = ({
 
     // Function to open history dialog
     const openHistoryDialog = (field: any, title: string) => {
+        console.log('🚨 WIZARD - Opening history dialog');
+        console.log('🚨 WIZARD - Field received:', field);
+        console.log('🚨 WIZARD - Field keys:', field ? Object.keys(field) : 'null');
+        console.log('🚨 WIZARD - History exists?', !!field?.history);
+        console.log('🚨 WIZARD - History length:', field?.history?.length);
+        console.log('🚨 WIZARD - Full history array:', field?.history);
+        console.log('🚨 WIZARD - Title:', title);
+
         setHistoryField(field);
         setHistoryTitle(title);
         setHistoryDialogVisible(true);
@@ -246,7 +246,9 @@ export const CulturalHeritagePropertyWizard = ({
 
     // Role selector for testing purposes
     const roleSelector = (
+
         <div className="flex justify-content-end mb-3">
+            <label>Rol de Usuario (Para pruebas)</label>
             <span className="p-float-label">
                 <select
                     value={currentUserRole}
@@ -258,7 +260,6 @@ export const CulturalHeritagePropertyWizard = ({
                     <option value={UserRoles.superAdmin}>{UserRoles.superAdmin}</option>
                     <option value={UserRoles.manager}>{UserRoles.manager}</option>
                 </select>
-                <label>Rol de Usuario (Para pruebas)</label>
             </span>
         </div>
     );
