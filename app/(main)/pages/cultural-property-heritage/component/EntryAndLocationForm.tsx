@@ -90,7 +90,7 @@ export const EntryAndLocationForm = ({
 
         const isValid = requiredFields.every(field => field !== null && field !== undefined && field !== '');
 
-        // Only update state and call markStepCompleted if the validity has changed
+        // Only update the state and call markStepCompleted if the validity has changed
         // and we haven't already updated it for this set of values
         if (isValid !== isFormValid && !formValidityUpdatedRef.current) {
             formValidityUpdatedRef.current = true;
@@ -177,9 +177,10 @@ export const EntryAndLocationForm = ({
 
     // Sample options for dropdowns
     const heritageTypeOptions = [
-        { label: 'Mueble', value: 'movable' },
-        { label: 'Inmueble', value: 'immovable' },
-        { label: 'Inmaterial', value: 'intangible' }
+        { label: 'Patrimonio Mueble', value: 'Patrimonio Mueble' },
+        { label: 'Patrimonio Inmueble', value: 'Patrimonio Inmueble' },
+        { label: 'Patrimonio Inmaterial', value: 'Patrimonio Inmaterial' },
+        { label: 'Objeto no Patrimonial', value: 'Objeto no Patrimonial' }
     ];
 
     const entryMethodOptions = [
@@ -197,18 +198,21 @@ export const EntryAndLocationForm = ({
     ];
 
     const institutionTypeOptions = [
-        { label: 'Museo', value: 'museum' },
-        { label: 'Archivo', value: 'archive' },
-        { label: 'Biblioteca', value: 'library' },
-        { label: 'Centro Cultural', value: 'cultural_center' }
+        { label: 'Museo', value: 'Museo' },
+        { label: 'Complejo Museológico', value: 'Complejo Mus' },
+        { label: 'Extensión Museística', value: 'Ext. Mus' },
+        { label: 'Salas Museísticas', value: 'Salas Mus' },
+        { label: 'Oficina del Museólogo e Historiador', value: 'OMSH' },
+        { label: 'Red de Bibliotecas Comunitarias', value: 'RBC' },
+        { label: 'Centro Cultural', value: 'CCULT' },
+        { label: 'Biblioteca', value: 'Bibliot' },
+        { label: 'Archivo', value: 'Archivo' }
     ];
 
+
     const genericClassificationOptions = [
-        { label: 'Arte', value: 'art' },
-        { label: 'Historia', value: 'history' },
-        { label: 'Arqueología', value: 'archaeology' },
-        { label: 'Etnografía', value: 'ethnography' },
-        { label: 'Ciencia y Tecnología', value: 'science_technology' }
+        { label: 'Objeto realizado por el hombre', value: 'Objeto realizado por el hombre' },
+        { label: 'Objeto no realizado por el hombre', value: 'Objeto no realizado por el hombre' },
     ];
 
     // If entryAndLocation is not initialized yet, show loading or return null
@@ -426,7 +430,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('floor', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -444,7 +448,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('exhibitionRoom', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -465,7 +469,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('storage', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -483,7 +487,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('showcaseShelf', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -504,7 +508,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('shelfDrawer', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -522,7 +526,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('box', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -543,7 +547,7 @@ export const EntryAndLocationForm = ({
                                 onChange={(value) => updateObjectLocationField('fileFolder', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status)}
+                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
