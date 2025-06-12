@@ -21,9 +21,44 @@ type UseGenericHookOptions<ResponseType> = {
     };
 };
 
+// 🔧 Merge genérico - preserva datos del backend sin importar si tiene history o no
+const smartMerge = (emptyItem: any, actualData: any): any => {
+    if (!actualData) return emptyItem;
+    if (!emptyItem) return actualData;
+
+    if (actualData.uuid) {
+        // Es registro existente - preservar TODOS los datos del backend
+        const fillMissingFields = (target: any, source: any): any => {
+            const result = { ...target };
+
+            for (const key in source) {
+                if (!(key in target)) {
+                    // Campo ausente, completar del emptyItem
+                    result[key] = source[key];
+                } else if (
+                    typeof source[key] === 'object' &&
+                    source[key] !== null &&
+                    !Array.isArray(source[key]) &&
+                    typeof target[key] === 'object' &&
+                    target[key] !== null
+                ) {
+                    // Objeto anidado, merge recursivo
+                    result[key] = fillMissingFields(target[key], source[key]);
+                }
+            }
+            return result;
+        };
+
+        return fillMissingFields(actualData, emptyItem);
+    } else {
+        // Nuevo registro - usar emptyItem como base
+        return { ...emptyItem, ...actualData };
+    }
+};
+
 export const useGenericHook = <ResponseType>({
                                                  service,
-                                                 capitalizeFunc = (value) => value, // Usa una función vacía si no se proporciona capitalize
+                                                 capitalizeFunc = (value) => value,
                                                  messages = {
                                                      createSuccess: 'Creado satisfactoriamente',
                                                      updateSuccess: 'Actualizado satisfactoriamente',
@@ -34,62 +69,77 @@ export const useGenericHook = <ResponseType>({
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [data, setData] = useState<ResponseType>(service.emptyItem);
     const [selects, setSelects] = useState<ResponseType[]>([]);
-
     const [dialog, setDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const toast = useRef<Toast>(null);
+
+    // Tracking para manejar reseteo inteligente
+    const [currentEditingUuid, setCurrentEditingUuid] = useState<string | null>(null);
 
     useEffect(() => {
         service.fetchAll().then((data) => setSelects(data));
     }, []);
 
-    const save = async (product: string = 'Nofound') => {
-        console.log({ save: data});
+    const refreshAllData = async () => {
+        try {
+            const refreshedData = await service.fetchAll();
+            setSelects(refreshedData);
+            return refreshedData;
+        } catch (error) {
+            return null;
+        }
+    };
 
+    const save = async (product: string = 'Nofound') => {
         setSubmitted(true);
-            const hasValidName = (data as any)?.name?.trim;
-            const hasValidType = (data as any)?.type?.trim;
-            const hasValidNameProduct = product !== 'Nofound'
+        const hasValidName = (data as any)?.name?.trim;
+        const hasValidType = (data as any)?.type?.trim;
+        const hasValidNameProduct = product !== 'Nofound'
 
         if (hasValidName || hasValidType || hasValidNameProduct) {
-            let _data = [...selects];
-
-                if (hasValidName) {
-                    (data as any).name = capitalizeFunc((data as any).name);
-                }
-
-                if (hasValidType) {
-                    (data as any).type = capitalizeFunc((data as any).type);
-                }
+            if (hasValidName) {
+                (data as any).name = capitalizeFunc((data as any).name);
+            }
+            if (hasValidType) {
+                (data as any).type = capitalizeFunc((data as any).type);
+            }
 
             if ((data as any).uuid) {
-
+                // ACTUALIZACIÓN
                 try {
                     const { uuid, deleted, ...updatedValues } = data as any;
                     await service.update(uuid, updatedValues);
-                    const index = _data.findIndex((item) => (item as any).uuid === uuid);
-                    if (index !== -1) {
-                        _data[index] = data;
-                        toast.current?.show({ severity: 'success', summary: messages.updateSuccess, life: 5000 });
+
+                    // Refrescar para obtener datos actualizados (incluyendo history si existe)
+                    const refreshedData = await refreshAllData();
+
+                    if (refreshedData) {
+                        const updatedRecord = refreshedData.find((item: any) => item.uuid === uuid);
+                        if (updatedRecord) {
+                            setData(updatedRecord);
+                            setCurrentEditingUuid(uuid);
+                        }
                     }
+
+                    toast.current?.show({ severity: 'success', summary: messages.updateSuccess, life: 5000 });
                     setDialog(false);
-                    setData(service.emptyItem);
                 } catch (error) {
                     handleError(error, messages.errorDefault);
                 }
             } else {
-                // Crear un nuevo elemento
+                // CREACIÓN
                 try {
-                    const createdItem = await service.create(data);
-                    _data.push(createdItem);
+                    await service.create(data);
+                    await refreshAllData();
+
                     toast.current?.show({ severity: 'success', summary: messages.createSuccess, life: 5000 });
                     setDialog(false);
                     setData(service.emptyItem);
+                    setCurrentEditingUuid(null);
                 } catch (error) {
                     handleError(error, messages.errorDefault);
                 }
             }
-            setSelects(_data);
         }
     };
 
@@ -130,11 +180,26 @@ export const useGenericHook = <ResponseType>({
     };
 
     const editData = async (updatedData: Partial<ResponseType>) => {
-        setData({
-            ...service.emptyItem,
-            ...updatedData
-        });
+        const incomingUuid = (updatedData as any)?.uuid;
+
+        // Detectar cambio de registro para reseteo inteligente
+        if (incomingUuid && incomingUuid !== currentEditingUuid) {
+            setCurrentEditingUuid(incomingUuid);
+        } else if (!incomingUuid) {
+            setCurrentEditingUuid(null);
+        }
+
+        // Merge inteligente que funciona con o sin history
+        const finalData = smartMerge(service.emptyItem, updatedData) as ResponseType;
+
+        setData(finalData);
         setDialog(true);
+    };
+
+    const closeDialog = () => {
+        setDialog(false);
+        setData(service.emptyItem);
+        setCurrentEditingUuid(null);
     };
 
     return {
@@ -151,6 +216,7 @@ export const useGenericHook = <ResponseType>({
         deleteData,
         editData,
         deleteDialog,
-        setDeleteDialog
+        setDeleteDialog,
+        closeDialog
     };
 };
