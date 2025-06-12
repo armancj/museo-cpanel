@@ -17,19 +17,25 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BitbucketMajeraCodeReviewSettings">
+    <option name="popularEmojiShortcuts">
+      <list />
+    </option>
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: remove cultural property heritage components and models&#10;&#10;- Delete `CulturalPropertyTable`, `CulturalPropertyForm`, and associated panels&#10;- Remove `culturalProperty.model` and related type definitions&#10;- Clear utility functions and references linked to cultural property models&#10;- Refactor related data and logic from codebase">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities">
+      <change afterPath="$PROJECT_DIR$/app/service/utilities/cleanFieldData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/component/ToolbarCommon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/component/ToolbarCommon.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/CulturalHeritagePropertyService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/utilities/culturalproperty.data.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/UserService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/UserService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +45,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -185,7 +191,7 @@
       <recent name="H:\projects\museum\museo-cpanel" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.Next.js: server-side">
+  <component name="RunManager" selected="npm.backend run">
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
     </configuration>
@@ -201,7 +207,10 @@
     </configuration>
     <configuration name="backend run" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/../museo-api/package.json" />
-      <command value="start" />
+      <command value="run" />
+      <scripts>
+        <script value="start:dev" />
+      </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
@@ -236,7 +245,9 @@
       <workItem from="1749210797918" duration="16557000" />
       <workItem from="1749563844655" duration="5431000" />
       <workItem from="1749569944815" duration="54000" />
-      <workItem from="1749642242475" duration="5564000" />
+      <workItem from="1749642242475" duration="6668000" />
+      <workItem from="1749672722815" duration="6000" />
+      <workItem from="1749701950022" duration="14059000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -446,7 +457,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749569016472</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities">
+      <option name="closed" value="true" />
+      <created>1749649401698</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1749649401698</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -464,7 +483,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature." />
     <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
     <MESSAGE value="-Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features" />
@@ -489,7 +507,8 @@
     <MESSAGE value="chore: remove redundant whitespace in `RecentActivityCard` component" />
     <MESSAGE value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
     <MESSAGE value="feat: remove cultural property heritage components and models&#10;&#10;- Delete `CulturalPropertyTable`, `CulturalPropertyForm`, and associated panels&#10;- Remove `culturalProperty.model` and related type definitions&#10;- Clear utility functions and references linked to cultural property models&#10;- Refactor related data and logic from codebase" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: remove cultural property heritage components and models&#10;&#10;- Delete `CulturalPropertyTable`, `CulturalPropertyForm`, and associated panels&#10;- Remove `culturalProperty.model` and related type definitions&#10;- Clear utility functions and references linked to cultural property models&#10;- Refactor related data and logic from codebase" />
+    <MESSAGE value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
