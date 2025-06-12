@@ -146,9 +146,15 @@ export const CulturalRecordForm = ({
     ];
 
     const valueGradeOptions = [
-        { label: 'Alto', value: 'high' },
-        { label: 'Medio', value: 'medium' },
-        { label: 'Bajo', value: 'low' }
+        { label: 'I', value: 'I' },
+        { label: 'II', value: 'II' },
+        { label: 'III', value: 'III' }
+    ];
+
+    const descriptionLevelOptions = [
+        { label: '1', value: 1 },
+        { label: '2', value: 2 },
+        { label: '3', value: 3 }
     ];
 
     return (
@@ -159,7 +165,7 @@ export const CulturalRecordForm = ({
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
                                 label="Título del Objeto"
-                                field={data.culturalRecord.objectTitle}
+                                field={data?.culturalRecord?.objectTitle}
                                 type="text"
                                 onChange={(value) => updateField('objectTitle', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectTitle', status)}
@@ -233,7 +239,8 @@ export const CulturalRecordForm = ({
                             <FieldWithHistory
                                 label="Nivel de Descripción"
                                 field={data.culturalRecord.descriptionLevel}
-                                type="number"
+                                type="dropdown"
+                                options={descriptionLevelOptions}
                                 onChange={(value) => updateField('descriptionLevel', value)}
                                 onStatusChange={(status) => updateFieldStatus('descriptionLevel', status)}
                                 onCommentChange={(comment) => updateFieldComment('descriptionLevel', comment)}
