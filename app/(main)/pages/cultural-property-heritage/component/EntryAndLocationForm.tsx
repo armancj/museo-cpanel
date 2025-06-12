@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 interface EntryAndLocationFormProps {
     data: CulturalHeritageProperty;
@@ -32,6 +34,18 @@ export const EntryAndLocationForm = ({
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for each panel
+    const [entryInfoStatus, setEntryInfoStatus] = useState<Status | null>(null);
+    const [objectLocationStatus, setObjectLocationStatus] = useState<Status | null>(null);
+
+    // Status options for dropdown
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Initialize entryAndLocation if it doesn't exist
     useEffect(() => {
@@ -175,6 +189,78 @@ export const EntryAndLocationForm = ({
         });
     };
 
+    // Update all fields in the entry info panel
+    const updateAllEntryInfoFields = (status: Status) => {
+        if (!status || !data.entryAndLocation) return;
+
+        setData({
+            ...data,
+            entryAndLocation: {
+                ...data.entryAndLocation,
+                inventoryNumber: {
+                    ...data.entryAndLocation.inventoryNumber,
+                    status
+                },
+                objectName: {
+                    ...data.entryAndLocation.objectName,
+                    status
+                },
+                entryDate: {
+                    ...data.entryAndLocation.entryDate,
+                    status
+                },
+                entryMethod: {
+                    ...data.entryAndLocation.entryMethod,
+                    status
+                },
+                heritageType: {
+                    ...data.entryAndLocation.heritageType,
+                    status
+                },
+                declarationType: {
+                    ...data.entryAndLocation.declarationType,
+                    status
+                },
+                institutionType: {
+                    ...data.entryAndLocation.institutionType,
+                    status
+                },
+                genericClassification: {
+                    ...data.entryAndLocation.genericClassification,
+                    status
+                },
+                auxiliaryInventory: {
+                    ...data.entryAndLocation.auxiliaryInventory,
+                    status
+                },
+                pieceInventory: {
+                    ...data.entryAndLocation.pieceInventory,
+                    status
+                },
+                initialDescription: {
+                    ...data.entryAndLocation.initialDescription,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the object location panel
+    const updateAllObjectLocationFields = (status: Status) => {
+        if (!status || !data.entryAndLocation) return;
+
+        setData({
+            ...data,
+            entryAndLocation: {
+                ...data.entryAndLocation,
+                objectLocation: {
+                    ...data.entryAndLocation.objectLocation,
+                    status
+                }
+            }
+        });
+    };
+
     // Sample options for dropdowns
     const heritageTypeOptions = [
         { label: 'Patrimonio Mueble', value: 'Patrimonio Mueble' },
@@ -223,7 +309,48 @@ export const EntryAndLocationForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Información de Entrada" toggleable>
+                <Panel
+                    header="Información de Entrada"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Información de Entrada</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={entryInfoStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setEntryInfoStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (entryInfoStatus) {
+                                                    updateAllEntryInfoFields(entryInfoStatus);
+                                                    setEntryInfoStatus(null);
+                                                }
+                                            }}
+                                            disabled={!entryInfoStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
@@ -417,7 +544,48 @@ export const EntryAndLocationForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Ubicación del Objeto" toggleable>
+                <Panel
+                    header="Ubicación del Objeto"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Ubicación del Objeto</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={objectLocationStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setObjectLocationStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (objectLocationStatus) {
+                                                    updateAllObjectLocationFields(objectLocationStatus);
+                                                    setObjectLocationStatus(null);
+                                                }
+                                            }}
+                                            disabled={!objectLocationStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory

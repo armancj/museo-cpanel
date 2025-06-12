@@ -24,18 +24,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities">
-      <change afterPath="$PROJECT_DIR$/app/service/utilities/cleanFieldData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/UserService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/UserService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,30 +58,51 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;armancj&quot;
-  }
-}</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: [
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "history": [
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6ZD0fw&quot;,
-        &quot;number&quot;: 12
-      },
-      &quot;lastSeen&quot;: 1749569175384
+      "state": "MERGED"
     },
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6Z4n4R&quot;,
-        &quot;number&quot;: 14
+      "state": "OPEN"
+    }
+  ],
+  "lastFilter": {
+    "state": "OPEN"
+  }
+}]]></component>
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
+    {
+      "id": {
+        "id": "PR_kwDOMrwCVc6ZD0fw",
+        "number": 12
       },
-      &quot;lastSeen&quot;: 1749569193798
+      "lastSeen": 1749569175384
+    },
+    {
+      "id": {
+        "id": "PR_kwDOMrwCVc6Z4p3_",
+        "number": 15
+      },
+      "lastSeen": 1749716500439
+    },
+    {
+      "id": {
+        "id": "PR_kwDOMrwCVc6aKpWL",
+        "number": 16
+      },
+      "lastSeen": 1749716534000
+    },
+    {
+      "id": {
+        "id": "PR_kwDOMrwCVc6Z4n4R",
+        "number": 14
+      },
+      "lastSeen": 1749716572401
     }
   ]
-}</component>
+}]]></component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
       <RecentBranches>
@@ -156,7 +177,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "#14 on feature/fix-error-upload-cultural-object",
+    "git-widget-placeholder": "feature/fix-error-upload-cultural-object",
     "ignore.virus.scanning.warn.message": "true",
     "javascript.nodejs.core.library.configured.version": "22.14.0",
     "javascript.nodejs.core.library.typings.version": "22.14.1",

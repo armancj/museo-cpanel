@@ -186,7 +186,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData }: CulturalHer
                     tooltip="Ver Detalles"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
-                        setData(rowData);
+                        editData(rowData);
                         onAddNew(); // Navigate to the wizard view with the selected item
                     }}
                 />

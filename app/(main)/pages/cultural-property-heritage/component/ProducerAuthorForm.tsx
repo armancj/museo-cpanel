@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 interface ProducerAuthorFormProps {
     data: CulturalHeritageProperty;
@@ -32,6 +34,18 @@ export const ProducerAuthorForm = ({
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for each panel
+    const [producerAuthorStatus, setProducerAuthorStatus] = useState<Status | null>(null);
+    const [addressStatus, setAddressStatus] = useState<Status | null>(null);
+
+    // Status options for dropdown
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Initialize producerAuthor if it doesn't exist
     useEffect(() => {
@@ -132,6 +146,74 @@ export const ProducerAuthorForm = ({
         });
     };
 
+    // Update all fields in the producer author panel
+    const updateAllProducerAuthorFields = (status: Status) => {
+        if (!status || !data.producerAuthor) return;
+
+        setData({
+            ...data,
+            producerAuthor: {
+                ...data.producerAuthor,
+                producerAuthorNames: {
+                    ...data.producerAuthor.producerAuthorNames,
+                    status
+                },
+                institutionalHistory: {
+                    ...data.producerAuthor.institutionalHistory,
+                    status
+                },
+                objectEntryHistory: {
+                    ...data.producerAuthor.objectEntryHistory,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the address panel
+    const updateAllAddressFields = (status: Status) => {
+        if (!status || !data.producerAuthor) return;
+
+        setData({
+            ...data,
+            producerAuthor: {
+                ...data.producerAuthor,
+                province: {
+                    ...data.producerAuthor.province,
+                    status
+                },
+                municipality: {
+                    ...data.producerAuthor.municipality,
+                    status
+                },
+                locality: {
+                    ...data.producerAuthor.locality,
+                    status
+                },
+                district: {
+                    ...data.producerAuthor.district,
+                    status
+                },
+                street: {
+                    ...data.producerAuthor.street,
+                    status
+                },
+                number: {
+                    ...data.producerAuthor.number,
+                    status
+                },
+                betweenStreet1: {
+                    ...data.producerAuthor.betweenStreet1,
+                    status
+                },
+                betweenStreet2: {
+                    ...data.producerAuthor.betweenStreet2,
+                    status
+                }
+            }
+        });
+    };
+
     // If producerAuthor is not initialized yet, show loading or return null
     if (!data.producerAuthor) {
         return <div>Cargando...</div>;
@@ -140,7 +222,48 @@ export const ProducerAuthorForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Información del Productor/Autor" toggleable>
+                <Panel
+                    header="Información del Productor/Autor"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Información del Productor/Autor</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={producerAuthorStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setProducerAuthorStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (producerAuthorStatus) {
+                                                    updateAllProducerAuthorFields(producerAuthorStatus);
+                                                    setProducerAuthorStatus(null);
+                                                }
+                                            }}
+                                            disabled={!producerAuthorStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12">
                             <FieldWithHistory
@@ -193,7 +316,48 @@ export const ProducerAuthorForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Dirección" toggleable>
+                <Panel
+                    header="Dirección"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Dirección</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={addressStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setAddressStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (addressStatus) {
+                                                    updateAllAddressFields(addressStatus);
+                                                    setAddressStatus(null);
+                                                }
+                                            }}
+                                            disabled={!addressStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory

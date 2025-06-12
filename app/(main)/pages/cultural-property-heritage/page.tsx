@@ -14,10 +14,12 @@ const CulturalHeritagePropertyPage = () => {
 
 
     const handleAddNew = () => {
+        hookData.closeDialog();
         setShowWizard(true);
     };
 
     const handleBackToList = () => {
+        hookData.closeDialog();
         setShowWizard(false);
     };
 
