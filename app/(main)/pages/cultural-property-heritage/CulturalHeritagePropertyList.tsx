@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { CulturalHeritageProperty, Status } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
 import { DataTable } from 'primereact/datatable';
@@ -14,18 +14,18 @@ import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { HeritageTypeService, HeritageTypeResponse } from '@/app/service/HeritageTypeService';
+import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
     onEditOrView?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    heritageTypes: HeritageTypeResponse[];
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypes }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
-    const [heritageTypes, setHeritageTypes] = useState<HeritageTypeResponse[]>([]);
 
     const {
         datum,
@@ -38,19 +38,6 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         setDeleteDialog
         // eslint-disable-next-line react-hooks/rules-of-hooks
     } = hookData || useHookCulturalHeritageProperty();
-
-    useEffect(() => {
-        const fetchHeritageTypes = async () => {
-            try {
-                const response = await HeritageTypeService.getHeritageTypes();
-                setHeritageTypes(response);
-            } catch (error) {
-                console.error('Error fetching heritage types:', error);
-            }
-        };
-
-        fetchHeritageTypes();
-    }, []);
 
     const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
         ...item,

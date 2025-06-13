@@ -1,19 +1,38 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
 import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
 import {
     useHookCulturalHeritageProperty
 } from '@/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty';
+import { HeritageTypeResponse, HeritageTypeService } from '@/app/service/HeritageTypeService';
 
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
+    const [heritageTypes, setHeritageTypes] = useState<HeritageTypeResponse[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const isEditModeRef = useRef(false);
 
 
     const hookData = useHookCulturalHeritageProperty();
+
+    useEffect(() => {
+        const fetchHeritageTypes = async () => {
+            try {
+                setLoading(true);
+                const response = await HeritageTypeService.getHeritageTypes();
+                setHeritageTypes(response);
+            } catch (error) {
+                console.error('Error fetching heritage types:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHeritageTypes();
+    }, []);
 
 
     const handleAddNew = () => {
@@ -33,6 +52,16 @@ const CulturalHeritagePropertyPage = () => {
         hookData.closeDialog();
         setShowWizard(false);
     };
+
+
+    if (loading) {
+        return (
+            <div className="flex align-items-center justify-content-center" style={{ height: '400px' }}>
+                <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
+                <span className="ml-2">Cargando...</span>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -54,7 +83,10 @@ const CulturalHeritagePropertyPage = () => {
             ) : (
                 <CulturalHeritagePropertyList onAddNew={handleAddNew}
                                               onEditOrView={handleEditOrView}
-                                              hookData={hookData} />
+                                              hookData={hookData}
+                                              heritageTypes={heritageTypes}
+                />
+
             )}
         </div>
     );
