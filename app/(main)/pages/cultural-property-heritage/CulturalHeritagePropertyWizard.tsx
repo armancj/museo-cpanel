@@ -18,14 +18,23 @@ import { NotesForm } from './component/NotesForm';
 import { HistoryDialog } from './component/HistoryDialog';
 
 
+interface DropdownData {
+    valueGradeOptions: { label: string; value: string }[];
+    descriptionInstrumentOptions: { label: string; value: string }[];
+    conservationStateOptions: { label: string; value: string }[];
+    heritageTypeOptions: { label: string; value: string }[];
+}
+
 interface CulturalHeritagePropertyWizardProps {
     onBackToList?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    dropdownData: DropdownData;
 }
 
 export const CulturalHeritagePropertyWizard = ({
                                                    onBackToList,
-                                                   hookData
+                                                   hookData,
+                                                   dropdownData
                                                }: CulturalHeritagePropertyWizardProps) => {
     // Get the current user role - in a real app, this would come from authentication
     // For this example, we'll use a state that can be changed for testing
@@ -226,11 +235,19 @@ export const CulturalHeritagePropertyWizard = ({
 
         switch (activeIndex) {
             case 0:
-                return <CulturalRecordForm {...commonProps} />;
+                return <CulturalRecordForm
+                    {...commonProps}
+                    valueGradeOptions={dropdownData.valueGradeOptions}
+                    descriptionInstrumentOptions={dropdownData.descriptionInstrumentOptions}
+                    conservationStateOptions={dropdownData.conservationStateOptions}
+                />;
             case 1:
                 return <ProducerAuthorForm {...commonProps} />;
             case 2:
-                return <EntryAndLocationForm {...commonProps} />;
+                return <EntryAndLocationForm
+                    {...commonProps}
+                    heritageTypeOptions={dropdownData.heritageTypeOptions}
+                />;
             case 3:
                 return <AccessAndUseConditionsForm {...commonProps} />;
             case 4:

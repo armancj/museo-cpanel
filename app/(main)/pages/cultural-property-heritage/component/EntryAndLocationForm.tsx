@@ -18,6 +18,7 @@ interface EntryAndLocationFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    heritageTypeOptions: { label: string; value: string }[];
 }
 
 export const EntryAndLocationForm = ({
@@ -30,7 +31,8 @@ export const EntryAndLocationForm = ({
     isEditMode,
     markStepCompleted,
     currentStep,
-    submitted
+    submitted,
+    heritageTypeOptions
 }: EntryAndLocationFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
@@ -277,12 +279,6 @@ export const EntryAndLocationForm = ({
     };
 
     // Sample options for dropdowns
-    const heritageTypeOptions = [
-        { label: 'Patrimonio Mueble', value: 'Patrimonio Mueble' },
-        { label: 'Patrimonio Inmueble', value: 'Patrimonio Inmueble' },
-        { label: 'Patrimonio Inmaterial', value: 'Patrimonio Inmaterial' },
-        { label: 'Objeto no Patrimonial', value: 'Objeto no Patrimonial' }
-    ];
 
     const entryMethodOptions = [
         { label: 'Donación', value: 'donation' },

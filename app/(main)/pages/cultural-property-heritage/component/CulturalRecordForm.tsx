@@ -18,6 +18,9 @@ interface CulturalRecordFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    valueGradeOptions: { label: string; value: string }[];
+    descriptionInstrumentOptions: { label: string; value: string }[];
+    conservationStateOptions: { label: string; value: string }[];
 }
 
 export const CulturalRecordForm = ({
@@ -30,7 +33,10 @@ export const CulturalRecordForm = ({
     isEditMode,
     markStepCompleted,
     currentStep,
-    submitted
+    submitted,
+    valueGradeOptions,
+    descriptionInstrumentOptions,
+    conservationStateOptions
 }: CulturalRecordFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
@@ -281,27 +287,6 @@ export const CulturalRecordForm = ({
         { label: 'Manuscrito', value: 'manuscript' },
         { label: 'Impreso', value: 'printed' },
         { label: 'Mecanografiado', value: 'typed' }
-    ];
-
-    const descriptionInstrumentOptions = [
-        { label: 'Ficha', value: 'card' },
-        { label: 'Catálogo', value: 'catalog' },
-        { label: 'Inventario', value: 'inventory' },
-        { label: 'Base de datos', value: 'database' }
-    ];
-
-    const conservationStateOptions = [
-        { label: 'Excelente', value: 'excellent' },
-        { label: 'Bueno', value: 'good' },
-        { label: 'Regular', value: 'regular' },
-        { label: 'Malo', value: 'bad' },
-        { label: 'Pésimo', value: 'terrible' }
-    ];
-
-    const valueGradeOptions = [
-        { label: 'I', value: 'I' },
-        { label: 'II', value: 'II' },
-        { label: 'III', value: 'III' }
     ];
 
     const descriptionLevelOptions = [

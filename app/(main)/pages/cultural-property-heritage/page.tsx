@@ -1,38 +1,28 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
 import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
 import {
     useHookCulturalHeritageProperty
 } from '@/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty';
-import { HeritageTypeResponse, HeritageTypeService } from '@/app/service/HeritageTypeService';
+import { useAllDropdownData } from '@/app/common/hooks/useAllDropdownData';
 
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
-    const [heritageTypes, setHeritageTypes] = useState<HeritageTypeResponse[]>([]);
-    const [loading, setLoading] = useState(true);
-
     const isEditModeRef = useRef(false);
 
+    // Use the custom hook to fetch all dropdown data
+    const {
+        valueGradeOptions,
+        descriptionInstrumentOptions,
+        conservationStateOptions,
+        heritageTypeOptions,
+        isLoading,
+        error
+    } = useAllDropdownData();
 
     const hookData = useHookCulturalHeritageProperty();
-
-    useEffect(() => {
-        const fetchHeritageTypes = async () => {
-            try {
-                setLoading(true);
-                const response = await HeritageTypeService.getHeritageTypes();
-                setHeritageTypes(response);
-            } catch (error) {
-                console.error('Error fetching heritage types:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchHeritageTypes();
-    }, []);
 
 
     const handleAddNew = () => {
@@ -54,11 +44,20 @@ const CulturalHeritagePropertyPage = () => {
     };
 
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex align-items-center justify-content-center" style={{ height: '400px' }}>
                 <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
                 <span className="ml-2">Cargando...</span>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex align-items-center justify-content-center" style={{ height: '400px' }}>
+                <i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', color: 'red' }}></i>
+                <span className="ml-2">Error al cargar los datos: {error.message}</span>
             </div>
         );
     }
@@ -75,18 +74,24 @@ const CulturalHeritagePropertyPage = () => {
                             onClick={handleBackToList}
                         />
                     </div>
-                    <CulturalHeritagePropertyWizard onBackToList={handleBackToList}
-                                                    hookData={hookData}
-
+                    <CulturalHeritagePropertyWizard
+                        onBackToList={handleBackToList}
+                        hookData={hookData}
+                        dropdownData={{
+                            valueGradeOptions,
+                            descriptionInstrumentOptions,
+                            conservationStateOptions,
+                            heritageTypeOptions
+                        }}
                     />
                 </div>
             ) : (
-                <CulturalHeritagePropertyList onAddNew={handleAddNew}
-                                              onEditOrView={handleEditOrView}
-                                              hookData={hookData}
-                                              heritageTypes={heritageTypes}
+                <CulturalHeritagePropertyList
+                    onAddNew={handleAddNew}
+                    onEditOrView={handleEditOrView}
+                    hookData={hookData}
+                    heritageTypeOptions={heritageTypeOptions}
                 />
-
             )}
         </div>
     );

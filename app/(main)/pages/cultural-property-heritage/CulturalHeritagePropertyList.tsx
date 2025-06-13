@@ -20,11 +20,11 @@ interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
     onEditOrView?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
-    heritageTypes: HeritageTypeResponse[];
+    heritageTypeOptions: { label: string; value: string }[];
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypes }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
 
     const {
@@ -250,15 +250,10 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
 
     // Heritage type filter template
     const heritageTypeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
-        const formattedOptions = heritageTypes.map(type => ({
-            label: type.name,
-            value: type.name
-        }));
-
         return (
             <Dropdown
                 value={options.value}
-                options={formattedOptions}
+                options={heritageTypeOptions}
                 onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
                 optionLabel="label"
                 placeholder="Seleccionar tipo"
