@@ -36,7 +36,7 @@ export const EntryAndLocationForm = ({
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
 
-    // State for selected status for each panel
+    // State for the selected status for each panel
     const [entryInfoStatus, setEntryInfoStatus] = useState<Status | null>(null);
     const [objectLocationStatus, setObjectLocationStatus] = useState<Status | null>(null);
 
@@ -131,7 +131,7 @@ export const EntryAndLocationForm = ({
         const currentField = data.entryAndLocation[field as keyof typeof data.entryAndLocation];
 
         // Automatically update status based on whether the field is filled
-        const newStatus = getUpdatedStatus(value, currentField.status);
+        const newStatus = getUpdatedStatus(value, currentField.status as Status);
 
         setData({
             ...data,
@@ -189,7 +189,7 @@ export const EntryAndLocationForm = ({
         };
 
         // Automatically update status based on whether any field in the object location is filled
-        const newStatus = getUpdatedStatus(newObjectLocationValue, data.entryAndLocation.objectLocation.status);
+        const newStatus = getUpdatedStatus(newObjectLocationValue, data.entryAndLocation.objectLocation.status as Status);
 
         setData({
             ...data,
@@ -465,6 +465,7 @@ export const EntryAndLocationForm = ({
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
+                                required={true}
                                 placeholder="Seleccione el tipo de declaración"
                             />
                         </div>

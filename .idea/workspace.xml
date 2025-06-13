@@ -25,13 +25,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,6 +262,7 @@
       <workItem from="1749701950022" duration="14059000" />
       <workItem from="1749745692980" duration="68000" />
       <workItem from="1749815869529" duration="8858000" />
+      <workItem from="1749845828150" duration="2018000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />

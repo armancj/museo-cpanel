@@ -118,7 +118,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         return (
             <>
                 <span className="p-column-title">Título</span>
-                {rowData.culturalRecord?.objectTitle?.value || 'Sin título'}
+                <div style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '10rem'
+                }}>
+                    {rowData.culturalRecord?.objectTitle?.value || 'Sin título'}
+                </div>
             </>
         );
     };
@@ -305,7 +312,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             sortable
                             headerStyle={{ minWidth: '10rem' }}
                             style={{ whiteSpace: 'nowrap' }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -315,14 +322,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             filter
                             filterPlaceholder="Buscar"
                             sortable
-                            headerStyle={{ minWidth: '10rem', maxWidth: '20rem' }}
+                            headerStyle={{ minWidth: '10rem', maxWidth: '10rem' }}
                             style={{
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                maxWidth: '20rem'
+                                maxWidth: '10rem'
                             }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '15rem' }}
                             showFilterMenu={false}
                         />
                         <Column
