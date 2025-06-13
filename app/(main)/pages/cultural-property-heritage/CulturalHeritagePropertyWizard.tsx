@@ -25,6 +25,8 @@ interface DropdownData {
     heritageTypeOptions: { label: string; value: string }[];
     provinceOptions: { label: string; value: string }[];
     municipalityOptions: { label: string; value: string }[];
+    accessConditionsOptions: { label: string; value: string }[];
+    reproductionConditionsOptions: { label: string; value: string }[];
     fetchMunicipalitiesForProvince: (provinceName: string) => Promise<void>;
 }
 
@@ -262,7 +264,11 @@ export const CulturalHeritagePropertyWizard = ({
                     heritageTypeOptions={dropdownData.heritageTypeOptions}
                 />;
             case 3:
-                return <AccessAndUseConditionsForm {...commonProps} />;
+                return <AccessAndUseConditionsForm
+                    {...commonProps}
+                    accessConditionsOptions={dropdownData.accessConditionsOptions}
+                    reproductionConditionsOptions={dropdownData.reproductionConditionsOptions}
+                />;
             case 4:
                 return <AssociatedDocumentationForm {...commonProps} />;
             case 5:

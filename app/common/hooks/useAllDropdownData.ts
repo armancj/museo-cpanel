@@ -5,6 +5,8 @@ import { ConservationStatusService } from '@/app/service/ConservationStatusServi
 import { HeritageTypeService } from '@/app/service/HeritageTypeService';
 import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
+import { NomenclatureAccessConditionsService } from '@/app/service/NomenclatureAccessConditionsService';
+import { ReproductionConditionsService } from '@/app/service/ReproductionConditionsService';
 
 // Define dropdown option type
 export type DropdownOption = { label: string; value: string };
@@ -17,6 +19,8 @@ export interface AllDropdownData {
     heritageTypeOptions: DropdownOption[];
     provinceOptions: DropdownOption[];
     municipalityOptions: DropdownOption[];
+    accessConditionsOptions: DropdownOption[];
+    reproductionConditionsOptions: DropdownOption[];
     isLoading: boolean;
     error: Error | null;
     // Function to fetch municipalities for a specific province
@@ -34,6 +38,8 @@ export const useAllDropdownData = (): AllDropdownData => {
     const [heritageTypeOptions, setHeritageTypeOptions] = useState<DropdownOption[]>([]);
     const [provinceOptions, setProvinceOptions] = useState<DropdownOption[]>([]);
     const [municipalityOptions, setMunicipalityOptions] = useState<DropdownOption[]>([]);
+    const [accessConditionsOptions, setAccessConditionsOptions] = useState<DropdownOption[]>([]);
+    const [reproductionConditionsOptions, setReproductionConditionsOptions] = useState<DropdownOption[]>([]);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -101,20 +107,41 @@ export const useAllDropdownData = (): AllDropdownData => {
                     ).catch(err => {
                         console.error('Error fetching provinces:', err);
                         return [];
+                    }),
+                    NomenclatureAccessConditionsService.get().then(data =>
+                        data.map(item => ({ label: item.type, value: item.type }))
+                    ).catch(err => {
+                        console.error('Error fetching access conditions:', err);
+                        return [];
+                    }),
+                    ReproductionConditionsService.getReproductionConditions().then(data =>
+                        data.map(item => ({ label: item.name, value: item.name }))
+                    ).catch(err => {
+                        console.error('Error fetching reproduction conditions:', err);
+                        return [];
                     })
                 ];
 
                 const results = await Promise.allSettled(promises);
 
                 // ✅ Manejar resultados individualmente
-                const [valueGrades, descriptionInstruments, conservationStatuses, heritageTypes, provinces] =
-                    results.map(result => result.status === 'fulfilled' ? result.value : []);
+                const [
+                    valueGrades,
+                    descriptionInstruments,
+                    conservationStatuses,
+                    heritageTypes,
+                    provinces,
+                    accessConditions,
+                    reproductionConditions
+                ] = results.map(result => result.status === 'fulfilled' ? result.value : []);
 
                 setValueGradeOptions(valueGrades);
                 setDescriptionInstrumentOptions(descriptionInstruments);
                 setConservationStateOptions(conservationStatuses);
                 setHeritageTypeOptions(heritageTypes);
                 setProvinceOptions(provinces);
+                setAccessConditionsOptions(accessConditions);
+                setReproductionConditionsOptions(reproductionConditions);
 
                 // ✅ Solo mostrar error si TODOS los servicios fallan
                 const allFailed = results.every(result => result.status === 'rejected');
@@ -140,6 +167,8 @@ export const useAllDropdownData = (): AllDropdownData => {
         heritageTypeOptions,
         provinceOptions,
         municipalityOptions,
+        accessConditionsOptions,
+        reproductionConditionsOptions,
         fetchMunicipalitiesForProvince,
         isLoading,
         error

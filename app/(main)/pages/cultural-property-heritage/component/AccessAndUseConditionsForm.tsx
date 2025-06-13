@@ -18,6 +18,8 @@ interface AccessAndUseConditionsFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    accessConditionsOptions: { label: string; value: string }[];
+    reproductionConditionsOptions: { label: string; value: string }[];
 }
 
 export const AccessAndUseConditionsForm = ({
@@ -30,7 +32,9 @@ export const AccessAndUseConditionsForm = ({
     isEditMode,
     markStepCompleted,
     currentStep,
-    submitted
+    submitted,
+    accessConditionsOptions,
+    reproductionConditionsOptions
 }: AccessAndUseConditionsFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
@@ -173,23 +177,10 @@ export const AccessAndUseConditionsForm = ({
         });
     };
 
-    // Sample options for dropdowns
-    const accessConditionsOptions = [
-        { label: 'Acceso Libre', value: 'free_access' },
-        { label: 'Acceso Restringido', value: 'restricted_access' },
-        { label: 'Acceso con Autorización', value: 'authorized_access' },
-        { label: 'Acceso Prohibido', value: 'prohibited_access' }
-    ];
-
-    const reproductionConditionsOptions = [
-        { label: 'Reproducción Permitida', value: 'allowed_reproduction' },
-        { label: 'Reproducción con Autorización', value: 'authorized_reproduction' },
-        { label: 'Reproducción Prohibida', value: 'prohibited_reproduction' },
-        { label: 'Reproducción con Fines Educativos', value: 'educational_reproduction' }
-    ];
+    // Access conditions and reproduction conditions options are now passed as props
 
 
-    // 🔍 DEBUGGING: Log the access conditions field data
+    // 🔍 DEBUGGING: Log the access conditions field data and options
     useEffect(() => {
         if (data.accessAndUseConditions?.accessConditions) {
             console.log('🔍 ACCESS FORM - accessConditions field:', data.accessAndUseConditions.accessConditions);
@@ -198,8 +189,14 @@ export const AccessAndUseConditionsForm = ({
         }
     }, [data.accessAndUseConditions?.accessConditions]);
 
+    // 🔍 DEBUGGING: Log the fetched options
+    useEffect(() => {
+        console.log('🔍 ACCESS FORM - accessConditionsOptions:', accessConditionsOptions);
+        console.log('🔍 ACCESS FORM - reproductionConditionsOptions:', reproductionConditionsOptions);
+    }, [accessConditionsOptions, reproductionConditionsOptions]);
 
-    // If accessAndUseConditions is not initialized yet, show loading or return null
+
+    // If accessAndUseConditions is not initialized yet, show loading
     if (!data.accessAndUseConditions) {
         return <div>Cargando...</div>;
     }
