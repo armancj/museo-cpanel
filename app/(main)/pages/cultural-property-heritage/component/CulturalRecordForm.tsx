@@ -3,6 +3,9 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface CulturalRecordFormProps {
     data: CulturalHeritageProperty;
@@ -15,6 +18,9 @@ interface CulturalRecordFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    valueGradeOptions: { label: string; value: string }[];
+    descriptionInstrumentOptions: { label: string; value: string }[];
+    conservationStateOptions: { label: string; value: string }[];
 }
 
 export const CulturalRecordForm = ({
@@ -27,11 +33,29 @@ export const CulturalRecordForm = ({
     isEditMode,
     markStepCompleted,
     currentStep,
-    submitted
+    submitted,
+    valueGradeOptions,
+    descriptionInstrumentOptions,
+    conservationStateOptions
 }: CulturalRecordFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for each panel
+    const [basicInfoStatus, setBasicInfoStatus] = useState<Status | null>(null);
+    const [datesAndDimensionsStatus, setDatesAndDimensionsStatus] = useState<Status | null>(null);
+    const [descriptorsStatus, setDescriptorsStatus] = useState<Status | null>(null);
+    const [physicalCharacteristicsStatus, setPhysicalCharacteristicsStatus] = useState<Status | null>(null);
+    const [additionalTitlesStatus, setAdditionalTitlesStatus] = useState<Status | null>(null);
+
+    // Status options for dropdowns
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Check if the form is valid
     useEffect(() => {
@@ -67,13 +91,20 @@ export const CulturalRecordForm = ({
 
     // Update a field in the cultural record
     const updateField = (field: string, value: any) => {
+        // Get the current field data
+        const currentField = data.culturalRecord[field as keyof typeof data.culturalRecord];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status as Status);
+
         setData({
             ...data,
             culturalRecord: {
                 ...data.culturalRecord,
                 [field]: {
-                    ...data.culturalRecord[field as keyof typeof data.culturalRecord],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
@@ -107,6 +138,134 @@ export const CulturalRecordForm = ({
         });
     };
 
+    // Update all fields in the basic info panel
+    const updateBasicInfoFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                objectTitle: {
+                    ...data.culturalRecord.objectTitle,
+                    status
+                },
+                objectDescription: {
+                    ...data.culturalRecord.objectDescription,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the dates and dimensions panel
+    const updateDatesAndDimensionsFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                extremeDates: {
+                    ...data.culturalRecord.extremeDates,
+                    status
+                },
+                valueGrade: {
+                    ...data.culturalRecord.valueGrade,
+                    status
+                },
+                descriptionLevel: {
+                    ...data.culturalRecord.descriptionLevel,
+                    status
+                },
+                valuation: {
+                    ...data.culturalRecord.valuation,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the descriptors panel
+    const updateDescriptorsFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                onomasticDescriptors: {
+                    ...data.culturalRecord.onomasticDescriptors,
+                    status
+                },
+                geographicDescriptors: {
+                    ...data.culturalRecord.geographicDescriptors,
+                    status
+                },
+                institutionalDescriptors: {
+                    ...data.culturalRecord.institutionalDescriptors,
+                    status
+                },
+                subjectDescriptors: {
+                    ...data.culturalRecord.subjectDescriptors,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the physical characteristics panel
+    const updatePhysicalCharacteristicsFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                languages: {
+                    ...data.culturalRecord.languages,
+                    status
+                },
+                supports: {
+                    ...data.culturalRecord.supports,
+                    status
+                },
+                letters: {
+                    ...data.culturalRecord.letters,
+                    status
+                },
+                descriptionInstrument: {
+                    ...data.culturalRecord.descriptionInstrument,
+                    status
+                },
+                conservationState: {
+                    ...data.culturalRecord.conservationState,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the additional titles panel
+    const updateAdditionalTitlesFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                backgroundTitle: {
+                    ...data.culturalRecord.backgroundTitle,
+                    status
+                },
+                sectionTitle: {
+                    ...data.culturalRecord.sectionTitle,
+                    status
+                }
+            }
+        });
+    };
+
     // Sample options for dropdowns
     const languageOptions = [
         { label: 'Español', value: 'es' },
@@ -130,27 +289,6 @@ export const CulturalRecordForm = ({
         { label: 'Mecanografiado', value: 'typed' }
     ];
 
-    const descriptionInstrumentOptions = [
-        { label: 'Ficha', value: 'card' },
-        { label: 'Catálogo', value: 'catalog' },
-        { label: 'Inventario', value: 'inventory' },
-        { label: 'Base de datos', value: 'database' }
-    ];
-
-    const conservationStateOptions = [
-        { label: 'Excelente', value: 'excellent' },
-        { label: 'Bueno', value: 'good' },
-        { label: 'Regular', value: 'regular' },
-        { label: 'Malo', value: 'bad' },
-        { label: 'Pésimo', value: 'terrible' }
-    ];
-
-    const valueGradeOptions = [
-        { label: 'I', value: 'I' },
-        { label: 'II', value: 'II' },
-        { label: 'III', value: 'III' }
-    ];
-
     const descriptionLevelOptions = [
         { label: '1', value: 1 },
         { label: '2', value: 2 },
@@ -160,7 +298,48 @@ export const CulturalRecordForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Información Básica" toggleable>
+                <Panel
+                    header="Información Básica"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Información Básica</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={basicInfoStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setBasicInfoStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (basicInfoStatus) {
+                                                    updateBasicInfoFields(basicInfoStatus);
+                                                    setBasicInfoStatus(null);
+                                                }
+                                            }}
+                                            disabled={!basicInfoStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
@@ -199,7 +378,48 @@ export const CulturalRecordForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Fechas y Dimensiones" toggleable>
+                <Panel
+                    header="Fechas y Dimensiones"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Fechas y Dimensiones</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={datesAndDimensionsStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setDatesAndDimensionsStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (datesAndDimensionsStatus) {
+                                                    updateDatesAndDimensionsFields(datesAndDimensionsStatus);
+                                                    setDatesAndDimensionsStatus(null);
+                                                }
+                                            }}
+                                            disabled={!datesAndDimensionsStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
@@ -269,7 +489,48 @@ export const CulturalRecordForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Descriptores" toggleable>
+                <Panel
+                    header="Descriptores"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Descriptores</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={descriptorsStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setDescriptorsStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (descriptorsStatus) {
+                                                    updateDescriptorsFields(descriptorsStatus);
+                                                    setDescriptorsStatus(null);
+                                                }
+                                            }}
+                                            disabled={!descriptorsStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
@@ -339,7 +600,48 @@ export const CulturalRecordForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Características Físicas" toggleable>
+                <Panel
+                    header="Características Físicas"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Características Físicas</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={physicalCharacteristicsStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setPhysicalCharacteristicsStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (physicalCharacteristicsStatus) {
+                                                    updatePhysicalCharacteristicsFields(physicalCharacteristicsStatus);
+                                                    setPhysicalCharacteristicsStatus(null);
+                                                }
+                                            }}
+                                            disabled={!physicalCharacteristicsStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
@@ -427,7 +729,48 @@ export const CulturalRecordForm = ({
             </div>
 
             <div className="col-12">
-                <Panel header="Títulos Adicionales" toggleable>
+                <Panel
+                    header="Títulos Adicionales"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Títulos Adicionales</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={additionalTitlesStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setAdditionalTitlesStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (additionalTitlesStatus) {
+                                                    updateAdditionalTitlesFields(additionalTitlesStatus);
+                                                    setAdditionalTitlesStatus(null);
+                                                }
+                                            }}
+                                            disabled={!additionalTitlesStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory

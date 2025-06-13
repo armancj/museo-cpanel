@@ -3,6 +3,9 @@ import { useEffect, useState, useRef } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface DescriptionControlFormProps {
     data: CulturalHeritageProperty;
@@ -32,6 +35,17 @@ export const DescriptionControlForm = ({
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
+
+    // State for selected status for the panel
+    const [descriptionControlStatus, setDescriptionControlStatus] = useState<Status | null>(null);
+
+    // Status options for dropdown
+    const statusOptions = [
+        { label: 'Pendiente', value: Status.Pending },
+        { label: 'Para Revisar', value: Status.ToReview },
+        { label: 'Revisado', value: Status.Reviewed },
+        { label: 'Con Problemas', value: Status.HasIssue }
+    ];
 
     // Initialize descriptionControl if it doesn't exist
     useEffect(() => {
@@ -81,13 +95,20 @@ export const DescriptionControlForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.descriptionControl) return;
 
+        // Get the current field data
+        const currentField = data.descriptionControl[field as keyof typeof data.descriptionControl];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             descriptionControl: {
                 ...data.descriptionControl,
                 [field]: {
-                    ...data.descriptionControl[field as keyof typeof data.descriptionControl],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
@@ -125,6 +146,34 @@ export const DescriptionControlForm = ({
         });
     };
 
+    // Update all fields in the description control panel
+    const updateAllDescriptionControlFields = (status: Status) => {
+        if (!status || !data.descriptionControl) return;
+
+        setData({
+            ...data,
+            descriptionControl: {
+                ...data.descriptionControl,
+                descriptionMadeBy: {
+                    ...data.descriptionControl.descriptionMadeBy,
+                    status
+                },
+                descriptionDateTime: {
+                    ...data.descriptionControl.descriptionDateTime,
+                    status
+                },
+                reviewedBy: {
+                    ...data.descriptionControl.reviewedBy,
+                    status
+                },
+                reviewDateTime: {
+                    ...data.descriptionControl.reviewDateTime,
+                    status
+                }
+            }
+        });
+    };
+
     // If descriptionControl is not initialized yet, show loading or return null
     if (!data.descriptionControl) {
         return <div>Cargando...</div>;
@@ -133,7 +182,48 @@ export const DescriptionControlForm = ({
     return (
         <div className="grid">
             <div className="col-12">
-                <Panel header="Control de Descripción" toggleable>
+                <Panel
+                    header="Control de Descripción"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Control de Descripción</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={descriptionControlStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setDescriptionControlStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (descriptionControlStatus) {
+                                                    updateAllDescriptionControlFields(descriptionControlStatus);
+                                                    setDescriptionControlStatus(null);
+                                                }
+                                            }}
+                                            disabled={!descriptionControlStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory

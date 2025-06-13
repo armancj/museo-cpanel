@@ -193,6 +193,7 @@ export const useGenericHook = <ResponseType>({
         const finalData = smartMerge(service.emptyItem, updatedData) as ResponseType;
 
         setData(finalData);
+        // Abrir el diálogo para mostrar el formulario de edición
         setDialog(true);
     };
 
@@ -200,7 +201,10 @@ export const useGenericHook = <ResponseType>({
         setDialog(false);
         setData(service.emptyItem);
         setCurrentEditingUuid(null);
+        setSubmitted(false);
     };
+
+
 
     return {
         datum: selects,

@@ -23,19 +23,12 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities">
-      <change afterPath="$PROJECT_DIR$/app/service/utilities/cleanFieldData.ts" afterDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/HistoryDialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/UserService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/UserService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,8 +38,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -59,9 +52,16 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;MERGED&quot;
+    },
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    }
+  ],
   &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;armancj&quot;
+    &quot;state&quot;: &quot;OPEN&quot;
   }
 }</component>
   <component name="GitHubPullRequestState">{
@@ -75,10 +75,24 @@
     },
     {
       &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOMrwCVc6Z4p3_&quot;,
+        &quot;number&quot;: 15
+      },
+      &quot;lastSeen&quot;: 1749716500439
+    },
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOMrwCVc6aKpWL&quot;,
+        &quot;number&quot;: 16
+      },
+      &quot;lastSeen&quot;: 1749716534000
+    },
+    {
+      &quot;id&quot;: {
         &quot;id&quot;: &quot;PR_kwDOMrwCVc6Z4n4R&quot;,
         &quot;number&quot;: 14
       },
-      &quot;lastSeen&quot;: 1749569193798
+      &quot;lastSeen&quot;: 1749716572401
     }
   ]
 }</component>
@@ -90,6 +104,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/fix-error-cultural-object" />
+                    <option name="lastUsedInstant" value="1749720321" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="feature/fix-error-upload-cultural-object" />
                     <option name="lastUsedInstant" value="1749569001" />
@@ -105,10 +123,6 @@
                   <RecentBranch>
                     <option name="branchName" value="feat/add-new-nomenclators" />
                     <option name="lastUsedInstant" value="1745428714" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feat/new" />
-                    <option name="lastUsedInstant" value="1745428713" />
                   </RecentBranch>
                 </list>
               </option>
@@ -148,50 +162,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "#14 on feature/fix-error-upload-cultural-object",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "22.14.0",
-    "javascript.nodejs.core.library.typings.version": "22.14.1",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "H:/projects/museum/museo-cpanel",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.Next.js: server-side.executor": "Run",
-    "npm.backend run.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "Pomodoro",
-    "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/fix-error-cultural-object&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;H:/projects/museum/museo-cpanel&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/arman/AppData/Roaming/fnm/aliases/default/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;npm.backend run.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Pomodoro&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\projects\museum\museo-cpanel" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.backend run">
+  <component name="RunManager" selected="npm.Next.js: server-side">
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
     </configuration>
@@ -248,6 +262,9 @@
       <workItem from="1749642242475" duration="6668000" />
       <workItem from="1749672722815" duration="6000" />
       <workItem from="1749701950022" duration="14059000" />
+      <workItem from="1749745692980" duration="68000" />
+      <workItem from="1749815869529" duration="8858000" />
+      <workItem from="1749845828150" duration="9368000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -465,7 +482,87 @@
       <option name="project" value="LOCAL" />
       <updated>1749649401698</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability">
+      <option name="closed" value="true" />
+      <created>1749719970563</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1749719970563</updated>
+    </task>
+    <task id="LOCAL-00029" summary="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method">
+      <option name="closed" value="true" />
+      <created>1749720270817</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1749720270817</updated>
+    </task>
+    <task id="LOCAL-00030" summary="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes">
+      <option name="closed" value="true" />
+      <created>1749824418229</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1749824418229</updated>
+    </task>
+    <task id="LOCAL-00031" summary="feat: enhance cultural property components and update workspace settings&#10;&#10;- Refactor `EntryAndLocationForm` with stricter type casting and required field support&#10;- Improve `CulturalHeritagePropertyList` with better text overflow handling and updated column styles&#10;- Adjust `.idea/workspace.xml` to include recent work items and cleanup unnecessary changes">
+      <option name="closed" value="true" />
+      <created>1749847877955</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1749847877955</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template">
+      <option name="closed" value="true" />
+      <created>1749848173722</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1749848173723</updated>
+    </task>
+    <task id="LOCAL-00033" summary="feat: add status filtering to cultural property list&#10;&#10;- Introduce dynamic status filtering in `CulturalHeritagePropertyList` using a dropdown filter&#10;- Update global filters and column configurations to support status filtering&#10;- Enhance table functionality with a `statusFilterTemplate`&#10;- Adjust filter header styles for consistent layout">
+      <option name="closed" value="true" />
+      <created>1749848613261</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1749848613261</updated>
+    </task>
+    <task id="LOCAL-00034" summary="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering">
+      <option name="closed" value="true" />
+      <created>1749849466249</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1749849466249</updated>
+    </task>
+    <task id="LOCAL-00035" summary="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic">
+      <option name="closed" value="true" />
+      <created>1749850721484</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1749850721484</updated>
+    </task>
+    <task id="LOCAL-00036" summary="feat: optimize field components and enhance producer-author form integration&#10;&#10;- Add `disabled` prop support to `FieldWithHistory` for improved control over field interactions&#10;- Refactor `FieldWithHistory` layout and component rendering for cleaner code and maintainability&#10;- Introduce memoization and improved state management in `ProducerAuthorForm` to enhance performance&#10;- Optimize municipality fetching logic based on province input changes&#10;- Refactor repetitive field update logic in `ProducerAuthorForm` for better readability and consistency">
+      <option name="closed" value="true" />
+      <created>1749854209731</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1749854209731</updated>
+    </task>
+    <task id="LOCAL-00037" summary="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency">
+      <option name="closed" value="true" />
+      <created>1749854750592</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1749854750592</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -483,17 +580,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature." />
-    <MESSAGE value="-Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
-    <MESSAGE value="feat(value-grade): add CRUD functionality for Value Grade management&#10;&#10;- Introduced new `ValueGrade` page with components for listing, form, table, and toolbar&#10;- Implemented `useHookValueGrade` to manage state and operations&#10;- Created `ValueGradeService` for API interactions (fetch, create, update, delete)&#10;- Added navigation entry for Value Grade in `modelAppmenuConst`&#10;- Integrated utility functions for formatting and export&#10;- Applied custom styles and localized UI messages for Value Grade features" />
-    <MESSAGE value="feat(app-menu): enhance AppMenuitem with `useRef` for CSSTransition&#10;&#10;- Added `useRef` to manage `nodeRef` in `CSSTransition` for submenu&#10;- Improved submenu rendering by referencing `ul` elements&#10;- Refactored imports for better organization" />
-    <MESSAGE value="refactor: optimize table components and improve filtering&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` components&#10;- Enhanced filtering with additional filter configurations in `tableBodyFunction`&#10;- Added scrollable tables and row filtering display&#10;- Removed redundant styles in `ButtonStyles.module.css`&#10;- Fixed `useEffect` dependency in `useGenericHook` for proper service usage" />
-    <MESSAGE value="refactor: improve table components and code readability&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` and `TableBodyFunction`&#10;- Enhanced date and status filtering templates in `tableBodyFunction`&#10;- Removed redundant styles and unused imports&#10;- Optimized UI components for better consistency and maintainability" />
-    <MESSAGE value="feat: process date fields in NomenclatureAccessConditions&#10;&#10;- Add processing of `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Update `.idea` workspace settings for VCS log tabs" />
-    <MESSAGE value="feat: enhance table components with date processing and filtering&#10;&#10;- Add date processing to ensure consistent Date objects for `createdAt` and `updatedAt` fields across multiple components&#10;- Improve table filtering by introducing date and text filters for better searchability&#10;- Simplify `TableCustom` component props and improve code readability&#10;- Refactor column configurations for reusability and cleaner implementation" />
-    <MESSAGE value="feat: enhance table components and add date field processing&#10;&#10;- Process `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Add filtering for `createdAt` and `updatedAt` with date pickers across multiple data tables&#10;- Simplify `TableCustom` and `tableBodyFunction` by refactoring props and improving code readability&#10;- Enhance table features with scrollable layout and row filtering display" />
-    <MESSAGE value="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props" />
-    <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`" />
     <MESSAGE value="feat: add documentation for improvement tasks&#10;&#10;- Added detailed improvement tasks in `docs/tasks.md` to enhance codebase quality, maintainability, and performance&#10;- Included sections for architecture, code quality, testing, performance, accessibility, DevOps, and security improvements" />
     <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
@@ -508,7 +594,18 @@
     <MESSAGE value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
     <MESSAGE value="feat: remove cultural property heritage components and models&#10;&#10;- Delete `CulturalPropertyTable`, `CulturalPropertyForm`, and associated panels&#10;- Remove `culturalProperty.model` and related type definitions&#10;- Clear utility functions and references linked to cultural property models&#10;- Refactor related data and logic from codebase" />
     <MESSAGE value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
+    <MESSAGE value="feat: update workspace and project configurations&#10;&#10;- Add Bitbucket Majera Code Review settings for emoji support&#10;- Refactor run configurations, updating scripts and commands for `backend run`&#10;- Adjust recent templates to include TypeScript JSX File&#10;- Add work items for extended task tracking and timing&#10;- Remove unused and redundant project task messages" />
+    <MESSAGE value="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability" />
+    <MESSAGE value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
+    <MESSAGE value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
+    <MESSAGE value="feat: enhance cultural property components and update workspace settings&#10;&#10;- Refactor `EntryAndLocationForm` with stricter type casting and required field support&#10;- Improve `CulturalHeritagePropertyList` with better text overflow handling and updated column styles&#10;- Adjust `.idea/workspace.xml` to include recent work items and cleanup unnecessary changes" />
+    <MESSAGE value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
+    <MESSAGE value="feat: add status filtering to cultural property list&#10;&#10;- Introduce dynamic status filtering in `CulturalHeritagePropertyList` using a dropdown filter&#10;- Update global filters and column configurations to support status filtering&#10;- Enhance table functionality with a `statusFilterTemplate`&#10;- Adjust filter header styles for consistent layout" />
+    <MESSAGE value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
+    <MESSAGE value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
+    <MESSAGE value="feat: optimize field components and enhance producer-author form integration&#10;&#10;- Add `disabled` prop support to `FieldWithHistory` for improved control over field interactions&#10;- Refactor `FieldWithHistory` layout and component rendering for cleaner code and maintainability&#10;- Introduce memoization and improved state management in `ProducerAuthorForm` to enhance performance&#10;- Optimize municipality fetching logic based on province input changes&#10;- Refactor repetitive field update logic in `ProducerAuthorForm` for better readability and consistency" />
+    <MESSAGE value="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

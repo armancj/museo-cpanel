@@ -2,22 +2,18 @@
 'use client';
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import Link from 'next/link';
 import { ChartData, ChartOptions } from 'chart.js';
 import { ChartDataset } from 'chart.js/dist/types';
-import withAuth from '@/lib/withAuth';
 import { DashboardService, HeritageTypeCount, MonthlyEntryData } from '@/app/service/DashboardService';
-import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
-import { Card } from 'primereact/card';
-import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
 import CulturalPropertyTable from '@/app/common/component/CulturalPropertyTable';
 import RecentActivityCard from '@/app/common/component/RecentActivityCard';
+import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
+import withAuth from '@/lib/withAuth';
 
 // Datos iniciales para los gráficos (se actualizarán con datos reales)
 const initialLineData: ChartData = {
@@ -38,7 +34,7 @@ const Dashboard = () => {
     // Estados para los datos del dashboard
     const [totalObjects, setTotalObjects] = useState<number>(0);
     const [recentEntries, setRecentEntries] = useState<number>(0);
-    const [latestEntries, setLatestEntries] = useState<CulturalPropertyModel[]>([]);
+    const [latestEntries, setLatestEntries] = useState<CulturalHeritageProperty[]>([]);
     const [heritageTypeData, setHeritageTypeData] = useState<HeritageTypeCount[]>([]);
     const [monthlyEntryData, setMonthlyEntryData] = useState<MonthlyEntryData[]>([]);
     const [lineData, setLineData] = useState<ChartData>(initialLineData);
@@ -443,5 +439,5 @@ const Dashboard = () => {
     );
 };
 
-const ProtectedDashboard = withAuth(Dashboard);
-export default ProtectedDashboard;
+export default withAuth(Dashboard);
+
