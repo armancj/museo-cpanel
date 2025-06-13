@@ -12,10 +12,13 @@ import { LayoutContext } from './context/layoutcontext';
 import { PrimeReactContext } from 'primereact/api';
 import { ChildContainerProps, LayoutState, AppTopbarRef } from '@/types';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { useAppContext } from '@/app/context/AppContext';
 
 const Layout = ({ children }: ChildContainerProps) => {
     const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
     const { setRipple } = useContext(PrimeReactContext);
+    const { isAuthenticated, isLoading } = useAppContext();
+
     const topbarRef = useRef<AppTopbarRef>(null);
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] = useEventListener({
@@ -36,6 +39,7 @@ const Layout = ({ children }: ChildContainerProps) => {
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
     useEffect(() => {
         hideMenu();
         hideProfileMenu();
@@ -120,6 +124,15 @@ const Layout = ({ children }: ChildContainerProps) => {
         'p-input-filled': layoutConfig.inputStyle === 'filled',
         'p-ripple-disabled': !layoutConfig.ripple
     });
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+                <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
+            </div>
+        );
+    }
+
 
     return (
         <React.Fragment>

@@ -6,12 +6,12 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../styles/layout/layout.scss';
 import '../styles/demo/Demos.scss';
-import {useState} from "react";
+import { useState } from 'react';
+import { AppProvider } from '@/app/context/AppContext';
 
 interface RootLayoutProps {
     children: React.ReactNode;
 }
-
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const [ripple, setRipple] = useState(true);
@@ -22,8 +22,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <title>Museo</title>
             </head>
             <body>
-                <PrimeReactProvider value={{ripple, setRipple} }>
-                    <LayoutProvider>{children}</LayoutProvider>
+                <PrimeReactProvider value={{ ripple, setRipple }}>
+                    <AppProvider>
+                        <LayoutProvider>{children}</LayoutProvider>
+                    </AppProvider>
                 </PrimeReactProvider>
             </body>
         </html>
