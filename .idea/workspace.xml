@@ -23,13 +23,13 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +265,7 @@
       <workItem from="1749701950022" duration="14059000" />
       <workItem from="1749745692980" duration="68000" />
       <workItem from="1749815869529" duration="8858000" />
-      <workItem from="1749845828150" duration="4596000" />
+      <workItem from="1749845828150" duration="8244000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -539,7 +539,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749849466249</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic">
+      <option name="closed" value="true" />
+      <created>1749850721484</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1749850721484</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -557,7 +565,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: enhance table components and add date field processing&#10;&#10;- Process `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Add filtering for `createdAt` and `updatedAt` with date pickers across multiple data tables&#10;- Simplify `TableCustom` and `tableBodyFunction` by refactoring props and improving code readability&#10;- Enhance table features with scrollable layout and row filtering display" />
     <MESSAGE value="feat: enhance data processing and filtering in tables&#10;&#10;- Add `processedDatum` to standardize date formats for table data across multiple pages&#10;- Introduce column-level filtering with calendar-based date filtering&#10;- Improve column configurations for better usability: adjustable widths, ellipsis for overflow, and placeholders&#10;- Update `TableCustom` component for cleaner props handling and added scrollable UI support&#10;- Simplify and enhance table rendering logic by utilizing spread operator for column props" />
     <MESSAGE value="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application." />
     <MESSAGE value="feat: add Playwright testing and configuration setup&#10;&#10;- Introduced Playwright with `playwright.config.ts` for end-to-end testing&#10;- Added example test case for homepage in `tests/home.spec.ts`&#10;- Updated `pnpm-lock.yaml` with Playwright dependencies&#10;- Improved development workflows with testing guidelines in `.junie/guidelines.md`&#10;- Ignored built dependency `sharp` in `pnpm-workspace.yaml`" />
@@ -582,7 +589,8 @@
     <MESSAGE value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
     <MESSAGE value="feat: add status filtering to cultural property list&#10;&#10;- Introduce dynamic status filtering in `CulturalHeritagePropertyList` using a dropdown filter&#10;- Update global filters and column configurations to support status filtering&#10;- Enhance table functionality with a `statusFilterTemplate`&#10;- Adjust filter header styles for consistent layout" />
     <MESSAGE value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
+    <MESSAGE value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

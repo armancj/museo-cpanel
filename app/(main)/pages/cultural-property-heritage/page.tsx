@@ -18,6 +18,9 @@ const CulturalHeritagePropertyPage = () => {
         descriptionInstrumentOptions,
         conservationStateOptions,
         heritageTypeOptions,
+        provinceOptions,
+        municipalityOptions,
+        fetchMunicipalitiesForProvince,
         isLoading,
         error
     } = useAllDropdownData();
@@ -81,7 +84,10 @@ const CulturalHeritagePropertyPage = () => {
                             valueGradeOptions,
                             descriptionInstrumentOptions,
                             conservationStateOptions,
-                            heritageTypeOptions
+                            heritageTypeOptions,
+                            provinceOptions,
+                            municipalityOptions,
+                            fetchMunicipalitiesForProvince
                         }}
                     />
                 </div>
