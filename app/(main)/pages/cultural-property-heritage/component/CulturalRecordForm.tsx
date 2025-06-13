@@ -95,7 +95,7 @@ export const CulturalRecordForm = ({
         const currentField = data.culturalRecord[field as keyof typeof data.culturalRecord];
 
         // Automatically update status based on whether the field is filled
-        const newStatus = getUpdatedStatus(value, currentField.status);
+        const newStatus = getUpdatedStatus(value, currentField.status as Status);
 
         setData({
             ...data,
