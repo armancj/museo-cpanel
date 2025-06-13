@@ -23,10 +23,9 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -262,7 +261,7 @@
       <workItem from="1749701950022" duration="14059000" />
       <workItem from="1749745692980" duration="68000" />
       <workItem from="1749815869529" duration="8858000" />
-      <workItem from="1749845828150" duration="2018000" />
+      <workItem from="1749845828150" duration="2740000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -504,7 +503,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749824418229</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="feat: enhance cultural property components and update workspace settings&#10;&#10;- Refactor `EntryAndLocationForm` with stricter type casting and required field support&#10;- Improve `CulturalHeritagePropertyList` with better text overflow handling and updated column styles&#10;- Adjust `.idea/workspace.xml` to include recent work items and cleanup unnecessary changes">
+      <option name="closed" value="true" />
+      <created>1749847877955</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1749847877955</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template">
+      <option name="closed" value="true" />
+      <created>1749848173722</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1749848173723</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -522,8 +537,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor: optimize table components and improve filtering&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` components&#10;- Enhanced filtering with additional filter configurations in `tableBodyFunction`&#10;- Added scrollable tables and row filtering display&#10;- Removed redundant styles in `ButtonStyles.module.css`&#10;- Fixed `useEffect` dependency in `useGenericHook` for proper service usage" />
-    <MESSAGE value="refactor: improve table components and code readability&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` and `TableBodyFunction`&#10;- Enhanced date and status filtering templates in `tableBodyFunction`&#10;- Removed redundant styles and unused imports&#10;- Optimized UI components for better consistency and maintainability" />
     <MESSAGE value="feat: process date fields in NomenclatureAccessConditions&#10;&#10;- Add processing of `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Update `.idea` workspace settings for VCS log tabs" />
     <MESSAGE value="feat: enhance table components with date processing and filtering&#10;&#10;- Add date processing to ensure consistent Date objects for `createdAt` and `updatedAt` fields across multiple components&#10;- Improve table filtering by introducing date and text filters for better searchability&#10;- Simplify `TableCustom` component props and improve code readability&#10;- Refactor column configurations for reusability and cleaner implementation" />
     <MESSAGE value="feat: enhance table components and add date field processing&#10;&#10;- Process `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Add filtering for `createdAt` and `updatedAt` with date pickers across multiple data tables&#10;- Simplify `TableCustom` and `tableBodyFunction` by refactoring props and improving code readability&#10;- Enhance table features with scrollable layout and row filtering display" />
@@ -547,7 +560,9 @@
     <MESSAGE value="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability" />
     <MESSAGE value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
     <MESSAGE value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
+    <MESSAGE value="feat: enhance cultural property components and update workspace settings&#10;&#10;- Refactor `EntryAndLocationForm` with stricter type casting and required field support&#10;- Improve `CulturalHeritagePropertyList` with better text overflow handling and updated column styles&#10;- Adjust `.idea/workspace.xml` to include recent work items and cleanup unnecessary changes" />
+    <MESSAGE value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

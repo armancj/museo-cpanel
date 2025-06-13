@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { CulturalHeritageProperty, emptyCulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
+import { CulturalHeritageProperty, Status } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
 import { DataTable } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
@@ -64,6 +64,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         'culturalRecord.objectTitle.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'culturalRecord.objectDescription.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'entryAndLocation.heritageType.value': { value: null, matchMode: FilterMatchMode.EQUALS },
+        'status': { value: null, matchMode: FilterMatchMode.EQUALS },
         createdAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
         updatedAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
     });
@@ -281,6 +282,29 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         );
     };
 
+    // Status filter template
+    const statusFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        const statusOptions = [
+            { label: 'Pendiente', value: Status.Pending },
+            { label: 'Para Revisar', value: Status.ToReview },
+            { label: 'Revisado', value: Status.Reviewed },
+            { label: 'Con Problemas', value: Status.HasIssue }
+        ];
+
+        return (
+            <Dropdown
+                value={options.value}
+                options={statusOptions}
+                onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
+                optionLabel="label"
+                placeholder="Seleccionar estado"
+                className="p-column-filter"
+                showClear
+                style={{ minWidth: '12rem' }}
+            />
+        );
+    };
+
     // Toolbar template
     const leftToolbarTemplate = () => {
         return (
@@ -327,7 +351,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                         dataKey="uuid"
                         paginator
                         rows={10}
-                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value', 'entryAndLocation.heritageType.value']}
+                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value', 'entryAndLocation.heritageType.value', 'status']}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -378,7 +402,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             sortable
                             headerStyle={{ minWidth: '10rem' }}
                             style={{ whiteSpace: 'nowrap' }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
                             showFilterMenu={false}
                             filterElement={heritageTypeFilterTemplate}
                         />
@@ -386,9 +410,13 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             field="status"
                             header="Estado"
                             body={statusBodyTemplate}
+                            filter
                             sortable
                             headerStyle={{ minWidth: '8rem' }}
                             style={{ whiteSpace: 'nowrap' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
+                            showFilterMenu={false}
+                            filterElement={statusFilterTemplate}
                         />
                         <Column
                             field="createdAt"
@@ -399,7 +427,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             style={{ whiteSpace: 'nowrap' }}
                             filter
                             filterElement={calendarFilterTemplate}
-                            filterHeaderStyle={{ minWidth: '22rem' }}
+                            filterHeaderStyle={{ minWidth: '16rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -411,7 +439,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             style={{ whiteSpace: 'nowrap' }}
                             filter
                             filterElement={calendarFilterTemplate}
-                            filterHeaderStyle={{ minWidth: '22rem' }}
+                            filterHeaderStyle={{ minWidth: '16rem' }}
                             showFilterMenu={false}
                         />
                         <Column
