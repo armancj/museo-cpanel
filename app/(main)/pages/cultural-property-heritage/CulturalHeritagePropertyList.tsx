@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { CulturalHeritageProperty, emptyCulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
 import { DataTable } from 'primereact/datatable';
@@ -7,12 +7,14 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { FilterMatchMode } from 'primereact/api';
-import { Column } from 'primereact/column';
+import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { HeritageTypeService, HeritageTypeResponse } from '@/app/service/HeritageTypeService';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
@@ -23,6 +25,7 @@ interface CulturalHeritagePropertyListProps {
 
 export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
+    const [heritageTypes, setHeritageTypes] = useState<HeritageTypeResponse[]>([]);
 
     const {
         datum,
@@ -36,6 +39,19 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         // eslint-disable-next-line react-hooks/rules-of-hooks
     } = hookData || useHookCulturalHeritageProperty();
 
+    useEffect(() => {
+        const fetchHeritageTypes = async () => {
+            try {
+                const response = await HeritageTypeService.getHeritageTypes();
+                setHeritageTypes(response);
+            } catch (error) {
+                console.error('Error fetching heritage types:', error);
+            }
+        };
+
+        fetchHeritageTypes();
+    }, []);
+
     const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
         ...item,
         // Convert only if they are not already Date objects
@@ -47,6 +63,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         'culturalRecord.objectTitle.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'culturalRecord.objectDescription.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        'entryAndLocation.heritageType.value': { value: null, matchMode: FilterMatchMode.EQUALS },
         createdAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
         updatedAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
     });
@@ -243,6 +260,27 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         );
     };
 
+    // Heritage type filter template
+    const heritageTypeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        const formattedOptions = heritageTypes.map(type => ({
+            label: type.name,
+            value: type.name
+        }));
+
+        return (
+            <Dropdown
+                value={options.value}
+                options={formattedOptions}
+                onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
+                optionLabel="label"
+                placeholder="Seleccionar tipo"
+                className="p-column-filter"
+                showClear
+                style={{ minWidth: '12rem' }}
+            />
+        );
+    };
+
     // Toolbar template
     const leftToolbarTemplate = () => {
         return (
@@ -289,7 +327,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                         dataKey="uuid"
                         paginator
                         rows={10}
-                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value']}
+                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value', 'entryAndLocation.heritageType.value']}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -337,12 +375,12 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             header="Tipo de Patrimonio"
                             body={heritageTypeBodyTemplate}
                             filter
-                            filterPlaceholder="Buscar"
                             sortable
                             headerStyle={{ minWidth: '10rem' }}
                             style={{ whiteSpace: 'nowrap' }}
                             filterHeaderStyle={{ minWidth: '20rem' }}
                             showFilterMenu={false}
+                            filterElement={heritageTypeFilterTemplate}
                         />
                         <Column
                             field="status"
