@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface AccessAndUseConditionsFormProps {
     data: CulturalHeritageProperty;
@@ -97,13 +98,20 @@ export const AccessAndUseConditionsForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.accessAndUseConditions) return;
 
+        // Get the current field data
+        const currentField = data.accessAndUseConditions[field as keyof typeof data.accessAndUseConditions];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             accessAndUseConditions: {
                 ...data.accessAndUseConditions,
                 [field]: {
-                    ...data.accessAndUseConditions[field as keyof typeof data.accessAndUseConditions],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });

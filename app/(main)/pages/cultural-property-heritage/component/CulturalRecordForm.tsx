@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface CulturalRecordFormProps {
     data: CulturalHeritageProperty;
@@ -84,13 +85,20 @@ export const CulturalRecordForm = ({
 
     // Update a field in the cultural record
     const updateField = (field: string, value: any) => {
+        // Get the current field data
+        const currentField = data.culturalRecord[field as keyof typeof data.culturalRecord];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             culturalRecord: {
                 ...data.culturalRecord,
                 [field]: {
-                    ...data.culturalRecord[field as keyof typeof data.culturalRecord],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });

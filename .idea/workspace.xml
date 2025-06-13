@@ -23,16 +23,15 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method">
-      <change afterPath="$PROJECT_DIR$/app/context/AppContext.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/withAuth.tsx" afterDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adapter/httpAdapter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/adapter/httpAdapter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useGenericHook.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/layout/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/layout/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/withAuth.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AccessAndUseConditionsForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/CulturalRecordForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/DescriptionControlForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/NotesForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/ProducerAuthorForm.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,7 +266,7 @@
       <workItem from="1749672722815" duration="6000" />
       <workItem from="1749701950022" duration="14059000" />
       <workItem from="1749745692980" duration="68000" />
-      <workItem from="1749815869529" duration="6889000" />
+      <workItem from="1749815869529" duration="8858000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -501,7 +500,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749720270817</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes">
+      <option name="closed" value="true" />
+      <created>1749824418229</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1749824418229</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -519,7 +526,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(app-menu): enhance AppMenuitem with `useRef` for CSSTransition&#10;&#10;- Added `useRef` to manage `nodeRef` in `CSSTransition` for submenu&#10;- Improved submenu rendering by referencing `ul` elements&#10;- Refactored imports for better organization" />
     <MESSAGE value="refactor: optimize table components and improve filtering&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` components&#10;- Enhanced filtering with additional filter configurations in `tableBodyFunction`&#10;- Added scrollable tables and row filtering display&#10;- Removed redundant styles in `ButtonStyles.module.css`&#10;- Fixed `useEffect` dependency in `useGenericHook` for proper service usage" />
     <MESSAGE value="refactor: improve table components and code readability&#10;&#10;- Simplified props destructuring and formatting in `TableCustom` and `TableBodyFunction`&#10;- Enhanced date and status filtering templates in `tableBodyFunction`&#10;- Removed redundant styles and unused imports&#10;- Optimized UI components for better consistency and maintainability" />
     <MESSAGE value="feat: process date fields in NomenclatureAccessConditions&#10;&#10;- Add processing of `createdAt` and `updatedAt` fields to ensure consistent Date objects&#10;- Update `.idea` workspace settings for VCS log tabs" />
@@ -544,7 +550,8 @@
     <MESSAGE value="feat: update workspace and project configurations&#10;&#10;- Add Bitbucket Majera Code Review settings for emoji support&#10;- Refactor run configurations, updating scripts and commands for `backend run`&#10;- Adjust recent templates to include TypeScript JSX File&#10;- Add work items for extended task tracking and timing&#10;- Remove unused and redundant project task messages" />
     <MESSAGE value="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability" />
     <MESSAGE value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
+    <MESSAGE value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

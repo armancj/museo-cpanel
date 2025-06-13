@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface NotesFormProps {
     data: CulturalHeritageProperty;
@@ -91,13 +92,20 @@ export const NotesForm = ({
     const updateField = (value: any) => {
         if (!data.notes) return;
 
+        // Get the current status
+        const currentStatus = data.notes.notes.status;
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentStatus);
+
         setData({
             ...data,
             notes: {
                 ...data.notes,
                 notes: {
                     ...data.notes.notes,
-                    value
+                    value,
+                    status: newStatus
                 }
             }
         });

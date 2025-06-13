@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface EntryAndLocationFormProps {
     data: CulturalHeritageProperty;
@@ -126,13 +127,20 @@ export const EntryAndLocationForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.entryAndLocation) return;
 
+        // Get the current field data
+        const currentField = data.entryAndLocation[field as keyof typeof data.entryAndLocation];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             entryAndLocation: {
                 ...data.entryAndLocation,
                 [field]: {
-                    ...data.entryAndLocation[field as keyof typeof data.entryAndLocation],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
@@ -174,16 +182,23 @@ export const EntryAndLocationForm = ({
     const updateObjectLocationField = (subfield: string, value: any) => {
         if (!data.entryAndLocation || !data.entryAndLocation.objectLocation.value) return;
 
+        // Create a new object location value with the updated field
+        const newObjectLocationValue = {
+            ...data.entryAndLocation.objectLocation.value,
+            [subfield]: value
+        };
+
+        // Automatically update status based on whether any field in the object location is filled
+        const newStatus = getUpdatedStatus(newObjectLocationValue, data.entryAndLocation.objectLocation.status);
+
         setData({
             ...data,
             entryAndLocation: {
                 ...data.entryAndLocation,
                 objectLocation: {
                     ...data.entryAndLocation.objectLocation,
-                    value: {
-                        ...data.entryAndLocation.objectLocation.value,
-                        [subfield]: value
-                    }
+                    value: newObjectLocationValue,
+                    status: newStatus
                 }
             }
         });

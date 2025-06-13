@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface ProducerAuthorFormProps {
     data: CulturalHeritageProperty;
@@ -102,13 +103,20 @@ export const ProducerAuthorForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.producerAuthor) return;
 
+        // Get the current field data
+        const currentField = data.producerAuthor[field as keyof typeof data.producerAuthor];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             producerAuthor: {
                 ...data.producerAuthor,
                 [field]: {
-                    ...data.producerAuthor[field as keyof typeof data.producerAuthor],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
