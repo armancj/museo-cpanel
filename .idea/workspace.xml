@@ -23,7 +23,8 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add public cultural heritage page and QR code dialog functionality&#10;&#10;- Implement `PublicCulturalHeritagePropertyPage` to display detailed heritage information&#10;- Add `QRCodeDialog` for generating and downloading QR codes with enhanced user actions&#10;- Extend `CulturalPropertyService` with `getPublicCulturalProperty` for public API integration">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -262,7 +263,7 @@
       <workItem from="1749815869529" duration="8858000" />
       <workItem from="1749845828150" duration="9368000" />
       <workItem from="1750072812118" duration="19000" />
-      <workItem from="1750084436977" duration="12985000" />
+      <workItem from="1750084436977" duration="17177000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -640,7 +641,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750098008773</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions&#10;- Implement responsive design for better accessibility across devices">
+      <option name="closed" value="true" />
+      <created>1750098703724</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1750098703724</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -658,7 +667,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
     <MESSAGE value="feat: update workspace and project configurations&#10;&#10;- Add Bitbucket Majera Code Review settings for emoji support&#10;- Refactor run configurations, updating scripts and commands for `backend run`&#10;- Adjust recent templates to include TypeScript JSX File&#10;- Add work items for extended task tracking and timing&#10;- Remove unused and redundant project task messages" />
     <MESSAGE value="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability" />
     <MESSAGE value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
@@ -683,7 +691,8 @@
     <MESSAGE value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to include only &quot;Patrimonio Cultural&quot; for technician role&#10;- Improve filtering logic for clearer separation of permitted menu labels" />
     <MESSAGE value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling" />
     <MESSAGE value="feat: add public cultural heritage page and QR code dialog functionality&#10;&#10;- Implement `PublicCulturalHeritagePropertyPage` to display detailed heritage information&#10;- Add `QRCodeDialog` for generating and downloading QR codes with enhanced user actions&#10;- Extend `CulturalPropertyService` with `getPublicCulturalProperty` for public API integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add public cultural heritage page and QR code dialog functionality&#10;&#10;- Implement `PublicCulturalHeritagePropertyPage` to display detailed heritage information&#10;- Add `QRCodeDialog` for generating and downloading QR codes with enhanced user actions&#10;- Extend `CulturalPropertyService` with `getPublicCulturalProperty` for public API integration" />
+    <MESSAGE value="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
