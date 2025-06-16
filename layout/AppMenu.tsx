@@ -33,7 +33,7 @@ const AppMenu = () => {
         }
 
         if (userRole === WebEnvConst.roles.technician) {
-            return model.filter(item => item.label === 'Inicio');
+            return model.filter(item => item.label === 'Inicio' || item.label ===  'Aplicación');
         }
 
         if (userRole === WebEnvConst.roles.superAdmin) {
