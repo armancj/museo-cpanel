@@ -22,6 +22,7 @@ const CulturalHeritagePropertyPage = () => {
         municipalityOptions,
         accessConditionsOptions,
         reproductionConditionsOptions,
+        genericClassificationOptions,
         fetchMunicipalitiesForProvince,
         isLoading,
         error
@@ -91,6 +92,7 @@ const CulturalHeritagePropertyPage = () => {
                             municipalityOptions,
                             accessConditionsOptions,
                             reproductionConditionsOptions,
+                            genericClassificationOptions,
                             fetchMunicipalitiesForProvince
                         }}
                     />

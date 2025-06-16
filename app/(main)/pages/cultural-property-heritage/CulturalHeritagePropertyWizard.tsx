@@ -5,9 +5,8 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { MenuItem } from 'primereact/menuitem';
-import { Dialog } from 'primereact/dialog';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
-import { CulturalHeritageProperty, Status, UserRoles } from './types';
+import { Status, UserRoles } from './types';
 import { CulturalRecordForm } from './component/CulturalRecordForm';
 import { ProducerAuthorForm } from './component/ProducerAuthorForm';
 import { EntryAndLocationForm } from './component/EntryAndLocationForm';
@@ -27,6 +26,7 @@ interface DropdownData {
     municipalityOptions: { label: string; value: string }[];
     accessConditionsOptions: { label: string; value: string }[];
     reproductionConditionsOptions: { label: string; value: string }[];
+    genericClassificationOptions: { label: string; value: string }[];
     fetchMunicipalitiesForProvince: (provinceName: string) => Promise<void>;
 }
 
@@ -80,7 +80,7 @@ export const CulturalHeritagePropertyWizard = ({
             // If it's an existing item, we can allow navigation between steps
             // Only update isCompleted if needed to avoid infinite loops
             if (!completedStepsSetRef.current) {
-                const hasIncompleteSteps = isCompleted.some(step => step === false);
+                const hasIncompleteSteps = isCompleted.some(step => !step);
                 if (hasIncompleteSteps) {
                     const newCompleted = isCompleted.map(() => true);
                     setIsCompleted(newCompleted);
@@ -262,6 +262,7 @@ export const CulturalHeritagePropertyWizard = ({
                 return <EntryAndLocationForm
                     {...commonProps}
                     heritageTypeOptions={dropdownData.heritageTypeOptions}
+                    genericClassificationOptions={dropdownData.genericClassificationOptions}
                 />;
             case 3:
                 return <AccessAndUseConditionsForm
