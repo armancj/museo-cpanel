@@ -23,9 +23,14 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add role-based institution field handling in user management&#10;&#10;- Add role conditions to display institution field only for 'Especialista' and 'Técnico' roles&#10;- Update `useManagement` to include institution field in user data structure&#10;- Refactor `UserDetails` component to apply role-based conditional rendering for institution dropdown">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/layout/AppMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/layout/AppMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/CulturalPropertyService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/webEnvConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/webEnvConst.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +268,7 @@
       <workItem from="1749815869529" duration="8858000" />
       <workItem from="1749845828150" duration="9368000" />
       <workItem from="1750072812118" duration="19000" />
-      <workItem from="1750084436977" duration="10108000" />
+      <workItem from="1750084436977" duration="12483000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -609,7 +614,31 @@
       <option name="project" value="LOCAL" />
       <updated>1750094473445</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="feat: update technician role menu filtering&#10;&#10;- Add &quot;Aplicación&quot; to technician role menu options">
+      <option name="closed" value="true" />
+      <created>1750095599252</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1750095599252</updated>
+    </task>
+    <task id="LOCAL-00045" summary="chore: update `.idea` workspace settings&#10;&#10;- Synchronize workspace configuration with updated project details&#10;- Adjust task entries and local task counter for better development tracking">
+      <option name="closed" value="true" />
+      <created>1750095619321</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1750095619321</updated>
+    </task>
+    <task id="LOCAL-00046" summary="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling">
+      <option name="closed" value="true" />
+      <created>1750095812900</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1750095812900</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -627,11 +656,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- feat: enhance `RecentActivityCard` with dynamic heritage type icons and improved entries display&#10;&#10;  - Add dynamic icons and styles for heritage types via `getHeritageData` function&#10;  - Increase recent entries limit from 2 to 4 with proper icon and style rendering&#10;  - Refactor entry loop logic for cleaner and more flexible implementation&#10;  - Simplify sorting logic in `DashboardService` for latest entries retrieval" />
-    <MESSAGE value="- feat: enhance `RecentActivityCard` and refactor recent entries logic&#10;&#10;  - Add dynamic heritage type icon mapping with corresponding colors and styles&#10;  - Increase displayed recent entries from 2 to 4, improving user insight&#10;  - Simplify `DashboardService` logic by reducing redundant operations&#10;  - Adjust `.idea` workspace configuration for improved project tracking" />
-    <MESSAGE value="feat: update export functionality in `RecentActivityCard`&#10;&#10;- Replace CSV export method with Excel export using `xlsx` library&#10;- Add formatted headers and dynamic column widths for improved output readability&#10;- Update export command to integrate new Excel export functionality" />
-    <MESSAGE value="chore: remove redundant whitespace in `RecentActivityCard` component" />
-    <MESSAGE value="feat: localize and enhance landing page&#10;&#10;- Add support for Spanish text in the landing page&#10;- Update styles with a theme consistent with cultural heritage branding&#10;- Replace placeholders with meaningful content emphasizing Cuba's cultural heritage&#10;- Introduce navigation functionalities for login and collection exploration&#10;- Improve design consistency across features to match cultural heritage context" />
     <MESSAGE value="feat: remove cultural property heritage components and models&#10;&#10;- Delete `CulturalPropertyTable`, `CulturalPropertyForm`, and associated panels&#10;- Remove `culturalProperty.model` and related type definitions&#10;- Clear utility functions and references linked to cultural property models&#10;- Refactor related data and logic from codebase" />
     <MESSAGE value="feat: remove cultural property heritage services and refactor related components&#10;&#10;- Delete `CulturalHeritagePropertyService` and related utility functions&#10;- Refactor `ToolbarCommon` to support dynamic start and end actions&#10;- Update `CulturalPropertyService` to rely on simplified `CulturalHeritageProperty` types&#10;- Adjust `CulturalHeritagePropertyList` for optional hooks and dynamic data handling&#10;- Remove unused type definitions and service utilities" />
     <MESSAGE value="feat: update workspace and project configurations&#10;&#10;- Add Bitbucket Majera Code Review settings for emoji support&#10;- Refactor run configurations, updating scripts and commands for `backend run`&#10;- Adjust recent templates to include TypeScript JSX File&#10;- Add work items for extended task tracking and timing&#10;- Remove unused and redundant project task messages" />
@@ -652,7 +676,12 @@
     <MESSAGE value="feat: enhance error handling and role-based user interface&#10;&#10;- Replace `handleApiError` with `ApiError` class for better error processing and user-friendly messages&#10;- Introduce detailed conflict resolution logic in `handleApiError` for specific field conflicts&#10;- Add role-based logic in `CulturalHeritagePropertyPage` to manage user roles dynamically via local storage&#10;- Update `CulturalHeritagePropertyWizard` to support role-based UI control with `isSuperAdmin` checks&#10;- Refactor `useManagement` to utilize `ApiError` and improve error handling consistency across the application" />
     <MESSAGE value="feat: add institution support in user management process&#10;&#10;- Add institution field to `UsersDatum` for improved user data handling&#10;- Extend `createUser` and `updateUser` methods in `UserService` to include institution mapping&#10;- Update `DropdownField` to support `optionValue` for dynamic institution selection&#10;- Enhance address data handling with institution filtering and state management in `useAddressData`&#10;- Add institution dropdown to `UserDetails` form for better user information collection" />
     <MESSAGE value="feat: add role-based institution field handling in user management&#10;&#10;- Add role conditions to display institution field only for 'Especialista' and 'Técnico' roles&#10;- Update `useManagement` to include institution field in user data structure&#10;- Refactor `UserDetails` component to apply role-based conditional rendering for institution dropdown" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add role-based institution field handling in user management&#10;&#10;- Add role conditions to display institution field only for 'Especialista' and 'Técnico' roles&#10;- Update `useManagement` to include institution field in user data structure&#10;- Refactor `UserDetails` component to apply role-based conditional rendering for institution dropdown" />
+    <MESSAGE value="feat: update technician role menu filtering&#10;&#10;- Add &quot;Aplicación&quot; to technician role menu options" />
+    <MESSAGE value="chore: update `.idea` workspace settings&#10;&#10;- Synchronize workspace configuration with updated project details&#10;- Adjust task entries and local task counter for better development tracking" />
+    <MESSAGE value="feat: update technician role menu for cultural heritage filtering&#10;&#10;- Refactor technician role menu logic to display only 'Patrimonio Cultural' under 'Aplicación'&#10;- Adjust filtering and mapping to ensure precise menu item processing" />
+    <MESSAGE value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to include only &quot;Patrimonio Cultural&quot; for technician role&#10;- Improve filtering logic for clearer separation of permitted menu labels" />
+    <MESSAGE value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

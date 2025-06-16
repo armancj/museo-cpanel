@@ -44,7 +44,8 @@ export const WebEnvConst = {
     culturalProperty:{
         getAll: '/cultural-heritage-property',
         post: '/cultural-heritage-property',
-        getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`
+        getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`,
+        getPublic: (uuid: string) => `/cultural-heritage-property/public/${uuid}`
     },
     typology: {
         getAll: '/typology',

@@ -15,6 +15,7 @@ import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
+import { QRCodeDialog } from '@/app/common/component/QRCodeDialog';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
@@ -26,6 +27,8 @@ interface CulturalHeritagePropertyListProps {
 
 export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
+    const [qrDialogVisible, setQrDialogVisible] = useState<boolean>(false);
+    const [selectedProperty, setSelectedProperty] = useState<CulturalHeritageProperty | null>(null);
 
     const {
         datum,
@@ -219,6 +222,16 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                         } else {
                             onAddNew(); // Fallback para compatibilidad
                         }
+                    }}
+                />
+                <Button
+                    icon="pi pi-qrcode"
+                    className="p-button-rounded p-button-text p-button-success"
+                    tooltip="Generar Código QR"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => {
+                        setSelectedProperty(rowData);
+                        setQrDialogVisible(true);
                     }}
                 />
                 <Button
@@ -450,6 +463,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                             )}
                         </div>
                     </Dialog>
+
+                    {/* QR Code Dialog */}
+                    <QRCodeDialog
+                        visible={qrDialogVisible}
+                        onHide={() => setQrDialogVisible(false)}
+                        uuid={selectedProperty?.uuid || ''}
+                        title={selectedProperty?.culturalRecord?.objectTitle?.value || 'Bien Patrimonial'}
+                    />
                 </div>
             </div>
         </div>

@@ -115,5 +115,10 @@ export const CulturalPropertyService = {
         const url = WebEnvConst.culturalProperty.getOne(uuid);
         console.log({ url });
         return await del<void>(url);
+    },
+
+    getPublicCulturalProperty: async (uuid: string) => {
+        const url = WebEnvConst.culturalProperty.getPublic(uuid);
+        return await get<CulturalHeritageProperty>(url);
     }
 };
