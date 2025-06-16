@@ -15,6 +15,7 @@ import { AssociatedDocumentationForm } from './component/AssociatedDocumentation
 import { DescriptionControlForm } from './component/DescriptionControlForm';
 import { NotesForm } from './component/NotesForm';
 import { HistoryDialog } from './component/HistoryDialog';
+import { useLocalStorage } from 'primereact/hooks';
 
 
 interface DropdownData {
@@ -33,16 +34,23 @@ interface DropdownData {
 interface CulturalHeritagePropertyWizardProps {
     onBackToList?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    currentUserRole: UserRoles;
+    setCurrentUserRole: (role: UserRoles) => void;
+    isSuperAdmin: boolean;
     dropdownData: DropdownData;
 }
 
 export const CulturalHeritagePropertyWizard = ({
                                                    onBackToList,
                                                    hookData,
+                                                   currentUserRole,
+                                                   setCurrentUserRole,
+                                                   isSuperAdmin,
                                                    dropdownData
                                                }: CulturalHeritagePropertyWizardProps) => {
 
-    const [currentUserRole, setCurrentUserRole] = useState<UserRoles>(UserRoles.employee);
+
+
 
     // State for the wizard
     const [activeIndex, setActiveIndex] = useState(0);
@@ -282,22 +290,36 @@ export const CulturalHeritagePropertyWizard = ({
     };
 
     // Role selector for testing purposes
-    const roleSelector = (
-
+    const roleSelector = isSuperAdmin ? (
         <div className="flex justify-content-end mb-3">
-            <label>Rol de Usuario (Para pruebas)</label>
-            <span className="p-float-label">
+            <div className="field">
+                <label htmlFor="userRole" className="block text-900 font-medium mb-2">
+                    Rol de Usuario (Modo Super Admin)
+                </label>
                 <select
+                    id="userRole"
                     value={currentUserRole}
                     onChange={(e) => setCurrentUserRole(e.target.value as UserRoles)}
                     className="p-inputtext p-component"
+                    style={{ padding: '0.75rem', minWidth: '200px' }}
                 >
                     <option value={UserRoles.employee}>{UserRoles.employee}</option>
                     <option value={UserRoles.administrator}>{UserRoles.administrator}</option>
                     <option value={UserRoles.superAdmin}>{UserRoles.superAdmin}</option>
                     <option value={UserRoles.manager}>{UserRoles.manager}</option>
                 </select>
-            </span>
+                <small className="block text-500 mt-1">
+                    Simular rol para testing
+                </small>
+            </div>
+        </div>
+    ) : (
+        <div className="flex justify-content-end mb-3">
+            <div className="field">
+                <small className="text-500">
+                    Rol actual: <strong>{currentUserRole}</strong>
+                </small>
+            </div>
         </div>
     );
 
