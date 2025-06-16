@@ -30,6 +30,7 @@ export interface UsersDatum {
     nationality: string;
     password:    string;
     province:    string;
+    institution: string;
     avatar?:     Avatar;
     roles:       string;
     active:      boolean;
@@ -86,18 +87,24 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
-        const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, ...rest} = user;
+        const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, institution, ...rest} = user;
 
         const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
         const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
         const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
+        // institution is now the UUID directly, no need to extract it
 
-        return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, ...rest });
+        return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, institutionId: institution, ...rest });
     },
 
     updateUser: async (uuid: string, user: Partial<UsersDatum>) => {
-
         const url = WebEnvConst.user.getOne(uuid);
+
+        // If institution is being updated, rename it to institutionId
+        if (user.institution !== undefined) {
+            const { institution, ...rest } = user;
+            return await patch<UsersDatum>(url, { ...rest, institutionId: institution });
+        }
 
         return await patch<UsersDatum>(url, user);
     },
@@ -215,4 +222,3 @@ export const UserService  =   {
 
 
 };
-

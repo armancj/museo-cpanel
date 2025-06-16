@@ -17,10 +17,13 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
         countries,
         provinces,
         municipalities,
+        institutions,
         isProvinceDisabled,
         isMunicipalityDisabled,
+        isInstitutionDisabled,
         handleCountryChange,
         handleProvinceChange,
+        handleMunicipalityChange,
     } = useAddressData();
 
     const roles = useMemo(
@@ -40,7 +43,11 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
     const handleDropdownChange = async (field: string, value: any) => {
         if (field === 'nationality') {
             await handleCountryChange(value);
-        } else if (field === 'province') await handleProvinceChange(value);
+        } else if (field === 'province') {
+            await handleProvinceChange(value);
+        } else if (field === 'municipal') {
+            await handleMunicipalityChange(value);
+        }
         onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
     };
 
@@ -205,7 +212,29 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 )}
             </div>
 
+            {/* Institución */}
+            <div className="field col-12 md:col-4">
+                <label htmlFor="institution">Institución*</label>
+                <DropdownField
+                    id="institution"
+                    name="institution"
+                    value={user.institution}
+                    options={institutions}
+                    optionLabel="name"
+                    optionValue="uuid"
+                    placeholder="Seleccionar Institución"
+                    disabled={isInstitutionDisabled}
+                    required
+                    submitted={submitted}
+                    onChange={(e) => handleDropdownChange('institution', e.value)}
+                    className={classNames({ 'p-invalid': submitted && !user.institution })}
+                    filter={true}
+                />
+                {submitted && !user.institution && (
+                    <small className="p-error">Institución es requerida.</small>
+                )}
+            </div>
+
         </div>
     );
 }
-
