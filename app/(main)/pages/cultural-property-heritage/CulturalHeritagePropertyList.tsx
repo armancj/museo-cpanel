@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { CulturalHeritageProperty, emptyCulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
+import { CulturalHeritageProperty, Status } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
 import { DataTable } from 'primereact/datatable';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
@@ -7,22 +7,28 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { FilterMatchMode } from 'primereact/api';
-import { Column } from 'primereact/column';
+import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
+import { QRCodeDialog } from '@/app/common/component/QRCodeDialog';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
     onEditOrView?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    heritageTypeOptions: { label: string; value: string }[];
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
+    const [qrDialogVisible, setQrDialogVisible] = useState<boolean>(false);
+    const [selectedProperty, setSelectedProperty] = useState<CulturalHeritageProperty | null>(null);
 
     const {
         datum,
@@ -47,6 +53,8 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         'culturalRecord.objectTitle.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'culturalRecord.objectDescription.value': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        'entryAndLocation.heritageType.value': { value: null, matchMode: FilterMatchMode.EQUALS },
+        'status': { value: null, matchMode: FilterMatchMode.EQUALS },
         createdAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
         updatedAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
     });
@@ -118,7 +126,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
         return (
             <>
                 <span className="p-column-title">Título</span>
-                {rowData.culturalRecord?.objectTitle?.value || 'Sin título'}
+                <div style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '10rem'
+                }}>
+                    {rowData.culturalRecord?.objectTitle?.value || 'Sin título'}
+                </div>
             </>
         );
     };
@@ -210,6 +225,16 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                     }}
                 />
                 <Button
+                    icon="pi pi-qrcode"
+                    className="p-button-rounded p-button-text p-button-success"
+                    tooltip="Generar Código QR"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => {
+                        setSelectedProperty(rowData);
+                        setQrDialogVisible(true);
+                    }}
+                />
+                <Button
                     icon="pi pi-trash"
                     className="p-button-rounded p-button-text p-button-danger"
                     tooltip="Eliminar Bien Patrimonial"
@@ -232,6 +257,47 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                 dateFormat="dd/mm/yy"
                 placeholder="Seleccionar fecha"
                 showIcon
+            />
+        );
+    };
+
+    // Heritage type filter template
+    const heritageTypeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        return (
+            <Dropdown
+                value={options.value}
+                options={heritageTypeOptions}
+                onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
+                optionLabel="label"
+                placeholder="Seleccionar tipo"
+                className="p-column-filter"
+                showClear
+                filter
+                style={{ minWidth: '12rem' }}
+            />
+        );
+    };
+
+    // Status filter template
+    const statusFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        const statusOptions = [
+            { label: 'Pendiente', value: Status.Pending },
+            { label: 'Para Revisar', value: Status.ToReview },
+            { label: 'Revisado', value: Status.Reviewed },
+            { label: 'Con Problemas', value: Status.HasIssue }
+        ];
+
+        return (
+            <Dropdown
+                value={options.value}
+                options={statusOptions}
+                onChange={(e: DropdownChangeEvent) => options.filterApplyCallback(e.value)}
+                optionLabel="label"
+                placeholder="Seleccionar estado"
+                className="p-column-filter"
+                showClear
+                filter
+                style={{ minWidth: '12rem' }}
             />
         );
     };
@@ -282,7 +348,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                         dataKey="uuid"
                         paginator
                         rows={10}
-                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value']}
+                        globalFilterFields={['culturalRecord.objectTitle.value', 'culturalRecord.objectDescription.value', 'entryAndLocation.heritageType.value', 'status']}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -305,7 +371,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             sortable
                             headerStyle={{ minWidth: '10rem' }}
                             style={{ whiteSpace: 'nowrap' }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -315,14 +381,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             filter
                             filterPlaceholder="Buscar"
                             sortable
-                            headerStyle={{ minWidth: '10rem', maxWidth: '20rem' }}
+                            headerStyle={{ minWidth: '10rem', maxWidth: '10rem' }}
                             style={{
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                maxWidth: '20rem'
+                                maxWidth: '10rem'
                             }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '15rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -330,20 +396,24 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             header="Tipo de Patrimonio"
                             body={heritageTypeBodyTemplate}
                             filter
-                            filterPlaceholder="Buscar"
                             sortable
                             headerStyle={{ minWidth: '10rem' }}
                             style={{ whiteSpace: 'nowrap' }}
-                            filterHeaderStyle={{ minWidth: '20rem' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
                             showFilterMenu={false}
+                            filterElement={heritageTypeFilterTemplate}
                         />
                         <Column
                             field="status"
                             header="Estado"
                             body={statusBodyTemplate}
+                            filter
                             sortable
                             headerStyle={{ minWidth: '8rem' }}
                             style={{ whiteSpace: 'nowrap' }}
+                            filterHeaderStyle={{ minWidth: '10rem' }}
+                            showFilterMenu={false}
+                            filterElement={statusFilterTemplate}
                         />
                         <Column
                             field="createdAt"
@@ -354,7 +424,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             style={{ whiteSpace: 'nowrap' }}
                             filter
                             filterElement={calendarFilterTemplate}
-                            filterHeaderStyle={{ minWidth: '22rem' }}
+                            filterHeaderStyle={{ minWidth: '16rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -366,7 +436,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             style={{ whiteSpace: 'nowrap' }}
                             filter
                             filterElement={calendarFilterTemplate}
-                            filterHeaderStyle={{ minWidth: '22rem' }}
+                            filterHeaderStyle={{ minWidth: '16rem' }}
                             showFilterMenu={false}
                         />
                         <Column
@@ -393,6 +463,14 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView 
                             )}
                         </div>
                     </Dialog>
+
+                    {/* QR Code Dialog */}
+                    <QRCodeDialog
+                        visible={qrDialogVisible}
+                        onHide={() => setQrDialogVisible(false)}
+                        uuid={selectedProperty?.uuid || ''}
+                        title={selectedProperty?.culturalRecord?.objectTitle?.value || 'Bien Patrimonial'}
+                    />
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ interface DropdownFieldProps {
     options: any[],
     onChange: (e: DropdownChangeEvent) => void,
     optionLabel: string,
+    optionValue?: string,
     placeholder: string,
     submitted: boolean,
     disabled?: boolean,
@@ -24,6 +25,7 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                                                          options,
                                                          onChange,
                                                          optionLabel,
+                                                         optionValue,
                                                          placeholder,
                                                          submitted,
                                                          disabled = false,
@@ -44,6 +46,7 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                 options={options}
                 onChange={onChange}
                 optionLabel={optionLabel}
+                optionValue={optionValue}
                 placeholder={placeholder}
                 className={combinedClassNames}
                 disabled={disabled}

@@ -1,10 +1,11 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { FieldWithHistory } from './FieldWithHistory';
 import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface ProducerAuthorFormProps {
     data: CulturalHeritageProperty;
@@ -17,27 +18,35 @@ interface ProducerAuthorFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    provinceOptions: { label: string; value: string }[];
+    municipalityOptions: { label: string; value: string }[];
+    fetchMunicipalitiesForProvince: (provinceName: string) => Promise<void>;
 }
 
 export const ProducerAuthorForm = ({
-    data,
-    setData,
-    canEditField,
-    canViewHistory,
-    canChangeStatus,
-    openHistoryDialog,
-    isEditMode,
-    markStepCompleted,
-    currentStep,
-    submitted
-}: ProducerAuthorFormProps) => {
-    const [isFormValid, setIsFormValid] = useState(false);
-    // Ref to track if we've already updated the form validity
-    const formValidityUpdatedRef = useRef(false);
-
-    // State for selected status for each panel
+                                       data,
+                                       setData,
+                                       canEditField,
+                                       canViewHistory,
+                                       canChangeStatus,
+                                       openHistoryDialog,
+                                       isEditMode,
+                                       markStepCompleted,
+                                       currentStep,
+                                       submitted,
+                                       provinceOptions,
+                                       municipalityOptions,
+                                       fetchMunicipalitiesForProvince
+                                   }: ProducerAuthorFormProps) => {
+    // States
     const [producerAuthorStatus, setProducerAuthorStatus] = useState<Status | null>(null);
     const [addressStatus, setAddressStatus] = useState<Status | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Refs para evitar loops infinitos
+    const initializedRef = useRef(false);
+    const lastProvinceRef = useRef<string>('');
+    const lastValidationStateRef = useRef<boolean>(false); // Guardar último estado de validación
 
     // Status options for dropdown
     const statusOptions = [
@@ -47,74 +56,100 @@ export const ProducerAuthorForm = ({
         { label: 'Con Problemas', value: Status.HasIssue }
     ];
 
-    // Initialize producerAuthor if it doesn't exist
+    // ✅ Inicialización SOLO cuando es necesario
     useEffect(() => {
-        // Only initialize if data exists but producerAuthor doesn't
-        if (data && !data.producerAuthor) {
-            setData({
-                ...data,
-                producerAuthor: {
-                    betweenStreet1: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    betweenStreet2: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    district: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    institutionalHistory: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    locality: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    municipality: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    number: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    objectEntryHistory: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    producerAuthorNames: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    province: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                    street: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] }
-                }
-            });
-        }
-    // Only run this effect when the component mounts or when data.uuid changes
-    }, [data?.uuid, setData]);
+        if (!data || data.producerAuthor || initializedRef.current) return;
 
-    // Check if the form is valid
+        console.log('🔧 Inicializando producerAuthor...');
+        initializedRef.current = true;
+
+        setData({
+            ...data,
+            producerAuthor: {
+                betweenStreet1: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                betweenStreet2: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                district: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                institutionalHistory: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                locality: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                municipality: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                number: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                objectEntryHistory: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                producerAuthorNames: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                province: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                street: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] }
+            }
+        });
+    }, [data?.uuid]); // Solo depende del UUID
+
+    // ✅ Reset cuando cambia el UUID
+    useEffect(() => {
+        const currentUuid = data?.uuid || '';
+        if (currentUuid) {
+            initializedRef.current = false;
+            lastValidationStateRef.current = false;
+        }
+    }, [data?.uuid]);
+
+    // ✅ Validación optimizada que evita llamadas constantes
+    const isValidForm = useMemo(() => {
+        if (!data.producerAuthor) return false;
+        const requiredValue = data.producerAuthor.producerAuthorNames?.value || '';
+        return requiredValue !== null && requiredValue !== undefined && requiredValue !== '';
+    }, [data.producerAuthor?.producerAuthorNames?.value]);
+
+    // ✅ Solo llamar markStepCompleted cuando el estado REALMENTE cambie
     useEffect(() => {
         if (!data.producerAuthor) {
-            setIsFormValid(false);
-            markStepCompleted(currentStep, false);
+            if (lastValidationStateRef.current !== false) {
+                lastValidationStateRef.current = false;
+                markStepCompleted(currentStep, false);
+            }
             return;
         }
 
-        const { producerAuthor } = data;
-        const requiredFields = [
-            producerAuthor.producerAuthorNames.value
-        ];
-
-        const isValid = requiredFields.every(field => field !== null && field !== undefined && field !== '');
-
-        // Only update state and call markStepCompleted if the validity has changed
-        // and we haven't already updated it for this set of values
-        if (isValid !== isFormValid && !formValidityUpdatedRef.current) {
-            formValidityUpdatedRef.current = true;
-            setIsFormValid(isValid);
-            markStepCompleted(currentStep, isValid);
-        } else {
-            // Reset the ref if the validity hasn't changed
-            formValidityUpdatedRef.current = false;
+        // Solo llamar markStepCompleted si el estado de validación cambió
+        if (lastValidationStateRef.current !== isValidForm) {
+            lastValidationStateRef.current = isValidForm;
+            markStepCompleted(currentStep, isValidForm);
         }
-    }, [data.producerAuthor, data.producerAuthor?.producerAuthorNames?.value, currentStep, isFormValid, markStepCompleted]);
+    }, [isValidForm, currentStep, markStepCompleted, data.producerAuthor]);
 
-    // Update a field in the producer author
+    // ✅ Fetch municipalities optimizado
+    useEffect(() => {
+        const currentProvince = data.producerAuthor?.province?.value;
+
+        if (currentProvince && currentProvince !== lastProvinceRef.current) {
+            lastProvinceRef.current = currentProvince;
+            setIsLoading(true);
+
+            fetchMunicipalitiesForProvince(currentProvince)
+                .catch(error => {
+                    console.error('Error fetching municipalities:', error);
+                })
+                .finally(() => setIsLoading(false));
+        }
+    }, [data.producerAuthor?.province?.value, fetchMunicipalitiesForProvince]);
+
+    // ✅ Update functions sin loops
     const updateField = (field: string, value: any) => {
         if (!data.producerAuthor) return;
+
+        const currentField = data.producerAuthor[field as keyof typeof data.producerAuthor];
+        const newStatus = getUpdatedStatus(value, currentField.status as Status);
 
         setData({
             ...data,
             producerAuthor: {
                 ...data.producerAuthor,
                 [field]: {
-                    ...data.producerAuthor[field as keyof typeof data.producerAuthor],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
     };
 
-    // Update a field's status in the producer author
     const updateFieldStatus = (field: string, status: Status) => {
         if (!data.producerAuthor) return;
 
@@ -130,7 +165,6 @@ export const ProducerAuthorForm = ({
         });
     };
 
-    // Update a field's comment in the producer author
     const updateFieldComment = (field: string, comment: string) => {
         if (!data.producerAuthor) return;
 
@@ -146,77 +180,57 @@ export const ProducerAuthorForm = ({
         });
     };
 
-    // Update all fields in the producer author panel
     const updateAllProducerAuthorFields = (status: Status) => {
         if (!status || !data.producerAuthor) return;
 
+        const updatedFields = ['producerAuthorNames', 'institutionalHistory', 'objectEntryHistory'];
+
         setData({
             ...data,
             producerAuthor: {
                 ...data.producerAuthor,
-                producerAuthorNames: {
-                    ...data.producerAuthor.producerAuthorNames,
-                    status
-                },
-                institutionalHistory: {
-                    ...data.producerAuthor.institutionalHistory,
-                    status
-                },
-                objectEntryHistory: {
-                    ...data.producerAuthor.objectEntryHistory,
-                    status
-                }
+                ...updatedFields.reduce((acc, field) => ({
+                    ...acc,
+                    [field]: {
+                        ...data.producerAuthor![field as keyof typeof data.producerAuthor],
+                        status
+                    }
+                }), {})
             }
         });
     };
 
-    // Update all fields in the address panel
     const updateAllAddressFields = (status: Status) => {
         if (!status || !data.producerAuthor) return;
 
+        const addressFields = [
+            'province', 'municipality', 'locality', 'district',
+            'street', 'number', 'betweenStreet1', 'betweenStreet2'
+        ];
+
         setData({
             ...data,
             producerAuthor: {
                 ...data.producerAuthor,
-                province: {
-                    ...data.producerAuthor.province,
-                    status
-                },
-                municipality: {
-                    ...data.producerAuthor.municipality,
-                    status
-                },
-                locality: {
-                    ...data.producerAuthor.locality,
-                    status
-                },
-                district: {
-                    ...data.producerAuthor.district,
-                    status
-                },
-                street: {
-                    ...data.producerAuthor.street,
-                    status
-                },
-                number: {
-                    ...data.producerAuthor.number,
-                    status
-                },
-                betweenStreet1: {
-                    ...data.producerAuthor.betweenStreet1,
-                    status
-                },
-                betweenStreet2: {
-                    ...data.producerAuthor.betweenStreet2,
-                    status
-                }
+                ...addressFields.reduce((acc, field) => ({
+                    ...acc,
+                    [field]: {
+                        ...data.producerAuthor![field as keyof typeof data.producerAuthor],
+                        status
+                    }
+                }), {})
             }
         });
     };
 
-    // If producerAuthor is not initialized yet, show loading or return null
+    // ✅ Early return después de hooks
     if (!data.producerAuthor) {
-        return <div>Cargando...</div>;
+        return (
+            <div className="flex align-items-center justify-content-center p-4">
+                <i className="pi pi-spin pi-spinner mr-2"></i>
+                <span>Inicializando formulario...</span>
+            </div>
+        );
     }
 
     return (
@@ -225,44 +239,45 @@ export const ProducerAuthorForm = ({
                 <Panel
                     header="Información del Productor/Autor"
                     toggleable
-                    headerTemplate={(options) => {
-                        return (
-                            <div className="flex align-items-center justify-content-between w-full">
-                                <div className="flex align-items-center">
-                                    <button
-                                        className={options.togglerClassName}
-                                        onClick={options.onTogglerClick}
-                                    >
-                                        <span className={options.togglerIconClassName}></span>
-                                    </button>
-                                    <span className="font-bold">Información del Productor/Autor</span>
-                                </div>
-                                {canChangeStatus() && (
-                                    <div className="flex align-items-center gap-2">
-                                        <Dropdown
-                                            value={producerAuthorStatus}
-                                            options={statusOptions}
-                                            onChange={(e) => setProducerAuthorStatus(e.value)}
-                                            placeholder="Seleccionar estado"
-                                            className="p-inputtext-sm"
-                                        />
-                                        <Button
-                                            label="Aplicar a todos"
-                                            icon="pi pi-check"
-                                            className="p-button-sm"
-                                            onClick={() => {
-                                                if (producerAuthorStatus) {
-                                                    updateAllProducerAuthorFields(producerAuthorStatus);
-                                                    setProducerAuthorStatus(null);
-                                                }
-                                            }}
-                                            disabled={!producerAuthorStatus}
-                                        />
-                                    </div>
-                                )}
+                    headerTemplate={(options) => (
+                        <div className="flex align-items-center justify-content-between w-full">
+                            <div className="flex align-items-center">
+                                <button
+                                    className={options.togglerClassName}
+                                    onClick={options.onTogglerClick}
+                                    type="button"
+                                >
+                                    <span className={options.togglerIconClassName}></span>
+                                </button>
+                                <span className="font-bold">Información del Productor/Autor</span>
                             </div>
-                        );
-                    }}
+                            {canChangeStatus() && (
+                                <div className="flex align-items-center gap-2">
+                                    <Dropdown
+                                        value={producerAuthorStatus}
+                                        options={statusOptions}
+                                        onChange={(e) => setProducerAuthorStatus(e.value)}
+                                        placeholder="Seleccionar estado"
+                                        className="p-inputtext-sm"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                    />
+                                    <Button
+                                        label="Aplicar a todos"
+                                        icon="pi pi-check"
+                                        size="small"
+                                        onClick={() => {
+                                            if (producerAuthorStatus) {
+                                                updateAllProducerAuthorFields(producerAuthorStatus);
+                                                setProducerAuthorStatus(null);
+                                            }
+                                        }}
+                                        disabled={!producerAuthorStatus}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
                 >
                     <div className="grid">
                         <div className="col-12">
@@ -273,7 +288,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('producerAuthorNames', value)}
                                 onStatusChange={(status) => updateFieldStatus('producerAuthorNames', status)}
                                 onCommentChange={(comment) => updateFieldComment('producerAuthorNames', comment)}
-                                canEdit={canEditField(data.producerAuthor.producerAuthorNames.status)}
+                                canEdit={canEditField(data.producerAuthor.producerAuthorNames.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -289,7 +304,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('institutionalHistory', value)}
                                 onStatusChange={(status) => updateFieldStatus('institutionalHistory', status)}
                                 onCommentChange={(comment) => updateFieldComment('institutionalHistory', comment)}
-                                canEdit={canEditField(data.producerAuthor.institutionalHistory.status)}
+                                canEdit={canEditField(data.producerAuthor.institutionalHistory.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -304,7 +319,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('objectEntryHistory', value)}
                                 onStatusChange={(status) => updateFieldStatus('objectEntryHistory', status)}
                                 onCommentChange={(comment) => updateFieldComment('objectEntryHistory', comment)}
-                                canEdit={canEditField(data.producerAuthor.objectEntryHistory.status)}
+                                canEdit={canEditField(data.producerAuthor.objectEntryHistory.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -319,74 +334,81 @@ export const ProducerAuthorForm = ({
                 <Panel
                     header="Dirección"
                     toggleable
-                    headerTemplate={(options) => {
-                        return (
-                            <div className="flex align-items-center justify-content-between w-full">
-                                <div className="flex align-items-center">
-                                    <button
-                                        className={options.togglerClassName}
-                                        onClick={options.onTogglerClick}
-                                    >
-                                        <span className={options.togglerIconClassName}></span>
-                                    </button>
-                                    <span className="font-bold">Dirección</span>
-                                </div>
-                                {canChangeStatus() && (
-                                    <div className="flex align-items-center gap-2">
-                                        <Dropdown
-                                            value={addressStatus}
-                                            options={statusOptions}
-                                            onChange={(e) => setAddressStatus(e.value)}
-                                            placeholder="Seleccionar estado"
-                                            className="p-inputtext-sm"
-                                        />
-                                        <Button
-                                            label="Aplicar a todos"
-                                            icon="pi pi-check"
-                                            className="p-button-sm"
-                                            onClick={() => {
-                                                if (addressStatus) {
-                                                    updateAllAddressFields(addressStatus);
-                                                    setAddressStatus(null);
-                                                }
-                                            }}
-                                            disabled={!addressStatus}
-                                        />
-                                    </div>
+                    headerTemplate={(options) => (
+                        <div className="flex align-items-center justify-content-between w-full">
+                            <div className="flex align-items-center">
+                                <button
+                                    className={options.togglerClassName}
+                                    onClick={options.onTogglerClick}
+                                    type="button"
+                                >
+                                    <span className={options.togglerIconClassName}></span>
+                                </button>
+                                <span className="font-bold">Dirección</span>
+                                {isLoading && (
+                                    <i className="pi pi-spin pi-spinner ml-2" style={{ fontSize: '1rem' }}></i>
                                 )}
                             </div>
-                        );
-                    }}
+                            {canChangeStatus() && (
+                                <div className="flex align-items-center gap-2">
+                                    <Dropdown
+                                        value={addressStatus}
+                                        options={statusOptions}
+                                        onChange={(e) => setAddressStatus(e.value)}
+                                        placeholder="Seleccionar estado"
+                                        className="p-inputtext-sm"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                    />
+                                    <Button
+                                        label="Aplicar a todos"
+                                        icon="pi pi-check"
+                                        size="small"
+                                        onClick={() => {
+                                            if (addressStatus) {
+                                                updateAllAddressFields(addressStatus);
+                                                setAddressStatus(null);
+                                            }
+                                        }}
+                                        disabled={!addressStatus}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
                 >
                     <div className="grid">
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
                                 label="Provincia"
                                 field={data.producerAuthor.province}
-                                type="text"
+                                type="dropdown"
+                                options={provinceOptions}
                                 onChange={(value) => updateField('province', value)}
                                 onStatusChange={(status) => updateFieldStatus('province', status)}
                                 onCommentChange={(comment) => updateFieldComment('province', comment)}
-                                canEdit={canEditField(data.producerAuthor.province.status)}
+                                canEdit={canEditField(data.producerAuthor.province.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese la provincia"
+                                placeholder="Seleccione una provincia"
                             />
                         </div>
                         <div className="col-12 md:col-6">
                             <FieldWithHistory
                                 label="Municipio"
                                 field={data.producerAuthor.municipality}
-                                type="text"
+                                type="dropdown"
+                                options={municipalityOptions}
                                 onChange={(value) => updateField('municipality', value)}
                                 onStatusChange={(status) => updateFieldStatus('municipality', status)}
                                 onCommentChange={(comment) => updateFieldComment('municipality', comment)}
-                                canEdit={canEditField(data.producerAuthor.municipality.status)}
+                                canEdit={canEditField(data.producerAuthor.municipality.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese el municipio"
+                                placeholder="Seleccione un municipio"
+                                disabled={isLoading || !data.producerAuthor.province.value}
                             />
                         </div>
                     </div>
@@ -400,7 +422,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('locality', value)}
                                 onStatusChange={(status) => updateFieldStatus('locality', status)}
                                 onCommentChange={(comment) => updateFieldComment('locality', comment)}
-                                canEdit={canEditField(data.producerAuthor.locality.status)}
+                                canEdit={canEditField(data.producerAuthor.locality.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -415,7 +437,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('district', value)}
                                 onStatusChange={(status) => updateFieldStatus('district', status)}
                                 onCommentChange={(comment) => updateFieldComment('district', comment)}
-                                canEdit={canEditField(data.producerAuthor.district.status)}
+                                canEdit={canEditField(data.producerAuthor.district.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -433,7 +455,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('street', value)}
                                 onStatusChange={(status) => updateFieldStatus('street', status)}
                                 onCommentChange={(comment) => updateFieldComment('street', comment)}
-                                canEdit={canEditField(data.producerAuthor.street.status)}
+                                canEdit={canEditField(data.producerAuthor.street.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -448,7 +470,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('number', value)}
                                 onStatusChange={(status) => updateFieldStatus('number', status)}
                                 onCommentChange={(comment) => updateFieldComment('number', comment)}
-                                canEdit={canEditField(data.producerAuthor.number.status)}
+                                canEdit={canEditField(data.producerAuthor.number.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -466,7 +488,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('betweenStreet1', value)}
                                 onStatusChange={(status) => updateFieldStatus('betweenStreet1', status)}
                                 onCommentChange={(comment) => updateFieldComment('betweenStreet1', comment)}
-                                canEdit={canEditField(data.producerAuthor.betweenStreet1.status)}
+                                canEdit={canEditField(data.producerAuthor.betweenStreet1.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
@@ -481,7 +503,7 @@ export const ProducerAuthorForm = ({
                                 onChange={(value) => updateField('betweenStreet2', value)}
                                 onStatusChange={(status) => updateFieldStatus('betweenStreet2', status)}
                                 onCommentChange={(comment) => updateFieldComment('betweenStreet2', comment)}
-                                canEdit={canEditField(data.producerAuthor.betweenStreet2.status)}
+                                canEdit={canEditField(data.producerAuthor.betweenStreet2.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}

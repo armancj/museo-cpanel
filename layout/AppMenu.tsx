@@ -33,7 +33,26 @@ const AppMenu = () => {
         }
 
         if (userRole === WebEnvConst.roles.technician) {
-            return model.filter(item => item.label === 'Inicio');
+            return model.filter(item => {
+                if (item.label === 'Inicio') return true;
+
+                if (item.label === 'Aplicación') {
+                    return {
+                        ...item,
+                        items: item.items?.filter(subItem => subItem.label === 'Patrimonio Cultural')
+                    };
+                }
+
+                return false;
+            }).map(item => {
+                if (item.label === 'Aplicación') {
+                    return {
+                        ...item,
+                        items: item.items?.filter(subItem => subItem.label === 'Patrimonio Cultural')
+                    };
+                }
+                return item;
+            });
         }
 
         if (userRole === WebEnvConst.roles.superAdmin) {

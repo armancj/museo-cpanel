@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface EntryAndLocationFormProps {
     data: CulturalHeritageProperty;
@@ -17,6 +18,8 @@ interface EntryAndLocationFormProps {
     markStepCompleted: (index: number, completed: boolean) => void;
     currentStep: number;
     submitted: boolean;
+    heritageTypeOptions: { label: string; value: string }[];
+    genericClassificationOptions: { label: string; value: string }[];
 }
 
 export const EntryAndLocationForm = ({
@@ -26,16 +29,16 @@ export const EntryAndLocationForm = ({
     canViewHistory,
     canChangeStatus,
     openHistoryDialog,
-    isEditMode,
     markStepCompleted,
     currentStep,
-    submitted
+    heritageTypeOptions,
+    genericClassificationOptions
 }: EntryAndLocationFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
     const formValidityUpdatedRef = useRef(false);
 
-    // State for selected status for each panel
+    // State for the selected status for each panel
     const [entryInfoStatus, setEntryInfoStatus] = useState<Status | null>(null);
     const [objectLocationStatus, setObjectLocationStatus] = useState<Status | null>(null);
 
@@ -126,13 +129,20 @@ export const EntryAndLocationForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.entryAndLocation) return;
 
+        // Get the current field data
+        const currentField = data.entryAndLocation[field as keyof typeof data.entryAndLocation];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status as Status);
+
         setData({
             ...data,
             entryAndLocation: {
                 ...data.entryAndLocation,
                 [field]: {
-                    ...data.entryAndLocation[field as keyof typeof data.entryAndLocation],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });
@@ -174,16 +184,23 @@ export const EntryAndLocationForm = ({
     const updateObjectLocationField = (subfield: string, value: any) => {
         if (!data.entryAndLocation || !data.entryAndLocation.objectLocation.value) return;
 
+        // Create a new object location value with the updated field
+        const newObjectLocationValue = {
+            ...data.entryAndLocation.objectLocation.value,
+            [subfield]: value
+        };
+
+        // Automatically update status based on whether any field in the object location is filled
+        const newStatus = getUpdatedStatus(newObjectLocationValue, data.entryAndLocation.objectLocation.status as Status);
+
         setData({
             ...data,
             entryAndLocation: {
                 ...data.entryAndLocation,
                 objectLocation: {
                     ...data.entryAndLocation.objectLocation,
-                    value: {
-                        ...data.entryAndLocation.objectLocation.value,
-                        [subfield]: value
-                    }
+                    value: newObjectLocationValue,
+                    status: newStatus
                 }
             }
         });
@@ -262,12 +279,6 @@ export const EntryAndLocationForm = ({
     };
 
     // Sample options for dropdowns
-    const heritageTypeOptions = [
-        { label: 'Patrimonio Mueble', value: 'Patrimonio Mueble' },
-        { label: 'Patrimonio Inmueble', value: 'Patrimonio Inmueble' },
-        { label: 'Patrimonio Inmaterial', value: 'Patrimonio Inmaterial' },
-        { label: 'Objeto no Patrimonial', value: 'Objeto no Patrimonial' }
-    ];
 
     const entryMethodOptions = [
         { label: 'Donación', value: 'donation' },
@@ -295,11 +306,6 @@ export const EntryAndLocationForm = ({
         { label: 'Archivo', value: 'Archivo' }
     ];
 
-
-    const genericClassificationOptions = [
-        { label: 'Objeto realizado por el hombre', value: 'Objeto realizado por el hombre' },
-        { label: 'Objeto no realizado por el hombre', value: 'Objeto no realizado por el hombre' },
-    ];
 
     // If entryAndLocation is not initialized yet, show loading or return null
     if (!data.entryAndLocation) {
@@ -450,6 +456,7 @@ export const EntryAndLocationForm = ({
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}
+                                required={true}
                                 placeholder="Seleccione el tipo de declaración"
                             />
                         </div>

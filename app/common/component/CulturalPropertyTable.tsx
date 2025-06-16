@@ -9,6 +9,7 @@ import { WebEnvConst } from '@/app/webEnvConst';
 import { Fieldset } from 'primereact/fieldset';
 import { Divider } from 'primereact/divider';
 import { Card } from 'primereact/card';
+import { EntryAndLocation } from '@/app/(main)/pages/cultural-property-heritage/types';
 
 const CulturalPropertyTable = ({ latestEntries, loading }: { latestEntries: any[]; loading: boolean }) => {
     const [selectedData, setSelectedData] = useState<any>(null);
@@ -23,6 +24,11 @@ const CulturalPropertyTable = ({ latestEntries, loading }: { latestEntries: any[
         } catch (error) {
             console.error('Error al obtener el objeto cultural:', error);
         }
+    };
+
+    const truncateText = (text: string, maxLength: number = 50): string => {
+        if (!text || text.length <= maxLength) return text || '';
+        return text.substring(0, maxLength).trim() + '...';
     };
 
     return (
@@ -56,19 +62,21 @@ const CulturalPropertyTable = ({ latestEntries, loading }: { latestEntries: any[
                                 color: '#007ad9',
                                 fontWeight: '500'
                             }}
+                            title={data?.culturalRecord?.objectTitle?.value}
                         >
-                            {data?.culturalRecord?.objectTitle?.value}
+                            {truncateText(data?.culturalRecord?.objectTitle?.value, 15)}
                         </span>
                     )}
                 />
+
                 <Column
-                    field="culturalRecord.heritageType.value"
+                    field="entryAndLocation.heritageType.value"
                     header="🎨 Tipo"
                     sortable
                     style={{ width: '25%', fontWeight: 'bold' }}
-                    body={(data) => <Tag value={data?.culturalRecord?.heritageType?.value} severity="success" style={{ fontSize: '0.88rem' }} />}
+                    body={(data) => <Tag value={data?.entryAndLocation?.heritageType?.value} severity="success" style={{ fontSize: '0.88rem' }} />}
                 />
-                <Column field="culturalRecord.entryDate.value" header="📅 Fecha" sortable body={(data) => <Tag value={formatDate(data?.createdAt)} severity="info" style={{ fontSize: '0.88rem' }} />} style={{ width: '25%', fontWeight: 'bold' }} />
+                <Column field="createdAt" header="📅 Fecha" sortable body={(data) => <Tag value={formatDate(data?.createdAt)} severity="info" style={{ fontSize: '0.88rem' }} />} style={{ width: '25%', fontWeight: 'bold' }} />
                 <Column
                     header="🔍 Acción"
                     body={(data) => (

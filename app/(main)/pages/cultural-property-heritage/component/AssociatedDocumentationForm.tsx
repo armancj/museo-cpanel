@@ -5,6 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { getUpdatedStatus } from '../utils/statusUtils';
 
 interface AssociatedDocumentationFormProps {
     data: CulturalHeritageProperty;
@@ -99,13 +100,20 @@ export const AssociatedDocumentationForm = ({
     const updateField = (field: string, value: any) => {
         if (!data.associatedDocumentation) return;
 
+        // Get the current field data
+        const currentField = data.associatedDocumentation[field as keyof typeof data.associatedDocumentation];
+
+        // Automatically update status based on whether the field is filled
+        const newStatus = getUpdatedStatus(value, currentField.status);
+
         setData({
             ...data,
             associatedDocumentation: {
                 ...data.associatedDocumentation,
                 [field]: {
-                    ...data.associatedDocumentation[field as keyof typeof data.associatedDocumentation],
-                    value
+                    ...currentField,
+                    value,
+                    status: newStatus
                 }
             }
         });

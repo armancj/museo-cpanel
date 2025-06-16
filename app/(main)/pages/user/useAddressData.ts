@@ -3,14 +3,17 @@ import { AddressResponse } from '@/app/service/UserService';
 import { CountryService } from '@/app/service/CountryService';
 import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
+import { InstitutionService, InstitutionResponse } from '@/app/service/InstitutionService';
 
 export const useAddressData = () => {
     const [countries, setCountries] = useState<AddressResponse[]>([]);
     const [provinces, setProvinces] = useState<AddressResponse[]>([]);
     const [municipalities, setMunicipalities] = useState<AddressResponse[]>([]);
+    const [institutions, setInstitutions] = useState<InstitutionResponse[]>([]);
     const [dropdownState, setDropdownState] = useState({
         isProvinceDisabled: true,
         isMunicipalityDisabled: true,
+        isInstitutionDisabled: true,
     });
 
     // Fetch countries on component mount
@@ -39,7 +42,12 @@ export const useAddressData = () => {
                 const provincesData = await ProvinceService.getProvinces(country);
                 setProvinces(provincesData);
                 setMunicipalities([]);  // Reseteamos los municipios al seleccionar un nuevo país
-                setDropdownState({ isProvinceDisabled: false, isMunicipalityDisabled: true });
+                setInstitutions([]); // Reseteamos las instituciones al seleccionar un nuevo país
+                setDropdownState({
+                    isProvinceDisabled: false,
+                    isMunicipalityDisabled: true,
+                    isInstitutionDisabled: true
+                });
             } catch (error) {
                 console.error('Error fetching provinces:', error);
             }
@@ -58,9 +66,38 @@ export const useAddressData = () => {
             try {
                 const municipalitiesData = await MunicipalityService.getMunicipalities(province);
                 setMunicipalities(municipalitiesData);
-                setDropdownState((prev) => ({ ...prev, isMunicipalityDisabled: false }));
+                setInstitutions([]); // Reset institutions when province changes
+                setDropdownState((prev) => ({
+                    ...prev,
+                    isMunicipalityDisabled: false,
+                    isInstitutionDisabled: true
+                }));
             } catch (error) {
                 console.error('Error fetching municipalities:', error);
+            }
+        },
+        []
+    );
+
+    /**
+     * Handles changes when a municipality is selected.
+     */
+    const handleMunicipalityChange = useCallback(
+        async (municipality: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
+            if(onInputChange)
+            onInputChange({ target: { name: 'municipal', value: municipality.name } }, 'municipal');
+
+            try {
+                // Filter institutions by municipality
+                const institutionsData = await InstitutionService.getInstitutions(municipality);
+                // Filter institutions to only include those that match the selected municipality
+                const filteredInstitutions = institutionsData.filter(
+                    institution => institution.municipality === municipality.name
+                );
+                setInstitutions(filteredInstitutions);
+                setDropdownState((prev) => ({ ...prev, isInstitutionDisabled: false }));
+            } catch (error) {
+                console.error('Error fetching institutions:', error);
             }
         },
         []
@@ -70,9 +107,12 @@ export const useAddressData = () => {
         countries,
         provinces,
         municipalities,
+        institutions,
         isProvinceDisabled: dropdownState.isProvinceDisabled,
         isMunicipalityDisabled: dropdownState.isMunicipalityDisabled,
+        isInstitutionDisabled: dropdownState.isInstitutionDisabled,
         handleCountryChange,
         handleProvinceChange,
+        handleMunicipalityChange,
     };
 };

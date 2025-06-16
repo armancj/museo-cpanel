@@ -5,9 +5,8 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { MenuItem } from 'primereact/menuitem';
-import { Dialog } from 'primereact/dialog';
 import { useHookCulturalHeritageProperty } from './useHookCulturalHeritageProperty';
-import { CulturalHeritageProperty, Status, UserRoles } from './types';
+import { Status, UserRoles } from './types';
 import { CulturalRecordForm } from './component/CulturalRecordForm';
 import { ProducerAuthorForm } from './component/ProducerAuthorForm';
 import { EntryAndLocationForm } from './component/EntryAndLocationForm';
@@ -16,20 +15,42 @@ import { AssociatedDocumentationForm } from './component/AssociatedDocumentation
 import { DescriptionControlForm } from './component/DescriptionControlForm';
 import { NotesForm } from './component/NotesForm';
 import { HistoryDialog } from './component/HistoryDialog';
+import { useLocalStorage } from 'primereact/hooks';
 
+
+interface DropdownData {
+    valueGradeOptions: { label: string; value: string }[];
+    descriptionInstrumentOptions: { label: string; value: string }[];
+    conservationStateOptions: { label: string; value: string }[];
+    heritageTypeOptions: { label: string; value: string }[];
+    provinceOptions: { label: string; value: string }[];
+    municipalityOptions: { label: string; value: string }[];
+    accessConditionsOptions: { label: string; value: string }[];
+    reproductionConditionsOptions: { label: string; value: string }[];
+    genericClassificationOptions: { label: string; value: string }[];
+    fetchMunicipalitiesForProvince: (provinceName: string) => Promise<void>;
+}
 
 interface CulturalHeritagePropertyWizardProps {
     onBackToList?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    currentUserRole: UserRoles;
+    setCurrentUserRole: (role: UserRoles) => void;
+    isSuperAdmin: boolean;
+    dropdownData: DropdownData;
 }
 
 export const CulturalHeritagePropertyWizard = ({
                                                    onBackToList,
-                                                   hookData
+                                                   hookData,
+                                                   currentUserRole,
+                                                   setCurrentUserRole,
+                                                   isSuperAdmin,
+                                                   dropdownData
                                                }: CulturalHeritagePropertyWizardProps) => {
-    // Get the current user role - in a real app, this would come from authentication
-    // For this example, we'll use a state that can be changed for testing
-    const [currentUserRole, setCurrentUserRole] = useState<UserRoles>(UserRoles.employee);
+
+
+
 
     // State for the wizard
     const [activeIndex, setActiveIndex] = useState(0);
@@ -54,17 +75,6 @@ export const CulturalHeritagePropertyWizard = ({
     } = hookData || useHookCulturalHeritageProperty();
 
 
-    // Define the steps for the wizard
-    const wizardItems: MenuItem[] = [
-        { label: 'Registro Cultural', command: () => canNavigate(0) && setActiveIndex(0) },
-        { label: 'Productor/Autor', command: () => canNavigate(1) && setActiveIndex(1) },
-        { label: 'Entrada y Ubicación', command: () => canNavigate(2) && setActiveIndex(2) },
-        { label: 'Condiciones de Acceso y Uso', command: () => canNavigate(3) && setActiveIndex(3) },
-        { label: 'Documentación Asociada', command: () => canNavigate(4) && setActiveIndex(4) },
-        { label: 'Control de Descripción', command: () => canNavigate(5) && setActiveIndex(5) },
-        { label: 'Notas', command: () => canNavigate(6) && setActiveIndex(6) },
-    ];
-
     // Check if all steps are completed
     useEffect(() => {
         const allCompleted = isCompleted.every(step => step);
@@ -78,7 +88,7 @@ export const CulturalHeritagePropertyWizard = ({
             // If it's an existing item, we can allow navigation between steps
             // Only update isCompleted if needed to avoid infinite loops
             if (!completedStepsSetRef.current) {
-                const hasIncompleteSteps = isCompleted.some(step => step === false);
+                const hasIncompleteSteps = isCompleted.some(step => !step);
                 if (hasIncompleteSteps) {
                     const newCompleted = isCompleted.map(() => true);
                     setIsCompleted(newCompleted);
@@ -90,6 +100,31 @@ export const CulturalHeritagePropertyWizard = ({
             completedStepsSetRef.current = false;
         }
     }, [data.uuid]); // Only depend on data.uuid to avoid infinite loops
+
+
+    if (!dropdownData) {
+        return (
+            <div className="flex align-items-center justify-content-center" style={{ height: '400px' }}>
+                <div className="text-center">
+                    <i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', color: 'var(--red-500)' }}></i>
+                    <div className="mt-2 text-red-500">
+                        Error: No se pudieron cargar los datos del formulario
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Define the steps for the wizard
+    const wizardItems: MenuItem[] = [
+        { label: 'Registro Cultural', command: () => canNavigate(0) && setActiveIndex(0) },
+        { label: 'Productor/Autor', command: () => canNavigate(1) && setActiveIndex(1) },
+        { label: 'Entrada y Ubicación', command: () => canNavigate(2) && setActiveIndex(2) },
+        { label: 'Condiciones de Acceso y Uso', command: () => canNavigate(3) && setActiveIndex(3) },
+        { label: 'Documentación Asociada', command: () => canNavigate(4) && setActiveIndex(4) },
+        { label: 'Control de Descripción', command: () => canNavigate(5) && setActiveIndex(5) },
+        { label: 'Notas', command: () => canNavigate(6) && setActiveIndex(6) },
+    ];
 
     // Function to check if navigation to a step is allowed
     const canNavigate = (index: number) => {
@@ -196,14 +231,6 @@ export const CulturalHeritagePropertyWizard = ({
 
     // Function to open history dialog
     const openHistoryDialog = (field: any, title: string) => {
-        console.log('🚨 WIZARD - Opening history dialog');
-        console.log('🚨 WIZARD - Field received:', field);
-        console.log('🚨 WIZARD - Field keys:', field ? Object.keys(field) : 'null');
-        console.log('🚨 WIZARD - History exists?', !!field?.history);
-        console.log('🚨 WIZARD - History length:', field?.history?.length);
-        console.log('🚨 WIZARD - Full history array:', field?.history);
-        console.log('🚨 WIZARD - Title:', title);
-
         setHistoryField(field);
         setHistoryTitle(title);
         setHistoryDialogVisible(true);
@@ -226,13 +253,31 @@ export const CulturalHeritagePropertyWizard = ({
 
         switch (activeIndex) {
             case 0:
-                return <CulturalRecordForm {...commonProps} />;
+                return <CulturalRecordForm
+                    {...commonProps}
+                    valueGradeOptions={dropdownData.valueGradeOptions}
+                    descriptionInstrumentOptions={dropdownData.descriptionInstrumentOptions}
+                    conservationStateOptions={dropdownData.conservationStateOptions}
+                />;
             case 1:
-                return <ProducerAuthorForm {...commonProps} />;
+                return <ProducerAuthorForm
+                    {...commonProps}
+                    provinceOptions={dropdownData.provinceOptions}
+                    municipalityOptions={dropdownData.municipalityOptions}
+                    fetchMunicipalitiesForProvince={dropdownData.fetchMunicipalitiesForProvince}
+                />;
             case 2:
-                return <EntryAndLocationForm {...commonProps} />;
+                return <EntryAndLocationForm
+                    {...commonProps}
+                    heritageTypeOptions={dropdownData.heritageTypeOptions}
+                    genericClassificationOptions={dropdownData.genericClassificationOptions}
+                />;
             case 3:
-                return <AccessAndUseConditionsForm {...commonProps} />;
+                return <AccessAndUseConditionsForm
+                    {...commonProps}
+                    accessConditionsOptions={dropdownData.accessConditionsOptions}
+                    reproductionConditionsOptions={dropdownData.reproductionConditionsOptions}
+                />;
             case 4:
                 return <AssociatedDocumentationForm {...commonProps} />;
             case 5:
@@ -245,22 +290,36 @@ export const CulturalHeritagePropertyWizard = ({
     };
 
     // Role selector for testing purposes
-    const roleSelector = (
-
+    const roleSelector = isSuperAdmin ? (
         <div className="flex justify-content-end mb-3">
-            <label>Rol de Usuario (Para pruebas)</label>
-            <span className="p-float-label">
+            <div className="field">
+                <label htmlFor="userRole" className="block text-900 font-medium mb-2">
+                    Rol de Usuario (Modo Super Admin)
+                </label>
                 <select
+                    id="userRole"
                     value={currentUserRole}
                     onChange={(e) => setCurrentUserRole(e.target.value as UserRoles)}
                     className="p-inputtext p-component"
+                    style={{ padding: '0.75rem', minWidth: '200px' }}
                 >
                     <option value={UserRoles.employee}>{UserRoles.employee}</option>
                     <option value={UserRoles.administrator}>{UserRoles.administrator}</option>
                     <option value={UserRoles.superAdmin}>{UserRoles.superAdmin}</option>
                     <option value={UserRoles.manager}>{UserRoles.manager}</option>
                 </select>
-            </span>
+                <small className="block text-500 mt-1">
+                    Simular rol para testing
+                </small>
+            </div>
+        </div>
+    ) : (
+        <div className="flex justify-content-end mb-3">
+            <div className="field">
+                <small className="text-500">
+                    Rol actual: <strong>{currentUserRole}</strong>
+                </small>
+            </div>
         </div>
     );
 
