@@ -17,6 +17,7 @@ export const emptyUser: UsersDatum = {
     name: '',
     nationality: '',
     province: '',
+    institution: '',
     avatar: {
         id: '', nameFile: ''
     },

@@ -212,28 +212,30 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 )}
             </div>
 
-            {/* Institución */}
-            <div className="field col-12 md:col-4">
-                <label htmlFor="institution">Institución*</label>
-                <DropdownField
-                    id="institution"
-                    name="institution"
-                    value={user.institution}
-                    options={institutions}
-                    optionLabel="name"
-                    optionValue="uuid"
-                    placeholder="Seleccionar Institución"
-                    disabled={isInstitutionDisabled}
-                    required
-                    submitted={submitted}
-                    onChange={(e) => handleDropdownChange('institution', e.value)}
-                    className={classNames({ 'p-invalid': submitted && !user.institution })}
-                    filter={true}
-                />
-                {submitted && !user.institution && (
-                    <small className="p-error">Institución es requerida.</small>
-                )}
-            </div>
+            {/* Institución - solo para Especialista y Técnico */}
+            {(user.roles === 'Especialista' || user.roles === 'Técnico') && (
+                <div className="field col-12 md:col-4">
+                    <label htmlFor="institution">Institución*</label>
+                    <DropdownField
+                        id="institution"
+                        name="institution"
+                        value={user.institution}
+                        options={institutions}
+                        optionLabel="name"
+                        optionValue="uuid"
+                        placeholder="Seleccionar Institución"
+                        disabled={isInstitutionDisabled}
+                        required
+                        submitted={submitted}
+                        onChange={(e) => handleDropdownChange('institution', e.value)}
+                        className={classNames({ 'p-invalid': submitted && !user.institution })}
+                        filter={true}
+                    />
+                    {submitted && !user.institution && (
+                        <small className="p-error">Institución es requerida.</small>
+                    )}
+                </div>
+            )}
 
         </div>
     );
