@@ -150,7 +150,7 @@ export const FieldWithHistory = ({
             case 'textarea':
                 return <InputTextarea value={field.value || ''} onChange={(e) => onChange(e.target.value)} rows={5} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'dropdown':
-                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled}/>;
+                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter/>;
             case 'date':
                 return (
                     <Calendar value={field.value ? new Date(field.value) : null} onChange={(e) => onChange(e.value)} dateFormat="dd/mm/yy" className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una fecha'} required={required} />
@@ -185,7 +185,7 @@ export const FieldWithHistory = ({
             case 'number':
                 return <InputNumber value={field.value} onValueChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'multiselect':
-                return <MultiSelect value={field.value || []} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione opciones'} required={required} />;
+                return <MultiSelect value={field.value || []} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione opciones'} required={required} filter />;
             case 'checkbox':
                 return (
                     <div className="flex align-items-center">

@@ -259,6 +259,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                 placeholder="Seleccionar tipo"
                 className="p-column-filter"
                 showClear
+                filter
                 style={{ minWidth: '12rem' }}
             />
         );
@@ -282,6 +283,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                 placeholder="Seleccionar estado"
                 className="p-column-filter"
                 showClear
+                filter
                 style={{ minWidth: '12rem' }}
             />
         );

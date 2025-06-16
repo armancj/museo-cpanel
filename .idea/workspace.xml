@@ -23,12 +23,10 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: improve recent activity and cultural property components&#10;&#10;- Replace `CulturalPropertyModel` with `CulturalHeritageProperty` for better type alignment&#10;- Add text truncation utility in `CulturalPropertyTable` to handle long text entries gracefully&#10;- Update column field mappings in `CulturalPropertyTable` for accurate data rendering&#10;- Enhance `RecentActivityCard` with improved type safety and dynamic content display&#10;- Clean up formatting and redundant code for improved readability">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add generic classification dropdown support&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `genericClassificationOptions`&#10;- Pass `genericClassificationOptions` to `EntryAndLocationForm` and `CulturalHeritagePropertyWizard`&#10;- Remove hardcoded generic classification options in `EntryAndLocationForm` for improved maintainability&#10;- Update dropdown rendering logic in `CulturalHeritagePropertyWizard` to use fetched data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/EntryAndLocationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hooks/useAllDropdownData.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/FieldWithHistory.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +44,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/fix-error-cultural-object" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -105,6 +103,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="feature/add-roles-manegemnt" />
+                    <option name="lastUsedInstant" value="1750087262" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="develop" />
                     <option name="lastUsedInstant" value="1749855771" />
                   </RecentBranch>
@@ -119,10 +121,6 @@
                   <RecentBranch>
                     <option name="branchName" value="feat/change-ui-nomenclators" />
                     <option name="lastUsedInstant" value="1745848218" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feat/add-new-nomenclators" />
-                    <option name="lastUsedInstant" value="1745428714" />
                   </RecentBranch>
                 </list>
               </option>
@@ -162,44 +160,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;H:/projects/museum/museo-cpanel&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/arman/AppData/Roaming/fnm/aliases/default/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;npm.backend run.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Pomodoro&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "feature/add-roles-manegemnt",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.nodejs.core.library.configured.version": "22.14.0",
+    "javascript.nodejs.core.library.typings.version": "22.14.1",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "H:/projects/museum/museo-cpanel",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
+    "nodejs_package_manager_path": "pnpm",
+    "npm.Next.js: server-side.executor": "Run",
+    "npm.backend run.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "Pomodoro",
+    "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mongo&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mongo"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\projects\museum\museo-cpanel" />
@@ -266,7 +264,7 @@
       <workItem from="1749815869529" duration="8858000" />
       <workItem from="1749845828150" duration="9368000" />
       <workItem from="1750072812118" duration="19000" />
-      <workItem from="1750084436977" duration="2619000" />
+      <workItem from="1750084436977" duration="3731000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -572,7 +570,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750086059915</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="feat: add generic classification dropdown support&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `genericClassificationOptions`&#10;- Pass `genericClassificationOptions` to `EntryAndLocationForm` and `CulturalHeritagePropertyWizard`&#10;- Remove hardcoded generic classification options in `EntryAndLocationForm` for improved maintainability&#10;- Update dropdown rendering logic in `CulturalHeritagePropertyWizard` to use fetched data">
+      <option name="closed" value="true" />
+      <created>1750087271716</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1750087271716</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -590,7 +596,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="docs: add improvement plans and project requirements&#10;&#10;- Add `docs/plan.md` detailing key improvement strategies for Museo-CPanel, including architecture, performance, security, testing, and UX&#10;- Include `docs/requirements.md` outlining project requirements, functional goals, technical constraints, and quality attributes" />
     <MESSAGE value="feat: add MongoDB schema to `.idea` workspace&#10;&#10;- Include MongoDB schema configuration file for database inspection and management in `.idea/dataSources/`&#10;- Add support for multiple schemas including `museum`, `admin`, `config`, and `local` for improved project setup&#10;- Define table structures, columns, and indexes for better database organization" />
     <MESSAGE value="chore: update `.idea` workspace and MongoDB configuration&#10;&#10;- Synchronize workspace settings with updated IntelliJ version&#10;- Adjust MongoDB driver and schema details for better compatibility and management" />
     <MESSAGE value="- feat: modularize recent entries table into reusable component&#10;&#10;  - Create `CulturalPropertyTable` for displaying recent cultural property entries&#10;  - Replace inline implementation with new reusable table component&#10;  - Add modal for detailed cultural property information with improved UI and data rendering&#10;&#10;- refactor: update color codes for conservation statuses&#10;&#10;  - Adjust green, yellow, and red shades for better visual clarity&#10;  - Ensure consistent coloring across application components&#10;&#10;- chore: clean up logs and unused code&#10;&#10;  - Remove unnecessary `console.log` statements from `DashboardService`&#10;  - Eliminate unused color generation logic for simplicity&#10;&#10;- chore: update workspace settings&#10;&#10;  - Synchronize `.idea` directory with recent project changes&#10;  - Add new recent template option: `TypeScript JSX File` in settings" />
@@ -615,7 +620,8 @@
     <MESSAGE value="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency" />
     <MESSAGE value="feat: add access and reproduction conditions dropdowns&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `accessConditionsOptions` and `reproductionConditionsOptions`&#10;- Pass new dropdown options to `CulturalHeritagePropertyWizard` and `AccessAndUseConditionsForm`&#10;- Refactor `AccessAndUseConditionsForm` to use props for dropdown options, replacing hardcoded values&#10;- Enhance logging for debugging dropdown data and options" />
     <MESSAGE value="feat: improve recent activity and cultural property components&#10;&#10;- Replace `CulturalPropertyModel` with `CulturalHeritageProperty` for better type alignment&#10;- Add text truncation utility in `CulturalPropertyTable` to handle long text entries gracefully&#10;- Update column field mappings in `CulturalPropertyTable` for accurate data rendering&#10;- Enhance `RecentActivityCard` with improved type safety and dynamic content display&#10;- Clean up formatting and redundant code for improved readability" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: improve recent activity and cultural property components&#10;&#10;- Replace `CulturalPropertyModel` with `CulturalHeritageProperty` for better type alignment&#10;- Add text truncation utility in `CulturalPropertyTable` to handle long text entries gracefully&#10;- Update column field mappings in `CulturalPropertyTable` for accurate data rendering&#10;- Enhance `RecentActivityCard` with improved type safety and dynamic content display&#10;- Clean up formatting and redundant code for improved readability" />
+    <MESSAGE value="feat: add generic classification dropdown support&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `genericClassificationOptions`&#10;- Pass `genericClassificationOptions` to `EntryAndLocationForm` and `CulturalHeritagePropertyWizard`&#10;- Remove hardcoded generic classification options in `EntryAndLocationForm` for improved maintainability&#10;- Update dropdown rendering logic in `CulturalHeritagePropertyWizard` to use fetched data" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add generic classification dropdown support&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `genericClassificationOptions`&#10;- Pass `genericClassificationOptions` to `EntryAndLocationForm` and `CulturalHeritagePropertyWizard`&#10;- Remove hardcoded generic classification options in `EntryAndLocationForm` for improved maintainability&#10;- Update dropdown rendering logic in `CulturalHeritagePropertyWizard` to use fetched data" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
