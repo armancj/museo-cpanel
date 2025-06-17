@@ -113,5 +113,10 @@ export const WebEnvConst = {
         getAll: '/value-grade',
         post: '/value-grade',
         getOne: (uuid: string) => `/value-grade/${uuid}`
+    },
+    fileStorage: {
+        upload: '/file-storage/upload',
+        getOne: (id: string) => `/file-storage/${id}`,
+        delete: (id: string) => `/file-storage/${id}`
     }
 };

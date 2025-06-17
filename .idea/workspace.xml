@@ -23,9 +23,9 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: redesign public cultural heritage page layout&#10;&#10;- Refactor `page.tsx` to enhance maintainability and readability&#10;- Replace obsolete components with modern alternatives like `Panel` and `Accordion`&#10;- Add utility functions for formatting data and values consistently&#10;- Implement improved error and loading states with better user feedback&#10;- Refactor header and share functionalities for simplicity and responsiveness">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4c7ad74c-592e-4316-ae10-1fb78d665c22.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4c7ad74c-592e-4316-ae10-1fb78d665c22.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,44 +159,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "feature/add-roles-manegemnt",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "22.14.0",
-    "javascript.nodejs.core.library.typings.version": "22.14.1",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "H:/projects/museum/museo-cpanel",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.Next.js: server-side.executor": "Run",
-    "npm.backend run.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "Pomodoro",
-    "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/add-roles-manegemnt&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;H:/projects/museum/museo-cpanel&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/arman/AppData/Roaming/fnm/aliases/default/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;npm.backend run.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Pomodoro&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\projects\museum\museo-cpanel" />
@@ -263,7 +263,8 @@
       <workItem from="1749815869529" duration="8858000" />
       <workItem from="1749845828150" duration="9368000" />
       <workItem from="1750072812118" duration="19000" />
-      <workItem from="1750084436977" duration="17177000" />
+      <workItem from="1750084436977" duration="17379000" />
+      <workItem from="1750164000718" duration="822000" />
     </task>
     <task id="LOCAL-00001" summary="Add conservation status management functionality&#10;&#10;Implemented CRUD operations for managing conservation statuses, including service, UI components, hooks, and utilities. Removed unused and redundant project configurations to clean up `.idea`, and introduced Prettier for auto-formatting settings.&#10;```">
       <option name="closed" value="true" />
@@ -649,7 +650,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750098703724</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="feat: redesign public cultural heritage page layout&#10;&#10;- Refactor `page.tsx` to enhance maintainability and readability&#10;- Replace obsolete components with modern alternatives like `Panel` and `Accordion`&#10;- Add utility functions for formatting data and values consistently&#10;- Implement improved error and loading states with better user feedback&#10;- Refactor header and share functionalities for simplicity and responsiveness">
+      <option name="closed" value="true" />
+      <created>1750102816873</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1750102816873</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,7 +676,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: update workspace and project configurations&#10;&#10;- Add Bitbucket Majera Code Review settings for emoji support&#10;- Refactor run configurations, updating scripts and commands for `backend run`&#10;- Adjust recent templates to include TypeScript JSX File&#10;- Add work items for extended task tracking and timing&#10;- Remove unused and redundant project task messages" />
     <MESSAGE value="feat: add status management and bulk update functionality to cultural property forms&#10;&#10;- Introduce status dropdowns and &quot;Apply to all&quot; buttons in `AssociatedDocumentationForm`, `CulturalRecordForm`, `DescriptionControlForm`, and `EntryAndLocationForm`&#10;- Add modular state management and update methods for bulk status updates across related fields&#10;- Enhance panel headers with dynamic templates for better user interaction and customizability" />
     <MESSAGE value="feat: add edit/view mode handling for cultural property list&#10;&#10;- Introduce `isEditModeRef` to track and manage edit/view mode&#10;- Add `handleEditOrView` method to support edit and view functionality&#10;- Update `CulturalHeritagePropertyList` component to handle `onEditOrView` callback&#10;- Ensure backward compatibility with `onAddNew` as a fallback method" />
     <MESSAGE value="feat: refactor authentication and context integration&#10;&#10;- Replace `withAuth` HOC with updated implementation for improved token handling and auth checks&#10;- Add `AppProvider` to the root layout to support application-wide state management&#10;- Enhance `httpAdapter` with robust error handling and redirection logic for unauthorized requests&#10;- Introduce preloader in `Layout` for authentication loading state&#10;- Remove unused imports and refactor to align with latest interface changes" />
@@ -692,7 +700,8 @@
     <MESSAGE value="feat: refine technician role menu filtering&#10;&#10;- Update &quot;Aplicación&quot; menu option to show only &quot;Patrimonio Cultural&quot; for technicians&#10;- Apply enhanced filtering logic for cleaner role-based menu handling" />
     <MESSAGE value="feat: add public cultural heritage page and QR code dialog functionality&#10;&#10;- Implement `PublicCulturalHeritagePropertyPage` to display detailed heritage information&#10;- Add `QRCodeDialog` for generating and downloading QR codes with enhanced user actions&#10;- Extend `CulturalPropertyService` with `getPublicCulturalProperty` for public API integration" />
     <MESSAGE value="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: redesign public cultural heritage page layout&#10;&#10;- Overhaul the layout of `PublicCulturalHeritagePropertyPage` for enhanced user experience&#10;- Add header, footer, and improved styling for modern visual appeal&#10;- Introduce detailed sections for general info, physical details, location, producer, and access conditions" />
+    <MESSAGE value="feat: redesign public cultural heritage page layout&#10;&#10;- Refactor `page.tsx` to enhance maintainability and readability&#10;- Replace obsolete components with modern alternatives like `Panel` and `Accordion`&#10;- Add utility functions for formatting data and values consistently&#10;- Implement improved error and loading states with better user feedback&#10;- Refactor header and share functionalities for simplicity and responsiveness" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: redesign public cultural heritage page layout&#10;&#10;- Refactor `page.tsx` to enhance maintainability and readability&#10;- Replace obsolete components with modern alternatives like `Panel` and `Accordion`&#10;- Add utility functions for formatting data and values consistently&#10;- Implement improved error and loading states with better user feedback&#10;- Refactor header and share functionalities for simplicity and responsiveness" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
