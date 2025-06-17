@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation';
 import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { CulturalPropertyService } from '@/app/service/CulturalPropertyService';
 import { Divider } from 'primereact/divider';
-import { Tag } from 'primereact/tag';
-import { Badge } from 'primereact/badge';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
 import { Accordion, AccordionTab } from 'primereact/accordion';
