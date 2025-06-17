@@ -104,7 +104,7 @@ export const AssociatedDocumentationForm = ({
         const currentField = data.associatedDocumentation[field as keyof typeof data.associatedDocumentation];
 
         // Automatically update status based on whether the field is filled
-        const newStatus = getUpdatedStatus(value, currentField.status);
+        const newStatus = getUpdatedStatus(value, currentField?.status);
 
         setData({
             ...data,
