@@ -23,11 +23,11 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add `FileStorageService` for file management&#10;&#10;- Create `FileStorageService` for handling file uploads, deletions, and retrievals&#10;- Introduce support for single and multiple file uploads&#10;- Extend `webEnvConst` with file storage API endpoints">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/component/AssociatedDocumentationForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/UserList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/UserList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/UserToolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/UserToolbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/orgchart.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/webEnvConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/webEnvConst.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
@@ -269,14 +269,6 @@
       <workItem from="1750072812118" duration="19000" />
       <workItem from="1750084436977" duration="17379000" />
       <workItem from="1750164000718" duration="822000" />
-    </task>
-    <task id="LOCAL-00002" summary="Add entry form management functionality&#10;&#10;Implemented entry form CRUD operations with service, hooks, UI components, and utilities. Enhanced styles and table interaction, added navigation support, and updated `.idea` settings for better project configuration.">
-      <option name="closed" value="true" />
-      <created>1745423836190</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1745423836190</updated>
     </task>
     <task id="LOCAL-00003" summary="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements.">
       <option name="closed" value="true" />
@@ -662,7 +654,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750168765822</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`">
+      <option name="closed" value="true" />
+      <created>1750177323434</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1750177323434</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -680,7 +680,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: enhance cultural property components and update workspace settings&#10;&#10;- Refactor `EntryAndLocationForm` with stricter type casting and required field support&#10;- Improve `CulturalHeritagePropertyList` with better text overflow handling and updated column styles&#10;- Adjust `.idea/workspace.xml` to include recent work items and cleanup unnecessary changes" />
     <MESSAGE value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
     <MESSAGE value="feat: add status filtering to cultural property list&#10;&#10;- Introduce dynamic status filtering in `CulturalHeritagePropertyList` using a dropdown filter&#10;- Update global filters and column configurations to support status filtering&#10;- Enhance table functionality with a `statusFilterTemplate`&#10;- Adjust filter header styles for consistent layout" />
     <MESSAGE value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
@@ -705,7 +704,8 @@
     <MESSAGE value="feat: add `MultipleFileUpload` component for enhanced file management&#10;&#10;- Introduce reusable `MultipleFileUpload` component for handling multi-file uploads&#10;- Add support for drag-and-drop, file preview, and size validation&#10;- Implement configurable maximum file size, file type restrictions, and file count limits&#10;- Enhance parent component integration with custom event handling on file upload and removal" />
     <MESSAGE value="feat: add `FileStorageService` for file upload and management&#10;&#10;- Implement `uploadFile`, `uploadFiles`, and `deleteFile` methods for single and batch file management&#10;- Add `getFileUrl` for generating file URLs and `createFileItem` for creating file metadata objects&#10;- Extend `WebEnvConst` with `fileStorage` API endpoints for upload, retrieval, and deletion" />
     <MESSAGE value="feat: add `FileStorageService` for file management&#10;&#10;- Create `FileStorageService` for handling file uploads, deletions, and retrievals&#10;- Introduce support for single and multiple file uploads&#10;- Extend `webEnvConst` with file storage API endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add `FileStorageService` for file management&#10;&#10;- Create `FileStorageService` for handling file uploads, deletions, and retrievals&#10;- Introduce support for single and multiple file uploads&#10;- Extend `webEnvConst` with file storage API endpoints" />
+    <MESSAGE value="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -11,6 +11,7 @@
         "test": "playwright test"
     },
     "dependencies": {
+        "@dabeng/react-orgchart": "^1.0.3",
         "@react-buddy/ide-toolbox-next": "^2.4.1",
         "@types/node": "20.3.1",
         "@types/react": "18.2.12",
