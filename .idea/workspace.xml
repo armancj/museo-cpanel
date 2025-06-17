@@ -24,8 +24,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: redesign public cultural heritage page layout&#10;&#10;- Refactor `page.tsx` to enhance maintainability and readability&#10;- Replace obsolete components with modern alternatives like `Panel` and `Accordion`&#10;- Add utility functions for formatting data and values consistently&#10;- Implement improved error and loading states with better user feedback&#10;- Refactor header and share functionalities for simplicity and responsiveness">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4c7ad74c-592e-4316-ae10-1fb78d665c22.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4c7ad74c-592e-4316-ae10-1fb78d665c22.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
