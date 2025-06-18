@@ -5,18 +5,24 @@ import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
 import { InstitutionService, InstitutionResponse } from '@/app/service/InstitutionService';
 
+interface DropdownState {
+    isProvinceDisabled: boolean;
+    isMunicipalityDisabled: boolean;
+    isInstitutionDisabled: boolean;
+}
+
 export const useAddressData = () => {
     const [countries, setCountries] = useState<AddressResponse[]>([]);
     const [provinces, setProvinces] = useState<AddressResponse[]>([]);
     const [municipalities, setMunicipalities] = useState<AddressResponse[]>([]);
     const [institutions, setInstitutions] = useState<InstitutionResponse[]>([]);
-    const [dropdownState, setDropdownState] = useState({
+    const [dropdownState, setDropdownState] = useState<DropdownState>({
         isProvinceDisabled: true,
         isMunicipalityDisabled: true,
         isInstitutionDisabled: true,
     });
 
-    // Fetch countries on component mount
+    // Cargar países al inicio
     useEffect(() => {
         const fetchCountries = async () => {
             try {
@@ -29,20 +35,68 @@ export const useAddressData = () => {
         fetchCountries();
     }, []);
 
-    /**
-     * Handles changes when a country is selected.
-     */
+    // Función para resetear todos los estados dependientes
+    const resetDependentStates = useCallback(() => {
+        setProvinces([]);
+        setMunicipalities([]);
+        setInstitutions([]);
+        setDropdownState({
+            isProvinceDisabled: true,
+            isMunicipalityDisabled: true,
+            isInstitutionDisabled: true,
+        });
+    }, []);
+
+    // Inicializar datos para edición
+    const initializeForEdit = useCallback(async (countryName: string, provinceName?: string, municipalityName?: string) => {
+        try {
+            // Buscar y cargar el país
+            const country = countries.find(c => c.name === countryName);
+            if (!country) return;
+
+            // Cargar provincias
+            const provincesData = await ProvinceService.getProvinces(country);
+            setProvinces(provincesData);
+            setDropdownState(prev => ({ ...prev, isProvinceDisabled: false }));
+
+            if (provinceName) {
+                // Buscar y cargar municipios
+                const province = provincesData.find(p => p.name === provinceName);
+                if (province) {
+                    const municipalitiesData = await MunicipalityService.getMunicipalities(province);
+                    setMunicipalities(municipalitiesData);
+                    setDropdownState(prev => ({ ...prev, isMunicipalityDisabled: false }));
+
+                    if (municipalityName) {
+                        // Cargar instituciones
+                        const municipality = municipalitiesData.find(m => m.name === municipalityName);
+                        if (municipality) {
+                            const institutionsData = await InstitutionService.getInstitutions(municipality);
+                            const filteredInstitutions = institutionsData.filter(
+                                institution => institution.municipality === municipality.name
+                            );
+                            setInstitutions(filteredInstitutions);
+                            setDropdownState(prev => ({ ...prev, isInstitutionDisabled: false }));
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error initializing address data for edit:', error);
+        }
+    }, [countries]);
+
     const handleCountryChange = useCallback(
         async (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
-            // Asumiendo que 'country' es el objeto completo, pasamos solo el valor necesario
-            if(onInputChange)
-            onInputChange({ target: { name: 'country', value: country.name } }, 'country');
+            if (onInputChange) {
+                onInputChange({ target: { name: 'country', value: country.name } }, 'country');
+            }
 
             try {
                 const provincesData = await ProvinceService.getProvinces(country);
                 setProvinces(provincesData);
-                setMunicipalities([]);  // Reseteamos los municipios al seleccionar un nuevo país
-                setInstitutions([]); // Reseteamos las instituciones al seleccionar un nuevo país
+                setMunicipalities([]);
+                setInstitutions([]);
                 setDropdownState({
                     isProvinceDisabled: false,
                     isMunicipalityDisabled: true,
@@ -55,19 +109,17 @@ export const useAddressData = () => {
         []
     );
 
-    /**
-     * Handles changes when a province is selected.
-     */
     const handleProvinceChange = useCallback(
         async (province: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
-            if(onInputChange)
-            onInputChange({ target: { name: 'province', value: province.name } }, 'province');
+            if (onInputChange) {
+                onInputChange({ target: { name: 'province', value: province.name } }, 'province');
+            }
 
             try {
                 const municipalitiesData = await MunicipalityService.getMunicipalities(province);
                 setMunicipalities(municipalitiesData);
-                setInstitutions([]); // Reset institutions when province changes
-                setDropdownState((prev) => ({
+                setInstitutions([]);
+                setDropdownState(prev => ({
                     ...prev,
                     isMunicipalityDisabled: false,
                     isInstitutionDisabled: true
@@ -79,23 +131,19 @@ export const useAddressData = () => {
         []
     );
 
-    /**
-     * Handles changes when a municipality is selected.
-     */
     const handleMunicipalityChange = useCallback(
         async (municipality: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
-            if(onInputChange)
-            onInputChange({ target: { name: 'municipal', value: municipality.name } }, 'municipal');
+            if (onInputChange) {
+                onInputChange({ target: { name: 'municipal', value: municipality.name } }, 'municipal');
+            }
 
             try {
-                // Filter institutions by municipality
                 const institutionsData = await InstitutionService.getInstitutions(municipality);
-                // Filter institutions to only include those that match the selected municipality
                 const filteredInstitutions = institutionsData.filter(
                     institution => institution.municipality === municipality.name
                 );
                 setInstitutions(filteredInstitutions);
-                setDropdownState((prev) => ({ ...prev, isInstitutionDisabled: false }));
+                setDropdownState(prev => ({ ...prev, isInstitutionDisabled: false }));
             } catch (error) {
                 console.error('Error fetching institutions:', error);
             }
@@ -114,5 +162,7 @@ export const useAddressData = () => {
         handleCountryChange,
         handleProvinceChange,
         handleMunicipalityChange,
+        initializeForEdit,
+        resetDependentStates,
     };
 };

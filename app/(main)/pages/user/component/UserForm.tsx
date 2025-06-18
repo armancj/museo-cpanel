@@ -12,10 +12,17 @@ interface UserFormProps {
     user: UsersDatum;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
     submitted: boolean;
-    onImageUpload: (file: File) => void; // Nueva prop para manejar la carga de imágenes
+    onImageUpload: (file: File) => void;
+    editingUser?: UsersDatum | null;
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitted, onImageUpload }) => {
+export const UserForm: React.FC<UserFormProps> = ({
+                                                      user,
+                                                      onInputChange,
+                                                      submitted,
+                                                      onImageUpload,
+                                                      editingUser
+                                                  }) => {
 
     const handleImageUpload = (file: File) => {
         onImageUpload(file);
@@ -24,14 +31,22 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
     };
 
     const avatarURL = user.avatar?.id ? process.env.NEXT_PUBLIC_API_BASE_URL + `file-storage/${user.avatar.id}` : undefined;
+
     return (
         <div className="p-fluid formgrid grid gap-4">
             <Fieldset legend="Detalles del Usuario" className="col-12 md:col-8 lg:col-6">
-                <UserDetails user={user} onInputChange={onInputChange} submitted={submitted} />
+                <UserDetails
+                    user={user}
+                    onInputChange={onInputChange}
+                    submitted={submitted}
+                    editingUser={editingUser}
+                />
             </Fieldset>
 
             <Fieldset legend="Avatar" className="col-12 md:col-5 lg:col-4">
-                <UserAvatar handleImageUpload={handleImageUpload} avatarURL={avatarURL}
+                <UserAvatar
+                    handleImageUpload={handleImageUpload}
+                    avatarURL={avatarURL}
                 />
             </Fieldset>
 
@@ -42,9 +57,6 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onInputChange, submitt
             <Fieldset legend="Seguridad" className="col-12 md:col-4 lg:col-3">
                 <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} />
             </Fieldset>
-
-
         </div>
     );
 };
-

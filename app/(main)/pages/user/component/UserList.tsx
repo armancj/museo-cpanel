@@ -25,9 +25,11 @@ export const UserList = () => {
         setUser,
         submitted,
         toast,
-        toggleUserActivation
-        , deleteUser, editUser,
-        setSelectedAvatar
+        toggleUserActivation,
+        deleteUser,
+        editUser,
+        setSelectedAvatar,
+        editingUser
     } = useManagement();
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
@@ -58,7 +60,6 @@ export const UserList = () => {
             <Button label="Guardar" icon="pi pi-check" text onClick={() => saveUser()} />
         </>
     );
-
 
     const handleImageUpload = (file: File) => {
         setSelectedAvatar(file);
@@ -97,15 +98,31 @@ export const UserList = () => {
                     ) : (
                         <OrganizationalChart users={users} />
                     )}
-                    <Dialog visible={userDialog} header="Detalles de usuarios" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
+
+                    <Dialog
+                        visible={userDialog}
+                        header="Detalles de usuarios"
+                        modal
+                        className="p-fluid"
+                        footer={userDialogFooter}
+                        onHide={hideDialog}
+                    >
                         <UserForm
                             onImageUpload={handleImageUpload}
                             user={user}
                             onInputChange={(e, field) => setUser({ ...user, [field]: e.target.value })}
                             submitted={submitted}
+                            editingUser={editingUser}
                         />
                     </Dialog>
-                    <Dialog visible={deleteUserDialog} header="Confirm" modal footer={userDialogFooter} onHide={() => setDeleteUserDialog(false)}>
+
+                    <Dialog
+                        visible={deleteUserDialog}
+                        header="Confirm"
+                        modal
+                        footer={userDialogFooter}
+                        onHide={() => setDeleteUserDialog(false)}
+                    >
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {user && <span>¿Estás seguro de que deseas eliminar a <b>{user.name}</b>?</span>}

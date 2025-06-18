@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
@@ -10,9 +10,10 @@ interface UserDetailsProps {
     submitted: boolean;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
     user: UsersDatum;
+    editingUser?: UsersDatum | null;
 }
 
-export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDetailsProps>) {
+export function UserDetails({ user, onInputChange, submitted, editingUser }: Readonly<UserDetailsProps>) {
     const {
         countries,
         provinces,
@@ -24,6 +25,8 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
         handleCountryChange,
         handleProvinceChange,
         handleMunicipalityChange,
+        initializeForEdit,
+        resetDependentStates,
     } = useAddressData();
 
     const roles = useMemo(
@@ -36,19 +39,44 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
         [],
     );
 
+    // Inicializar datos cuando se está editando un usuario
+    useEffect(() => {
+        if (editingUser && countries.length > 0) {
+            if (editingUser.nationality) {
+                initializeForEdit(
+                    editingUser.nationality,
+                    editingUser.province || undefined,
+                    editingUser.municipal || undefined
+                );
+            }
+        } else if (!editingUser) {
+            resetDependentStates();
+        }
+    }, [editingUser, countries, initializeForEdit, resetDependentStates]);
+
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateMobile = (mobile: string): boolean => {
         return mobile.trim().length > 0;
     };
+
     const handleDropdownChange = async (field: string, value: any) => {
         if (field === 'nationality') {
-            await handleCountryChange(value);
+            await handleCountryChange(value, onInputChange);
         } else if (field === 'province') {
-            await handleProvinceChange(value);
+            await handleProvinceChange(value, onInputChange);
         } else if (field === 'municipal') {
-            await handleMunicipalityChange(value);
+            await handleMunicipalityChange(value, onInputChange);
+        } else {
+            onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
         }
-        onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
+    };
+
+    // Función para encontrar el objeto completo en las opciones
+    const findOptionByValue = (options: any[], value: string, optionLabel: string = 'name', optionValue?: string) => {
+        if (!value || !options?.length) return null;
+
+        const searchKey = optionValue || optionLabel;
+        return options.find(option => option[searchKey] === value) || null;
     };
 
     return (
@@ -58,8 +86,8 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 <label htmlFor="name">Nombre*</label>
                 <div className="p-inputgroup">
                     <span className="p-inputgroup-addon">
-                    <i className="pi pi pi-user"></i>
-                </span>
+                        <i className="pi pi pi-user"></i>
+                    </span>
                     <InputText
                         id="name"
                         value={user.name}
@@ -75,10 +103,9 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             <div className="col-12 md:col-7">
                 <label htmlFor="lastName">Apellidos</label>
                 <div className="p-inputgroup">
-
-                <span className="p-inputgroup-addon">
-                    <i className="pi pi-id-card"></i>
-                </span>
+                    <span className="p-inputgroup-addon">
+                        <i className="pi pi-id-card"></i>
+                    </span>
                     <InputText
                         id="lastName"
                         value={user.lastName}
@@ -134,9 +161,10 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 <DropdownField
                     id="roles"
                     name="roles"
-                    value={user.roles}
+                    value={findOptionByValue(roles, user.roles, 'name', 'value')}
                     options={roles}
                     optionLabel="name"
+                    optionValue="value"
                     placeholder="Seleccionar un Rol"
                     onChange={(e) => handleDropdownChange('roles', e.value)}
                     required
@@ -154,7 +182,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 <DropdownField
                     id="nationality"
                     name="nationality"
-                    value={user.nationality}
+                    value={findOptionByValue(countries, user.nationality)}
                     options={countries}
                     optionLabel="name"
                     placeholder="Seleccionar País"
@@ -174,7 +202,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 <DropdownField
                     id="province"
                     name="province"
-                    value={user.province}
+                    value={findOptionByValue(provinces, user.province)}
                     options={provinces}
                     optionLabel="name"
                     placeholder="Seleccionar Provincia"
@@ -196,7 +224,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                 <DropdownField
                     id="municipal"
                     name="municipal"
-                    value={user.municipal}
+                    value={findOptionByValue(municipalities, user.municipal)}
                     options={municipalities}
                     optionLabel="name"
                     placeholder="Seleccionar Municipio"
@@ -219,7 +247,7 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                     <DropdownField
                         id="institution"
                         name="institution"
-                        value={user.institution}
+                        value={findOptionByValue(institutions, user.institution, 'name', 'uuid')}
                         options={institutions}
                         optionLabel="name"
                         optionValue="uuid"
@@ -236,7 +264,6 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
                     )}
                 </div>
             )}
-
         </div>
     );
 }

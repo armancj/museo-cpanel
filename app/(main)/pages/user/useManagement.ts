@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
-import { CountryService } from '@/app/service/CountryService';
-import { ProvinceService } from '@/app/service/ProvinceService';
-import { MunicipalityService } from '@/app/service/MunicipalityService';
 import { ApiError } from '@/adapter/httpAdapter';
 
 export const emptyUser: UsersDatum = {
     password: '',
-    active: false, deleted: false, uuid: '',
+    active: false,
+    deleted: false,
+    uuid: '',
     mobile: '',
     municipal: '',
     email: '',
@@ -19,7 +18,8 @@ export const emptyUser: UsersDatum = {
     province: '',
     institution: '',
     avatar: {
-        id: '', nameFile: ''
+        id: '',
+        nameFile: ''
     },
     roles: ''
 };
@@ -30,6 +30,7 @@ export const useManagement = () => {
     const [userDialog, setUserDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
+    const [editingUser, setEditingUser] = useState<UsersDatum | null>(null);
 
     const toast = useRef<Toast>(null);
 
@@ -55,14 +56,14 @@ export const useManagement = () => {
             if (user.uuid) {
                 // Actualizar usuario existente
                 try {
-                    const {active, uuid, deleted, avatar, ...userUpdated}=user;
+                    const {active, uuid, deleted, avatar, ...userUpdated} = user;
                     const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
                     const index = _usersData.findIndex((u) => u.uuid === user.uuid);
 
                     if (selectedAvatar) {
                         const response = await uploadAvatar(uuid, selectedAvatar);
                         setSelectedAvatar(null);
-                        updatedUserData.avatar = response?.avatar
+                        updatedUserData.avatar = response?.avatar;
                     }
 
                     if (index !== -1) {
@@ -82,7 +83,7 @@ export const useManagement = () => {
                     if (selectedAvatar) {
                         const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
                         setSelectedAvatar(null);
-                        createdUser.avatar = response?.avatar
+                        createdUser.avatar = response?.avatar;
                     }
                     _usersData.push(createdUser);
                     toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
@@ -106,7 +107,6 @@ export const useManagement = () => {
         };
 
         if (error instanceof ApiError) {
-            // El error ya viene procesado desde el httpAdapter
             show.severity = error.severity;
             show.detail = error.userMessage;
 
@@ -116,7 +116,6 @@ export const useManagement = () => {
                 show.summary = 'Error del servidor';
             }
         } else {
-            // Fallback para errores no procesados
             console.error('Error no procesado:', error);
             show.detail = error?.message || defaultMessage;
         }
@@ -158,31 +157,8 @@ export const useManagement = () => {
         };
 
         setUser(userToEdit);
+        setEditingUser(userToEdit);
         setSelectedAvatar(null);
-
-        try {
-            // Cargar países
-            const countryData = (await CountryService.getCountries({name: userToEdit.nationality}))[0];
-
-            if (countryData) {
-                const provincesData = await ProvinceService.getProvinces(countryData);
-                if (userToEdit.province) {
-                    const province = provincesData.find((province) => province.name === userToEdit.province);
-                    if (province) {
-                        const municipalitiesData = await MunicipalityService.getMunicipalities(province);
-
-                        setUser((prev) => ({
-                            ...prev,
-                            nationality: countryData as any,
-                            province: provincesData as any,
-                        }));
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error cargando datos de país/provincia/municipio:', error);
-        }
-
         setUserDialog(true);
     };
 
@@ -201,6 +177,7 @@ export const useManagement = () => {
         toggleUserActivation,
         deleteUser,
         editUser,
-        setSelectedAvatar
+        setSelectedAvatar,
+        editingUser
     };
 };
