@@ -1,5 +1,6 @@
 import { post, patch, del, get } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
+import { InstitutionResponse } from '@/app/service/InstitutionService';
 
 export interface UsersResponse {
     usersData:    UsersDatum[];
@@ -30,11 +31,13 @@ export interface UsersDatum {
     nationality: string;
     password:    string;
     province:    string;
-    institution: string;
     avatar?:     Avatar;
     roles:       string;
     active:      boolean;
     deleted:     boolean;
+    institution: string | InstitutionResponse;
+    institutionId?: string;
+
 }
 
 export interface Avatar {
@@ -87,26 +90,36 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
+        console.log('🔍 === DEBUGGING CREATE USER ===');
+        console.log('📋 user.institution:', user.institution);
+        console.log('🆔 user.institutionId:', user.institutionId);
+
         const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, institution, ...rest} = user;
 
         const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
         const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
         const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
-        // institution is now the UUID directly, no need to extract it
 
-        return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, institutionId: institution, ...rest });
+        const payload = {
+            nationality,
+            municipal,
+            province,
+            institutionId: user.institutionId, // ✅ Usar institutionId
+            ...rest
+        };
+
+        console.log('📤 Payload final:', payload);
+
+        return await post<UsersDatum>(WebEnvConst.user.post, payload);
     },
 
     updateUser: async (uuid: string, user: Partial<UsersDatum>) => {
         const url = WebEnvConst.user.getOne(uuid);
+        const { institution, ...userPayload } = user;
 
-        // If institution is being updated, rename it to institutionId
-        if (user.institution !== undefined) {
-            const { institution, ...rest } = user;
-            return await patch<UsersDatum>(url, { ...rest, institutionId: institution });
-        }
+        console.log('🔧 Enviando al backend (updateUser):', userPayload);
 
-        return await patch<UsersDatum>(url, user);
+        return await patch<UsersDatum>(url, userPayload);
     },
 
     deleteUser: async (uuid: string) =>  {

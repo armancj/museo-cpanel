@@ -24,6 +24,7 @@ export const UserList = () => {
         totalElement,
         setUser,
         submitted,
+        setSubmitted,
         toast,
         toggleUserActivation,
         deleteUser,
@@ -40,11 +41,16 @@ export const UserList = () => {
     const dt = useRef<DataTable<UsersDatum[]>>(null);
 
     const openNew = () => {
+        console.log('🆕 === CREANDO NUEVO USUARIO ===');
         setUser(emptyUser);
+        setSubmitted(false);
         setUserDialog(true);
     };
 
+
     const hideDialog = () => {
+        console.log('🚪 === CERRANDO DIÁLOGO ===');
+        setSubmitted(false);
         setUserDialog(false);
     };
 
@@ -65,6 +71,19 @@ export const UserList = () => {
         setSelectedAvatar(file);
         console.log("selected file:", file);
     };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
+        const { value } = e.target;
+
+        // 🔍 DEBUG TEMPORAL
+        console.log('🔥 Input change:', field, '=', value);
+
+        setUser(prevUser => ({
+            ...prevUser,
+            [field]: value
+        }));
+    };
+
 
     return (
         <div className="grid crud-demo">
@@ -110,7 +129,7 @@ export const UserList = () => {
                         <UserForm
                             onImageUpload={handleImageUpload}
                             user={user}
-                            onInputChange={(e, field) => setUser({ ...user, [field]: e.target.value })}
+                            onInputChange={handleInputChange}
                             submitted={submitted}
                             editingUser={editingUser}
                         />

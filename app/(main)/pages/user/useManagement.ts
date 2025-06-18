@@ -17,6 +17,7 @@ export const emptyUser: UsersDatum = {
     nationality: '',
     province: '',
     institution: '',
+    institutionId: '',
     avatar: {
         id: '',
         nameFile: ''
@@ -50,51 +51,107 @@ export const useManagement = () => {
     };
 
     const saveUser = async () => {
+        console.log('🚀 === DEBUGGING SAVE USER ===');
+        console.log('📋 Usuario completo:', user);
+        console.log('🏢 user.institutionId:', user.institutionId);
+
         setSubmitted(true);
         if (user.name.trim()) {
             let _usersData = [...(usersResponse?.usersData || [])];
+
             if (user.uuid) {
-                // Actualizar usuario existente
+                // ✅ ACTUALIZAR usuario existente
                 try {
                     const {active, uuid, deleted, avatar, ...userUpdated} = user;
-                    const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
-                    const index = _usersData.findIndex((u) => u.uuid === user.uuid);
 
-                    if (selectedAvatar) {
-                        const response = await uploadAvatar(uuid, selectedAvatar);
-                        setSelectedAvatar(null);
-                        updatedUserData.avatar = response?.avatar;
+                    // Llamar al endpoint que devuelve boolean
+                    const success = await UserService.updateUser(user.uuid, userUpdated);
+
+                    if (success) {
+                        // ✅ Actualización exitosa - actualizar estado local
+                        const index = _usersData.findIndex((u) => u.uuid === user.uuid);
+
+                        if (index !== -1) {
+                            // Actualizar con los nuevos datos del formulario
+                            _usersData[index] = {
+                                ..._usersData[index], // Mantener datos existentes
+                                ...userUpdated,       // Aplicar cambios
+                                uuid: user.uuid,      // Mantener UUID
+                                active: _usersData[index].active, // Mantener estado activo
+                                deleted: _usersData[index].deleted // Mantener estado deleted
+                            };
+                        }
+
+                        // Manejar avatar si se subió uno nuevo
+                        if (selectedAvatar) {
+                            const response = await uploadAvatar(uuid, selectedAvatar);
+                            setSelectedAvatar(null);
+                            if (response?.avatar && index !== -1) {
+                                _usersData[index].avatar = response.avatar;
+                            }
+                        }
+
+                        toast.current?.show({
+                            severity: 'success',
+                            summary: 'Usuario Actualizado',
+                            life: 5000
+                        });
+
+                        setUserDialog(false);
+                        setSubmitted(false);
+                        setUser(emptyUser);
+                        setEditingUser(null);
+
+                    } else {
+                        throw new Error('Error al actualizar usuario');
                     }
 
-                    if (index !== -1) {
-                        _usersData[index] = updatedUserData;
-                        toast.current?.show({ severity: 'success', summary: 'Usuario Actualizado', life: 5000 });
-                    }
-
-                    setUserDialog(false);
                 } catch (error) {
                     handleError(error, 'No se pudo actualizar el usuario');
                 }
             } else {
-                // Crear nuevo usuario
+                // ✅ CREAR nuevo usuario
                 try {
+                    console.log('🆕 === INICIANDO CREACIÓN ===');
+                    console.log('📤 Datos a enviar:', user);
+
                     const createdUser = await UserService.createUser(user);
+                    console.log('✅ Usuario creado exitosamente:', createdUser);
 
                     if (selectedAvatar) {
+                        console.log('📸 Subiendo avatar...');
                         const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
                         setSelectedAvatar(null);
                         createdUser.avatar = response?.avatar;
+                        console.log('✅ Avatar subido:', response?.avatar);
                     }
+
                     _usersData.push(createdUser);
-                    toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Usuario Creado',
+                        life: 5000
+                    });
 
                     setUserDialog(false);
+                    setSubmitted(false);
                     setUser(emptyUser);
+                    setEditingUser(null);
+
                 } catch (error) {
+                    console.error('❌ === ERROR EN CREACIÓN ===');
+                    console.error('❌ Error completo:', error);
+                    console.error('❌ Error status:', (error as any)?.status);
+                    console.error('❌ Error message:', (error as any)?.message);
                     handleError(error, 'No se pudo crear el usuario');
+                    return;
                 }
             }
-            setUsersResponse({ ...usersResponse, usersData: _usersData } as UsersResponse);
+            // Actualizar el estado con los cambios
+            setUsersResponse({
+                ...usersResponse,
+                usersData: _usersData
+            } as UsersResponse);
         }
     };
 
@@ -151,16 +208,46 @@ export const useManagement = () => {
     };
 
     const editUser = async (updatedUser: Partial<UsersDatum>): Promise<void> => {
-        const userToEdit = {
-            ...emptyUser,
+        console.log('🔧 === EDIT USER ===');
+        console.log('👤 editUser - Usuario recibido:', updatedUser.name);
+        console.log('🏢 editUser - institution objeto completo:', (updatedUser.institution as any)?.name || 'N/A');
+
+        // ✅ Extraer institutionId del objeto institution que viene del backend
+        const institutionId = (updatedUser.institution as any)?.uuid || '';
+
+        // ✅ Preparar usuario para el formulario
+        const userToEdit: UsersDatum = {
             ...updatedUser,
+            password: '', // ✅ Limpiar password para edición
+            institutionId, // ✅ UUID extraído para el formulario (no el objeto completo)
+
+            // ✅ Completar campos requeridos con valores por defecto seguros
+            active: updatedUser.active ?? false,
+            deleted: updatedUser.deleted ?? false,
+            uuid: updatedUser.uuid || '',
+            mobile: updatedUser.mobile || '',
+            municipal: updatedUser.municipal || '',
+            email: updatedUser.email || '',
+            address: updatedUser.address || '',
+            lastName: updatedUser.lastName || '',
+            name: updatedUser.name || '',
+            nationality: updatedUser.nationality || '',
+            province: updatedUser.province || '',
+            institution: updatedUser.institution || '', // ✅ Mantener objeto original para referencia
+            avatar: updatedUser.avatar || { id: '', nameFile: '' },
+            roles: updatedUser.roles || ''
         };
 
-        setUser(userToEdit);
-        setEditingUser(userToEdit);
-        setSelectedAvatar(null);
-        setUserDialog(true);
+        console.log('🏢 editUser - institutionId extraído:', institutionId);
+        console.log('✅ editUser - usuario preparado para formulario:', userToEdit.name);
+
+        // ✅ Establecer estados
+        setUser(userToEdit);           // Para el formulario
+        setEditingUser(updatedUser as UsersDatum); // Para referencia original
+        setSelectedAvatar(null);       // Limpiar avatar seleccionado
+        setUserDialog(true);          // Abrir diálogo
     };
+
 
     return {
         users: usersResponse?.usersData || [],

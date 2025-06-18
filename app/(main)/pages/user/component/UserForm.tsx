@@ -3,10 +3,11 @@ import {
     UsersDatum
 } from '@/app/service/UserService';
 import { Fieldset } from 'primereact/fieldset';
-import { UserDetails } from '@/app/(main)/pages/user/component/UserDetails';
 import UserPassword from '@/app/(main)/pages/user/component/UserPassword';
 import UserAddress from '@/app/(main)/pages/user/component/UserAddress';
 import UserAvatar from '@/app/(main)/pages/user/component/UserAvatar';
+import UserDetailsForm from './UserDetails';
+
 
 interface UserFormProps {
     user: UsersDatum;
@@ -35,19 +36,15 @@ export const UserForm: React.FC<UserFormProps> = ({
     return (
         <div className="p-fluid formgrid grid gap-4">
             <Fieldset legend="Detalles del Usuario" className="col-12 md:col-8 lg:col-6">
-                <UserDetails
+                <UserDetailsForm
                     user={user}
                     onInputChange={onInputChange}
                     submitted={submitted}
-                    editingUser={editingUser}
                 />
             </Fieldset>
 
             <Fieldset legend="Avatar" className="col-12 md:col-5 lg:col-4">
-                <UserAvatar
-                    handleImageUpload={handleImageUpload}
-                    avatarURL={avatarURL}
-                />
+                <UserAvatar handleImageUpload={handleImageUpload} avatarURL={avatarURL} />
             </Fieldset>
 
             <Fieldset legend="Contacto y Dirección" className="col-12 md:col-8 lg:col-6">

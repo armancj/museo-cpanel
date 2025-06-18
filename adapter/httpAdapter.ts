@@ -12,43 +12,27 @@ const httpAdapter = axios.create({
 let isRedirecting = false;
 
 
-httpAdapter.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        if (typeof window !== 'undefined') {
-            try {
-                const authUser = localStorage.getItem('authUser');
-                if (authUser) {
-                    const parsedAuthUser: AuthResponse = JSON.parse(authUser);
-                    const token = parsedAuthUser.access_token;
-                    if (token) {
-                        config.headers.Authorization = `Bearer ${token}`;
-                    }
-                }
-            } catch (error) {
-                console.error('Error al parsear token desde localStorage:', error);
-                localStorage.removeItem('authUser');
-            }
-        }
-        return config;
-    },
-    (error: AxiosError) => {
-        return Promise.reject(error);
-    }
-);
-
-// Interceptor de response
 httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
         return response;
     },
     (error: AxiosError) => {
+        console.log('🔥 === INTERCEPTOR ERROR ===');
+        console.log('🔥 Status:', error.response?.status);
+        console.log('🔥 URL:', error.config?.url);
+        console.log('🔥 Method:', error.config?.method);
+        console.log('🔥 isRedirecting:', isRedirecting);
+        console.log('🔥 Current path:', window.location.pathname);
+
         if (error.response?.status === 401 && !isRedirecting) {
+            console.log('🚨 === REDIRIGIENDO AL LOGIN ===');
             isRedirecting = true;
 
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('authUser');
 
                 if (!window.location.pathname.includes('/auth/login')) {
+                    console.log('🚨 Redirect to login...');
                     window.location.href = '/auth/login';
                 }
             }
@@ -66,6 +50,40 @@ httpAdapter.interceptors.response.use(
             console.error('Error de red:', error.message);
         }
 
+        return Promise.reject(error);
+    }
+);
+
+httpAdapter.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+        console.log('📤 === REQUEST INTERCEPTOR ===');
+        console.log('📤 URL:', config.url);
+        console.log('📤 Method:', config.method);
+
+        if (typeof window !== 'undefined') {
+            try {
+                const authUser = localStorage.getItem('authUser');
+                console.log('📤 AuthUser existe:', !!authUser);
+
+                if (authUser) {
+                    const parsedAuthUser: AuthResponse = JSON.parse(authUser);
+                    const token = parsedAuthUser.access_token;
+                    console.log('📤 Token existe:', !!token);
+                    console.log('📤 Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
+
+                    if (token) {
+                        config.headers.Authorization = `Bearer ${token}`;
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error al parsear token desde localStorage:', error);
+                localStorage.removeItem('authUser');
+            }
+        }
+        return config;
+    },
+    (error: AxiosError) => {
+        console.error('❌ Request interceptor error:', error);
         return Promise.reject(error);
     }
 );

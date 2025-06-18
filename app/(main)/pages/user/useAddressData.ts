@@ -47,7 +47,7 @@ export const useAddressData = () => {
         });
     }, []);
 
-    // 🔥 ACTUALIZADO: Inicializar datos para edición con institutionId
+    // Inicializar datos para edición con institutionId
     const initializeForEdit = useCallback(async (
         countryName: string,
         provinceName?: string,
@@ -83,10 +83,10 @@ export const useAddressData = () => {
                             setInstitutions(filteredInstitutions);
                             setDropdownState(prev => ({ ...prev, isInstitutionDisabled: false }));
 
-                            // 🔍 Debug para verificar si encontramos la institución
+                            // Debug para verificar si encontramos la institución
                             if (institutionId) {
                                 const foundInstitution = filteredInstitutions.find(inst => inst.uuid === institutionId);
-                                console.log('🎯 Institución encontrada para edición:', foundInstitution?.name || 'No encontrada');
+                                console.log('🎯 Institución para edición:', foundInstitution?.name || 'No encontrada');
                             }
                         }
                     }
@@ -96,12 +96,6 @@ export const useAddressData = () => {
             console.error('Error initializing address data for edit:', error);
         }
     }, [countries]);
-
-    // 🆕 Nueva función para encontrar institución por UUID
-    const findInstitutionByUuid = useCallback((uuid: string): InstitutionResponse | null => {
-        if (!uuid || !institutions.length) return null;
-        return institutions.find(institution => institution.uuid === uuid) || null;
-    }, [institutions]);
 
     const handleCountryChange = useCallback(
         async (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
@@ -181,6 +175,5 @@ export const useAddressData = () => {
         handleMunicipalityChange,
         initializeForEdit,
         resetDependentStates,
-        findInstitutionByUuid, // 🆕 Nueva función exportada
     };
 };
