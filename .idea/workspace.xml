@@ -23,9 +23,20 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="chore: update `.gitignore` to exclude `.idea` directory">
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/DialogFooter.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/DialogHeader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/HiddenQRContainer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/InfoSection.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/QRContainer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/QRStyles.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/TitleSection.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/hook/useClipboard.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/hook/useQRActions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/hook/useQRGeneration.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/component/QRCode/util/createCleanFilename.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/common/component/QRCodeDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/component/QRCodeDialog.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,8 +47,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -82,11 +93,52 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "feature/add-roles-manegemnt",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.nodejs.core.library.configured.version": "22.14.0",
+    "javascript.nodejs.core.library.typings.version": "22.14.1",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "H:/projects/museum/museo-cpanel/app/common/component/QRCode",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/arman/AppData/Roaming/fnm/aliases/default/node",
+    "nodejs_package_manager_path": "pnpm",
+    "npm.Next.js: server-side.executor": "Run",
+    "npm.backend run.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "Pomodoro",
+    "ts.external.directory.path": "H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mongo"
+    ]
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="H:\projects\museum\museo-cpanel\app\common\component\QRCode" />
       <recent name="H:\projects\museum\museo-cpanel" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\projects\museum\museo-cpanel\app\common\component\QRCode" />
+      <recent name="H:\projects\museum\museo-cpanel\app\common\component" />
       <recent name="H:\projects\museum\museo-cpanel\app\(full-page)\cultural-property-heritage\hook" />
     </key>
   </component>
@@ -154,23 +206,7 @@
       <workItem from="1750084436977" duration="17379000" />
       <workItem from="1750164000718" duration="822000" />
       <workItem from="1750252555749" duration="49000" />
-      <workItem from="1750257317810" duration="6710000" />
-    </task>
-    <task id="LOCAL-00005" summary="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature.">
-      <option name="closed" value="true" />
-      <created>1745426126446</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1745426126446</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Add reproduction conditions management feature&#10;&#10;Implemented CRUD functionality for managing reproduction conditions, including services, hooks, and UI components such as tables, forms, and toolbars. Added routing, styles, and utilities to ensure seamless integration and user interaction. Updated navigation to include the new feature.">
-      <option name="closed" value="true" />
-      <created>1745427845151</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1745427845151</updated>
+      <workItem from="1750257317810" duration="7710000" />
     </task>
     <task id="LOCAL-00007" summary="Add Section management feature with CRUD functionality&#10;&#10;Implemented components, services, hooks, and utilities for managing sections including listing, creation, editing, and deletion. Updated navigation and styles to integrate the feature seamlessly into the application.">
       <option name="closed" value="true" />
@@ -548,7 +584,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750262852216</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="feat: improve QRCodeDialog functionalities&#10;&#10;- Refactor QR code generation and download logic for cleaner and reusable code&#10;- Add native share functionality with support for sharing QR code images&#10;- Enhance button layout responsiveness and visual alignment&#10;- Update `.gitignore` to include `!/.idea/workspace.xml` for syncing workspace settings">
+      <option name="closed" value="true" />
+      <created>1750265211249</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1750265211249</updated>
+    </task>
+    <task id="LOCAL-00055" summary="chore: update `.gitignore` to exclude `.idea` directory">
+      <option name="closed" value="true" />
+      <created>1750265241529</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1750265241529</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -563,9 +615,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
-    <MESSAGE value="feat: optimize field components and enhance producer-author form integration&#10;&#10;- Add `disabled` prop support to `FieldWithHistory` for improved control over field interactions&#10;- Refactor `FieldWithHistory` layout and component rendering for cleaner code and maintainability&#10;- Introduce memoization and improved state management in `ProducerAuthorForm` to enhance performance&#10;- Optimize municipality fetching logic based on province input changes&#10;- Refactor repetitive field update logic in `ProducerAuthorForm` for better readability and consistency" />
-    <MESSAGE value="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency" />
     <MESSAGE value="feat: add access and reproduction conditions dropdowns&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `accessConditionsOptions` and `reproductionConditionsOptions`&#10;- Pass new dropdown options to `CulturalHeritagePropertyWizard` and `AccessAndUseConditionsForm`&#10;- Refactor `AccessAndUseConditionsForm` to use props for dropdown options, replacing hardcoded values&#10;- Enhance logging for debugging dropdown data and options" />
     <MESSAGE value="feat: improve recent activity and cultural property components&#10;&#10;- Replace `CulturalPropertyModel` with `CulturalHeritageProperty` for better type alignment&#10;- Add text truncation utility in `CulturalPropertyTable` to handle long text entries gracefully&#10;- Update column field mappings in `CulturalPropertyTable` for accurate data rendering&#10;- Enhance `RecentActivityCard` with improved type safety and dynamic content display&#10;- Clean up formatting and redundant code for improved readability" />
     <MESSAGE value="feat: add generic classification dropdown support&#10;&#10;- Extend `useAllDropdownData` hook to fetch and include `genericClassificationOptions`&#10;- Pass `genericClassificationOptions` to `EntryAndLocationForm` and `CulturalHeritagePropertyWizard`&#10;- Remove hardcoded generic classification options in `EntryAndLocationForm` for improved maintainability&#10;- Update dropdown rendering logic in `CulturalHeritagePropertyWizard` to use fetched data" />
@@ -588,6 +637,9 @@
     <MESSAGE value="feat: add organizational chart component enhancements&#10;&#10;- Migrate stylesheet from `.css` to `.scss` for improved maintainability&#10;- Add animations and responsive styles for better user experience&#10;- Refactor API integrations and route definitions for `webEnvConst.fileStorage`&#10;- Include additional npm dependencies: `@dabeng/react-orgchart`, `rxjs`, and `json-digger`&#10;- Update workspace configuration and lock files to align with new organizational chart functionality" />
     <MESSAGE value="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints" />
     <MESSAGE value="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies" />
+    <MESSAGE value="feat: enhance QR code functionality and sharing options&#10;&#10;- Refactor QR code generation logic for better error handling and reusability&#10;- Add native sharing functionality for QR images with fallback to manual download&#10;- Improve UI for sharing and downloading actions with better responsiveness&#10;- Optimize `QRCodeDialog` component by removing redundant code and enhancing layout" />
+    <MESSAGE value="feat: improve QRCodeDialog functionalities&#10;&#10;- Refactor QR code generation and download logic for cleaner and reusable code&#10;- Add native share functionality with support for sharing QR code images&#10;- Enhance button layout responsiveness and visual alignment&#10;- Update `.gitignore` to include `!/.idea/workspace.xml` for syncing workspace settings" />
+    <MESSAGE value="chore: update `.gitignore` to exclude `.idea` directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update `.gitignore` to exclude `.idea` directory" />
   </component>
 </project>
