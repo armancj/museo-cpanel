@@ -116,7 +116,7 @@ export const WebEnvConst = {
     },
     fileStorage: {
         upload: '/file-storage/upload',
-        getOne: (id: string) => `/file-storage/${id}`,
-        delete: (id: string) => `/file-storage/${id}`
+        getOne: (id: string) => `file-storage/${id}`,
+        delete: (id: string) => `file-storage/${id}`
     }
 };

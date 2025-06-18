@@ -9,22 +9,42 @@ interface UserToolbarProps {
     setUserDialog: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     confirmDeleteSelected: (user: UsersDatum) => void,
     exportExcel: () => void,
-    openNew: () => void
+    openNew: () => void,
+    viewMode: 'table' | 'chart',
+    setViewMode: (mode: 'table' | 'chart') => void
 }
 
-export const UserToolbar = ({ selectedUsers, setUserDialog, confirmDeleteSelected, exportExcel, openNew }: UserToolbarProps) => {
+export const UserToolbar = ({
+    selectedUsers,
+    setUserDialog,
+    confirmDeleteSelected,
+    exportExcel,
+    openNew,
+    viewMode = 'table',
+    setViewMode
+}: UserToolbarProps) => {
     const handleDelete = () => {
         if (selectedUsers.length) {
             confirmDeleteSelected(selectedUsers[0]);
         }
     };
 
+    const toggleViewMode = () => {
+        setViewMode(viewMode === 'table' ? 'chart' : 'table');
+    };
+
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={handleDelete} disabled={!selectedUsers  || !selectedUsers.length} />
+                    <Button label="New" icon="pi pi-plus" severity="success" className="mr-2" onClick={openNew} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" className="mr-2" onClick={handleDelete} disabled={!selectedUsers || !selectedUsers.length} />
+                    <Button
+                        label={viewMode === 'table' ? "Ver Organigrama" : "Ver Tabla"}
+                        icon={viewMode === 'table' ? "pi pi-sitemap" : "pi pi-table"}
+                        severity="info"
+                        onClick={toggleViewMode}
+                    />
                 </div>
             </React.Fragment>
         );
