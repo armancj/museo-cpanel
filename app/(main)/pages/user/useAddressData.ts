@@ -47,8 +47,13 @@ export const useAddressData = () => {
         });
     }, []);
 
-    // Inicializar datos para edición
-    const initializeForEdit = useCallback(async (countryName: string, provinceName?: string, municipalityName?: string) => {
+    // 🔥 ACTUALIZADO: Inicializar datos para edición con institutionId
+    const initializeForEdit = useCallback(async (
+        countryName: string,
+        provinceName?: string,
+        municipalityName?: string,
+        institutionId?: string
+    ) => {
         try {
             // Buscar y cargar el país
             const country = countries.find(c => c.name === countryName);
@@ -77,6 +82,12 @@ export const useAddressData = () => {
                             );
                             setInstitutions(filteredInstitutions);
                             setDropdownState(prev => ({ ...prev, isInstitutionDisabled: false }));
+
+                            // 🔍 Debug para verificar si encontramos la institución
+                            if (institutionId) {
+                                const foundInstitution = filteredInstitutions.find(inst => inst.uuid === institutionId);
+                                console.log('🎯 Institución encontrada para edición:', foundInstitution?.name || 'No encontrada');
+                            }
                         }
                     }
                 }
@@ -86,10 +97,16 @@ export const useAddressData = () => {
         }
     }, [countries]);
 
+    // 🆕 Nueva función para encontrar institución por UUID
+    const findInstitutionByUuid = useCallback((uuid: string): InstitutionResponse | null => {
+        if (!uuid || !institutions.length) return null;
+        return institutions.find(institution => institution.uuid === uuid) || null;
+    }, [institutions]);
+
     const handleCountryChange = useCallback(
         async (country: AddressResponse, onInputChange?: (e: any, field: string) => void) => {
             if (onInputChange) {
-                onInputChange({ target: { name: 'country', value: country.name } }, 'country');
+                onInputChange({ target: { name: 'nationality', value: country.name } }, 'nationality');
             }
 
             try {
@@ -164,5 +181,6 @@ export const useAddressData = () => {
         handleMunicipalityChange,
         initializeForEdit,
         resetDependentStates,
+        findInstitutionByUuid, // 🆕 Nueva función exportada
     };
 };
