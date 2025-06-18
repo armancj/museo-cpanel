@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
-import { AxiosError } from 'axios';
 import { CountryService } from '@/app/service/CountryService';
 import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
+import { ApiError } from '@/adapter/httpAdapter';
 
 export const emptyUser: UsersDatum = {
     password: '',
@@ -17,13 +17,14 @@ export const emptyUser: UsersDatum = {
     name: '',
     nationality: '',
     province: '',
+    institution: '',
     avatar: {
         id: '', nameFile: ''
     },
     roles: ''
 };
-export const useManagement = () => {
 
+export const useManagement = () => {
     const [usersResponse, setUsersResponse] = useState<UsersResponse | null>(null);
     const [user, setUser] = useState<UsersDatum>(emptyUser);
     const [userDialog, setUserDialog] = useState(false);
@@ -103,41 +104,41 @@ export const useManagement = () => {
             detail: defaultMessage,
             life: 5000
         };
-        if (error instanceof AxiosError) {
-            const errorMessage = (error.response)?.data?.message || 'failed axio';
-            if (error.status === 400) show.detail = errorMessage;
-            if (error.status === 401) show.detail = errorMessage;
-            if (error.status === 404) show.detail = 'La provincia, el municipio o el pais, no se encuentra en la aplicación';
+
+        if (error instanceof ApiError) {
+            // El error ya viene procesado desde el httpAdapter
+            show.severity = error.severity;
+            show.detail = error.userMessage;
+
             if (error.status === 409) {
-                const conflictData = JSON.parse(errorMessage.replace('Conflict: ', ''));
-                const conflictFields = Object.keys(conflictData);
-                conflictFields.forEach(field => {
-                    const fieldData = field === 'email' ? 'Correo' : 'Teléfono';
-                    show.detail = `El ${fieldData}: ${conflictData[field]} ya se encuentra en el sistema.`;
-                });
+                show.summary = 'Información duplicada';
+            } else if (error.status >= 500) {
+                show.summary = 'Error del servidor';
             }
+        } else {
+            // Fallback para errores no procesados
+            console.error('Error no procesado:', error);
+            show.detail = error?.message || defaultMessage;
         }
+
         toast.current?.show(show);
         setUserDialog(true);
-        console.log(error);
+        console.log('Error manejado:', error);
     };
-
 
     const toggleUserActivation = async (uuid: string, active: boolean) => {
         try {
             await UserService.changeActivateUser({ uuid, active });
-                const updatedUsers = usersResponse?.usersData.map(user =>
-                    user.uuid === uuid ? { ...user, active } : user
-                );
-                setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
-                toast.current?.show({ severity: 'success', summary: 'Estado del usuario actualizado', life: 5000 });
+            const updatedUsers = usersResponse?.usersData.map(user =>
+                user.uuid === uuid ? { ...user, active } : user
+            );
+            setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
+            toast.current?.show({ severity: 'success', summary: 'Estado del usuario actualizado', life: 5000 });
 
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el estado del usuario', life: 5000 });
-            console.error('Error al cambiar el estado del usuario:', error);
+            handleError(error, 'No se pudo actualizar el estado del usuario');
         }
     };
-
 
     const deleteUser = async (uuid: string) => {
         try {
@@ -146,8 +147,7 @@ export const useManagement = () => {
             setUsersResponse({ ...usersResponse, usersData: updatedUsers } as UsersResponse);
             toast.current?.show({ severity: 'success', summary: 'Usuario Eliminado', life: 5000 });
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el usuario', life: 5000 });
-            console.error('Error al eliminar el usuario:', error);
+            handleError(error, 'No se pudo eliminar el usuario');
         }
     };
 
@@ -163,27 +163,22 @@ export const useManagement = () => {
         try {
             // Cargar países
             const countryData = (await CountryService.getCountries({name: userToEdit.nationality}))[0];
-                console.log('Countries:', countryData);
 
-                if (countryData) {
-                    const provincesData = await ProvinceService.getProvinces(countryData);
-                    if (userToEdit.province) {
-                        const province = provincesData.find((province) => province.name === userToEdit.province);
-                        if (province) {
-                            const municipalitiesData = await MunicipalityService.getMunicipalities(province);
+            if (countryData) {
+                const provincesData = await ProvinceService.getProvinces(countryData);
+                if (userToEdit.province) {
+                    const province = provincesData.find((province) => province.name === userToEdit.province);
+                    if (province) {
+                        const municipalitiesData = await MunicipalityService.getMunicipalities(province);
 
-                            console.log('Países:', user.countries);
-                            console.log('Provincias:', user.provinces);
-                            console.log('Municipios:', user.municipalities);
-
-                            setUser((prev) => ({
-                                ...prev,
-                                nationality: countryData as any,
-                                province: provincesData as any,
-                            }));
-                        }
+                        setUser((prev) => ({
+                            ...prev,
+                            nationality: countryData as any,
+                            province: provincesData as any,
+                        }));
                     }
                 }
+            }
         } catch (error) {
             console.error('Error cargando datos de país/provincia/municipio:', error);
         }
@@ -204,7 +199,8 @@ export const useManagement = () => {
         totalPage: usersResponse?.totalPage ?? 0,
         totalElement: usersResponse?.totalElement ?? 0,
         toggleUserActivation,
-        deleteUser, editUser,
+        deleteUser,
+        editUser,
         setSelectedAvatar
     };
 };

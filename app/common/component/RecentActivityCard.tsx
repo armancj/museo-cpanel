@@ -4,11 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 import { DashboardService } from '@/app/service/DashboardService';
-import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
 import * as XLSX from 'xlsx';
+import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 
 // Función para exportar datos en formato CSV
-const exportToExcel = (data: CulturalPropertyModel[], fileName: string) => {
+const exportToExcel = (data: CulturalHeritageProperty[], fileName: string) => {
     if (data.length === 0) {
         alert('No hay actividades recientes para exportar.');
         return;
@@ -16,11 +16,7 @@ const exportToExcel = (data: CulturalPropertyModel[], fileName: string) => {
 
     // Generar los encabezados y las filas de datos
     const headers = ['Nombre del Objeto', 'Tipo de Patrimonio', 'Fecha de Creación'];
-    const rows = data.map((entry) => [
-        entry.culturalRecord?.objectTitle?.value || 'N/A',
-        entry.entryAndLocation?.heritageType?.value || 'N/A',
-        new Date(entry.createdAt).toLocaleDateString('es-ES')
-    ]);
+    const rows = data.map((entry) => [entry.culturalRecord?.objectTitle?.value || 'N/A', entry.entryAndLocation?.heritageType?.value || 'N/A', new Date(entry.createdAt).toLocaleDateString('es-ES')]);
 
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
 
@@ -60,8 +56,7 @@ const heritageMap = new Map<string, { icon: string; color: string; bgColor: stri
     ['Otro', { icon: 'pi pi-question-circle', color: 'text-gray-400', bgColor: 'bg-gray-100' }]
 ]);
 
-
-const getHeritageData = (heritageType: string | undefined): { icon: string; color: string, bgColor: string } => {
+const getHeritageData = (heritageType: string | undefined): { icon: string; color: string; bgColor: string } => {
     if (!heritageType) return { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200' };
 
     // @ts-ignore
@@ -72,15 +67,13 @@ const getHeritageData = (heritageType: string | undefined): { icon: string; colo
     }
 
     // Si no hay coincidencias, valores por defecto
-    return { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200'  };
+    return { icon: 'pi pi-palette', color: 'text-blue-700', bgColor: 'bg-blue-200' };
 };
-
-
 
 // Componente de "Actividad Reciente"
 const RecentActivityCard = () => {
     const menuRef = useRef<Menu | null>(null);
-    const [latestEntries, setLatestEntries] = useState<CulturalPropertyModel[]>([]);
+    const [latestEntries, setLatestEntries] = useState<CulturalHeritageProperty[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     // Función para obtener datos actualizados
@@ -106,14 +99,7 @@ const RecentActivityCard = () => {
             <div className="flex align-items-center justify-content-between mb-4">
                 <h5>Actividad Reciente</h5>
                 <div>
-                    <Button
-                        type="button"
-                        icon="pi pi-ellipsis-v"
-                        rounded
-                        text
-                        className="p-button-plain"
-                        onClick={(event) => menuRef.current?.toggle(event)}
-                    />
+                    <Button type="button" icon="pi pi-ellipsis-v" rounded text className="p-button-plain" onClick={(event) => menuRef.current?.toggle(event)} />
                     <Menu
                         ref={menuRef}
                         popup
@@ -121,8 +107,7 @@ const RecentActivityCard = () => {
                             {
                                 label: 'Exportar',
                                 icon: 'pi pi-fw pi-file-export',
-                                command: () => exportToExcel
-                                (latestEntries, 'actividades_recientes')
+                                command: () => exportToExcel(latestEntries, 'actividades_recientes')
                             },
                             {
                                 label: 'Actualizar',
@@ -147,19 +132,22 @@ const RecentActivityCard = () => {
                         const { icon, color, bgColor } = getHeritageData(entry.entryAndLocation?.heritageType?.value);
                         return (
                             <li key={entry.uuid} className="flex align-items-center py-2 border-bottom-1 surface-border">
-                                <div
-                                    className={`w-3rem h-3rem flex align-items-center justify-content-center ${bgColor} border-circle mr-3 flex-shrink-0`}
-                                >
+                                <div className={`w-3rem h-3rem flex align-items-center justify-content-center ${bgColor} border-circle mr-3 flex-shrink-0`}>
                                     {/* Ícono dinámico con color */}
                                     <i className={`${icon} text-xl ${color}`} />
                                 </div>
                                 <span className="text-900 line-height-3">
-                    <span className="font-medium">{entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}</span>
-                    <span className="text-700">
-                        {' '}
-                        ha sido ingresado como <span className={color}>{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
-                    </span>
-                </span>
+                                    <span className="font-medium">
+                                        {(entry.culturalRecord?.objectTitle?.value || 'Objeto Museable').length > 20
+                                            ? `${(entry.culturalRecord?.objectTitle?.value || 'Objeto Museable').substring(0, 20)}...`
+                                            : entry.culturalRecord?.objectTitle?.value || 'Objeto Museable'}
+                                    </span>
+
+                                    <span className="text-700">
+                                        {' '}
+                                        ha sido ingresado como <span className={color}>{entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}</span>
+                                    </span>
+                                </span>
                             </li>
                         );
                     })}

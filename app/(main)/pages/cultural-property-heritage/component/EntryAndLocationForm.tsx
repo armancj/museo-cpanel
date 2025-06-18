@@ -19,6 +19,7 @@ interface EntryAndLocationFormProps {
     currentStep: number;
     submitted: boolean;
     heritageTypeOptions: { label: string; value: string }[];
+    genericClassificationOptions: { label: string; value: string }[];
 }
 
 export const EntryAndLocationForm = ({
@@ -28,11 +29,10 @@ export const EntryAndLocationForm = ({
     canViewHistory,
     canChangeStatus,
     openHistoryDialog,
-    isEditMode,
     markStepCompleted,
     currentStep,
-    submitted,
-    heritageTypeOptions
+    heritageTypeOptions,
+    genericClassificationOptions
 }: EntryAndLocationFormProps) => {
     const [isFormValid, setIsFormValid] = useState(false);
     // Ref to track if we've already updated the form validity
@@ -306,11 +306,6 @@ export const EntryAndLocationForm = ({
         { label: 'Archivo', value: 'Archivo' }
     ];
 
-
-    const genericClassificationOptions = [
-        { label: 'Objeto realizado por el hombre', value: 'Objeto realizado por el hombre' },
-        { label: 'Objeto no realizado por el hombre', value: 'Objeto no realizado por el hombre' },
-    ];
 
     // If entryAndLocation is not initialized yet, show loading or return null
     if (!data.entryAndLocation) {

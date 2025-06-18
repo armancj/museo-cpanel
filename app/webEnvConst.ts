@@ -44,7 +44,8 @@ export const WebEnvConst = {
     culturalProperty:{
         getAll: '/cultural-heritage-property',
         post: '/cultural-heritage-property',
-        getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`
+        getOne: (uuid: string) => `/cultural-heritage-property/${uuid}`,
+        getPublic: (uuid: string) => `/cultural-heritage-property/public/${uuid}`
     },
     typology: {
         getAll: '/typology',
@@ -112,5 +113,10 @@ export const WebEnvConst = {
         getAll: '/value-grade',
         post: '/value-grade',
         getOne: (uuid: string) => `/value-grade/${uuid}`
+    },
+    fileStorage: {
+        upload: '/file-storage/upload',
+        getOne: (id: string) => `file-storage/${id}`,
+        delete: (id: string) => `file-storage/${id}`
     }
 };

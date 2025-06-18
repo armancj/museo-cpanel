@@ -7,6 +7,7 @@ import { ProvinceService } from '@/app/service/ProvinceService';
 import { MunicipalityService } from '@/app/service/MunicipalityService';
 import { NomenclatureAccessConditionsService } from '@/app/service/NomenclatureAccessConditionsService';
 import { ReproductionConditionsService } from '@/app/service/ReproductionConditionsService';
+import { GenericClassificationService } from '@/app/service/GenericClassificationService';
 
 // Define dropdown option type
 export type DropdownOption = { label: string; value: string };
@@ -21,6 +22,7 @@ export interface AllDropdownData {
     municipalityOptions: DropdownOption[];
     accessConditionsOptions: DropdownOption[];
     reproductionConditionsOptions: DropdownOption[];
+    genericClassificationOptions: DropdownOption[];
     isLoading: boolean;
     error: Error | null;
     // Function to fetch municipalities for a specific province
@@ -40,6 +42,7 @@ export const useAllDropdownData = (): AllDropdownData => {
     const [municipalityOptions, setMunicipalityOptions] = useState<DropdownOption[]>([]);
     const [accessConditionsOptions, setAccessConditionsOptions] = useState<DropdownOption[]>([]);
     const [reproductionConditionsOptions, setReproductionConditionsOptions] = useState<DropdownOption[]>([]);
+    const [genericClassificationOptions, setGenericClassificationOptions] = useState<DropdownOption[]>([]);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -119,6 +122,12 @@ export const useAllDropdownData = (): AllDropdownData => {
                     ).catch(err => {
                         console.error('Error fetching reproduction conditions:', err);
                         return [];
+                    }),
+                    GenericClassificationService.getGenericClassifications().then(data =>
+                        data.map(item => ({ label: item.name, value: item.name }))
+                    ).catch(err => {
+                        console.error('Error fetching generic classifications:', err);
+                        return [];
                     })
                 ];
 
@@ -132,7 +141,8 @@ export const useAllDropdownData = (): AllDropdownData => {
                     heritageTypes,
                     provinces,
                     accessConditions,
-                    reproductionConditions
+                    reproductionConditions,
+                    genericClassifications
                 ] = results.map(result => result.status === 'fulfilled' ? result.value : []);
 
                 setValueGradeOptions(valueGrades);
@@ -142,6 +152,7 @@ export const useAllDropdownData = (): AllDropdownData => {
                 setProvinceOptions(provinces);
                 setAccessConditionsOptions(accessConditions);
                 setReproductionConditionsOptions(reproductionConditions);
+                setGenericClassificationOptions(genericClassifications);
 
                 // ✅ Solo mostrar error si TODOS los servicios fallan
                 const allFailed = results.every(result => result.status === 'rejected');
@@ -169,6 +180,7 @@ export const useAllDropdownData = (): AllDropdownData => {
         municipalityOptions,
         accessConditionsOptions,
         reproductionConditionsOptions,
+        genericClassificationOptions,
         fetchMunicipalitiesForProvince,
         isLoading,
         error

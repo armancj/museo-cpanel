@@ -9,6 +9,7 @@ import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
 import { emptyUser, useManagement } from '@/app/(main)/pages/user/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
+import { OrganizationalChart } from '@/app/(main)/pages/user/component/OrganizationalChart';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
 
 
@@ -32,6 +33,7 @@ export const UserList = () => {
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<UsersDatum[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
 
     const dt = useRef<DataTable<UsersDatum[]>>(null);
 
@@ -73,22 +75,28 @@ export const UserList = () => {
                         setUserDialog={setUserDialog}
                         confirmDeleteSelected={confirmDeleteSelected}
                         exportExcel={exportCSV}
-                        openNew={ openNew }
+                        openNew={openNew}
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
                     />
 
-                    <UserTable
-                        dt={dt}
-                        users={users}
-                        selectedUsers={selectedUsers}
-                        setSelectedUsers={setSelectedUsers}
-                        globalFilter={globalFilter}
-                        setGlobalFilter = {setGlobalFilter}
-                        totalPage={totalPage}
-                        totalElement={{totalElement}}
-                        toggleUserActivation={toggleUserActivation}
-                        deleteUser={deleteUser}
-                        editUser={editUser}
-                    />
+                    {viewMode === 'table' ? (
+                        <UserTable
+                            dt={dt}
+                            users={users}
+                            selectedUsers={selectedUsers}
+                            setSelectedUsers={setSelectedUsers}
+                            globalFilter={globalFilter}
+                            setGlobalFilter={setGlobalFilter}
+                            totalPage={totalPage}
+                            totalElement={{totalElement}}
+                            toggleUserActivation={toggleUserActivation}
+                            deleteUser={deleteUser}
+                            editUser={editUser}
+                        />
+                    ) : (
+                        <OrganizationalChart users={users} />
+                    )}
                     <Dialog visible={userDialog} header="Detalles de usuarios" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
                         <UserForm
                             onImageUpload={handleImageUpload}

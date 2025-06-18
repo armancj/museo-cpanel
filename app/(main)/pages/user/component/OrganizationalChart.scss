@@ -1,0 +1,154 @@
+.orgchart-container {
+    .orgchart {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+            }
+        }
+
+    // Líneas de conexión
+    .lines .topLine,
+    .lines .downLine,
+    .lines .leftLine,
+    .lines .rightLine {
+        border-color: #6c757d;
+        border-width: 2px;
+    }
+
+    // Líneas verticales principales (entre niveles)
+    .lines .downLine {
+        border-left-color: #2196F3;
+        border-left-width: 3px;
+    }
+
+    // Líneas horizontales (entre hermanos)
+    .lines .topLine {
+        border-top-color: #4CAF50;
+        border-top-width: 2px;
+    }
+
+    // Conectores laterales
+    .lines .leftLine,
+    .lines .rightLine {
+        border-top-color: #FFC107;
+        border-top-width: 2px;
+    }
+
+    // Nodos colapsados
+    .node.collapsed {
+        opacity: 0.7;
+
+        &::after {
+            content: '+';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2196F3;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    }
+
+    // Nodos expandidos
+    .node.expanded::after {
+        content: '-';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4CAF50;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    }
+
+// Estilos específicos por tipo de nodo
+.org-node {
+    position: relative;
+    user-select: none;
+
+    &.country-node {
+        background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+        border-color: #2196F3 !important;
+    }
+
+    &.province-node {
+        background: linear-gradient(135deg, #e8f5e8 0%, #ffffff 100%);
+        border-color: #4CAF50 !important;
+    }
+
+    &.municipality-node {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+        border-color: #FFC107 !important;
+    }
+
+    &.institution-node {
+        background: linear-gradient(135deg, #f3e5f5 0%, #ffffff 100%);
+    }
+
+    &.user-node {
+        background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+    }
+}
+
+// Animaciones para la carga
+.node {
+    animation: nodeAppear 0.5s ease-out;
+}
+
+    @keyframes nodeAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+// Responsive
+@media (max-width: 768px) {
+    .org-node {
+        min-width: 120px !important;
+        padding: 8px !important;
+
+        .font-bold {
+            font-size: 10px !important;
+        }
+    }
+}
+}
+
+   .orgchart .orgchart-container {
+       .oc-export-btn {
+           display: none; // Ocultamos los botones por defecto
+       }
+   }
