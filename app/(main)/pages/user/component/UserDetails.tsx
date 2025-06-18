@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
 import { classNames } from 'primereact/utils';
 import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
 import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
@@ -78,6 +79,11 @@ export function UserDetails({ user, onInputChange, submitted, editingUser }: Rea
         const searchKey = optionValue || optionLabel;
         return options.find(option => option[searchKey] === value) || null;
     };
+    console.log('🔍 INSTITUCIÓN DEBUG:');
+    console.log('user.institution (UUID):', user.institution);
+    console.log('institutions array:', institutions);
+    console.log('findOptionByValue result for institution:', findOptionByValue(institutions, user.institution, 'name', 'uuid'));
+
 
     return (
         <div className="grid">
@@ -155,20 +161,18 @@ export function UserDetails({ user, onInputChange, submitted, editingUser }: Rea
                 )}
             </div>
 
-            {/* Roles */}
+            {/* Roles - Usando Dropdown directo */}
             <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="roles">Rol*</label>
-                <DropdownField
+                <Dropdown
                     id="roles"
                     name="roles"
-                    value={findOptionByValue(roles, user.roles, 'name', 'value')}
+                    value={user.roles}
                     options={roles}
                     optionLabel="name"
                     optionValue="value"
                     placeholder="Seleccionar un Rol"
                     onChange={(e) => handleDropdownChange('roles', e.value)}
-                    required
-                    submitted={submitted}
                     className={classNames({ 'p-invalid': submitted && !user.roles })}
                 />
                 {submitted && !user.roles && (
@@ -240,21 +244,19 @@ export function UserDetails({ user, onInputChange, submitted, editingUser }: Rea
                 )}
             </div>
 
-            {/* Institución - solo para Especialista y Técnico */}
+            {/* Institución - Usando Dropdown directo para Especialista y Técnico */}
             {(user.roles === 'Especialista' || user.roles === 'Técnico') && (
                 <div className="field col-12 md:col-4">
                     <label htmlFor="institution">Institución*</label>
-                    <DropdownField
+                    <Dropdown
                         id="institution"
                         name="institution"
-                        value={findOptionByValue(institutions, user.institution, 'name', 'uuid')}
+                        value={user.institution}
                         options={institutions}
                         optionLabel="name"
                         optionValue="uuid"
                         placeholder="Seleccionar Institución"
                         disabled={isInstitutionDisabled}
-                        required
-                        submitted={submitted}
                         onChange={(e) => handleDropdownChange('institution', e.value)}
                         className={classNames({ 'p-invalid': submitted && !user.institution })}
                         filter={true}
