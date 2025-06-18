@@ -23,13 +23,18 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`">
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints">
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/AccordionHeader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/CulturalError.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/CulturalLoading.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/FieldDisplay.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/HeritageHeader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/InfoPanel.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/hook/useCulturalHeritageProperty.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/hook/useGenerateCulturalRecordSections.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/util/culture-function.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/pages/user/component/orgchart.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/pages/user/component/OrganizationalChart.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/webEnvConst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/webEnvConst.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +44,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -269,14 +274,8 @@
       <workItem from="1750072812118" duration="19000" />
       <workItem from="1750084436977" duration="17379000" />
       <workItem from="1750164000718" duration="822000" />
-    </task>
-    <task id="LOCAL-00003" summary="Add fund title management feature&#10;&#10;Implemented CRUD functionality for fund titles, including services, hooks, UI components, and utilities. Updated navigation and styles, added data table and export support, and introduced form and toolbar enhancements.">
-      <option name="closed" value="true" />
-      <created>1745424416789</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1745424416789</updated>
+      <workItem from="1750252555749" duration="49000" />
+      <workItem from="1750257317810" duration="4776000" />
     </task>
     <task id="LOCAL-00004" summary="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration.">
       <option name="closed" value="true" />
@@ -662,7 +661,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750177323434</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints">
+      <option name="closed" value="true" />
+      <created>1750184495811</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1750184495811</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -680,8 +687,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: add heritage type filtering and dynamic dropdown support&#10;&#10;- Integrate heritage type filtering in `CulturalHeritagePropertyList` component&#10;- Fetch heritage types dynamically via `HeritageTypeService`&#10;- Add `useEffect` for fetching and managing heritage type data&#10;- Update global filter and column filters with heritage type support&#10;- Enhance table functionality with a custom dropdown filter template" />
-    <MESSAGE value="feat: add status filtering to cultural property list&#10;&#10;- Introduce dynamic status filtering in `CulturalHeritagePropertyList` using a dropdown filter&#10;- Update global filters and column configurations to support status filtering&#10;- Enhance table functionality with a `statusFilterTemplate`&#10;- Adjust filter header styles for consistent layout" />
     <MESSAGE value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
     <MESSAGE value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
     <MESSAGE value="feat: optimize field components and enhance producer-author form integration&#10;&#10;- Add `disabled` prop support to `FieldWithHistory` for improved control over field interactions&#10;- Refactor `FieldWithHistory` layout and component rendering for cleaner code and maintainability&#10;- Introduce memoization and improved state management in `ProducerAuthorForm` to enhance performance&#10;- Optimize municipality fetching logic based on province input changes&#10;- Refactor repetitive field update logic in `ProducerAuthorForm` for better readability and consistency" />
@@ -705,7 +710,9 @@
     <MESSAGE value="feat: add `FileStorageService` for file upload and management&#10;&#10;- Implement `uploadFile`, `uploadFiles`, and `deleteFile` methods for single and batch file management&#10;- Add `getFileUrl` for generating file URLs and `createFileItem` for creating file metadata objects&#10;- Extend `WebEnvConst` with `fileStorage` API endpoints for upload, retrieval, and deletion" />
     <MESSAGE value="feat: add `FileStorageService` for file management&#10;&#10;- Create `FileStorageService` for handling file uploads, deletions, and retrievals&#10;- Introduce support for single and multiple file uploads&#10;- Extend `webEnvConst` with file storage API endpoints" />
     <MESSAGE value="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`" />
+    <MESSAGE value="feat: add organizational chart component enhancements&#10;&#10;- Migrate stylesheet from `.css` to `.scss` for improved maintainability&#10;- Add animations and responsive styles for better user experience&#10;- Refactor API integrations and route definitions for `webEnvConst.fileStorage`&#10;- Include additional npm dependencies: `@dabeng/react-orgchart`, `rxjs`, and `json-digger`&#10;- Update workspace configuration and lock files to align with new organizational chart functionality" />
+    <MESSAGE value="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
