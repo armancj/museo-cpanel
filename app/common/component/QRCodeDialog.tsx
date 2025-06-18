@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Dialog } from 'primereact/dialog';
@@ -17,7 +18,7 @@ interface QRCodeDialogProps {
 export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps) => {
     const [url, setUrl] = useState<string>('');
     const [isDownloading, setIsDownloading] = useState(false);
-    const [showUrl, setShowUrl] = useState(false);
+    const [isSharing, setIsSharing] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
     const downloadRef = useRef<HTMLDivElement>(null);
 
@@ -26,103 +27,92 @@ export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps
         return title.substring(0, maxLength) + '...';
     };
 
-    const formatUrlForDisplay = (url: string) => {
-        try {
-            const urlObj = new URL(url);
-            return `${urlObj.hostname}${urlObj.pathname}`;
-        } catch {
-            return url;
-        }
-    };
-
     useEffect(() => {
         const baseUrl = window.location.origin;
         const fullUrl = `${baseUrl}/cultural-property-heritage/${uuid}`;
         setUrl(fullUrl);
     }, [uuid]);
 
-    const downloadQRCode = async () => {
-        if (downloadRef.current) {
-            setIsDownloading(true);
-            try {
-                // Encontrar el SVG dentro del contenedor de descarga
-                const svgElement = downloadRef.current.querySelector('svg');
-                if (!svgElement) {
-                    throw new Error('SVG no encontrado');
-                }
+    // Función para convertir QR a Blob
+    const getQRImageBlob = async (): Promise<Blob> => {
+        if (!downloadRef.current) throw new Error('Referencia QR no encontrada');
 
-                // Crear un canvas directamente desde el SVG
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+        const svgElement = downloadRef.current.querySelector('svg');
+        if (!svgElement) throw new Error('SVG no encontrado');
 
-                if (!ctx) {
-                    throw new Error('No se pudo obtener el contexto del canvas');
-                }
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('No se pudo obtener el contexto del canvas');
 
-                // Configurar el tamaño del canvas (alta resolución)
-                const size = 800;
-                canvas.width = size;
-                canvas.height = size;
+        const size = 800;
+        canvas.width = size;
+        canvas.height = size;
 
-                // Fondo blanco
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, size, size);
+        // Fondo blanco
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, size, size);
 
-                // Convertir SVG a imagen
-                const svgData = new XMLSerializer().serializeToString(svgElement);
-                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                const svgUrl = URL.createObjectURL(svgBlob);
+        // Convertir SVG a imagen
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
 
-                const img = new Image();
+        const img = new Image();
 
-                await new Promise<void>((resolve, reject) => {
-                    img.onload = () => {
-                        try {
-                            // Centrar el QR en el canvas con padding
-                            const padding = 80;
-                            const qrSize = size - (padding * 2);
+        return new Promise((resolve, reject) => {
+            img.onload = () => {
+                try {
+                    const padding = 80;
+                    const qrSize = size - (padding * 2);
+                    ctx.drawImage(img, padding, padding, qrSize, qrSize);
+                    URL.revokeObjectURL(svgUrl);
 
-                            ctx.drawImage(img, padding, padding, qrSize, qrSize);
-
-                            // Limpiar la URL temporal
-                            URL.revokeObjectURL(svgUrl);
-                            resolve();
-                        } catch (error) {
-                            reject(error);
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(new Error('Error al generar blob'));
                         }
-                    };
+                    }, 'image/png', 1.0);
+                } catch (error) {
+                    URL.revokeObjectURL(svgUrl);
+                    reject(error);
+                }
+            };
 
-                    img.onerror = () => {
-                        URL.revokeObjectURL(svgUrl);
-                        reject(new Error('Error al cargar la imagen SVG'));
-                    };
+            img.onerror = () => {
+                URL.revokeObjectURL(svgUrl);
+                reject(new Error('Error al cargar la imagen SVG'));
+            };
 
-                    img.src = svgUrl;
-                });
+            img.src = svgUrl;
+        });
+    };
 
-                // Convertir a PNG y descargar
-                const pngUrl = canvas.toDataURL('image/png', 1.0);
-                const downloadLink = document.createElement('a');
-                downloadLink.href = pngUrl;
+    const downloadQRCode = async () => {
+        setIsDownloading(true);
+        try {
+            const blob = await getQRImageBlob();
+            const pngUrl = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = pngUrl;
 
-                const cleanTitle = title
-                    .replace(/[^a-zA-Z0-9\s]/g, '')
-                    .replace(/\s+/g, '-')
-                    .toLowerCase()
-                    .substring(0, 30);
+            const cleanTitle = title
+                .replace(/[^a-zA-Z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .toLowerCase()
+                .substring(0, 30);
 
-                downloadLink.download = `qr-${cleanTitle || 'patrimonio'}.png`;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-
-            } catch (error) {
-                console.error('Error downloading QR code:', error);
-                // Fallback: intentar con html2canvas
-                await downloadWithHtml2Canvas();
-            } finally {
-                setIsDownloading(false);
-            }
+            downloadLink.download = `qr-${cleanTitle || 'patrimonio'}.png`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(pngUrl);
+        } catch (error) {
+            console.error('Error downloading QR code:', error);
+            await downloadWithHtml2Canvas();
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -162,6 +152,50 @@ export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps
         }
     };
 
+    // Función para compartir la imagen del QR
+    const shareQRImage = async () => {
+        setIsSharing(true);
+        try {
+            const blob = await getQRImageBlob();
+            const cleanTitle = title.substring(0, 30).replace(/[^a-zA-Z0-9\s]/g, '');
+            const file = new File([blob], `qr-${cleanTitle || 'patrimonio'}.png`, {
+                type: 'image/png'
+            });
+
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Compartir nativo con imagen
+                await navigator.share({
+                    title: `Código QR - ${title}`,
+                    text: `📱 Código QR del patrimonio cultural: ${title}`,
+                    files: [file]
+                });
+            } else {
+                // Fallback: crear enlace temporal para descargar
+                const pngUrl = URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = pngUrl;
+                tempLink.download = `qr-${cleanTitle || 'patrimonio'}.png`;
+                tempLink.style.display = 'none';
+
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+
+                URL.revokeObjectURL(pngUrl);
+
+                // Mostrar mensaje de instrucciones
+                alert('El archivo se ha descargado. Ahora puedes compartirlo manualmente desde tu galería/descargas.');
+            }
+        } catch (error) {
+            console.error('Error sharing QR image:', error);
+            // Fallback final: descargar la imagen
+            await downloadQRCode();
+            alert('No se pudo compartir directamente. El archivo se ha descargado para que puedas compartirlo manualmente.');
+        } finally {
+            setIsSharing(false);
+        }
+    };
+
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(url);
@@ -182,8 +216,8 @@ export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps
     );
 
     const footer = (
-        <div className="flex justify-content-between align-items-center gap-2">
-            <div className="flex gap-2">
+        <div className="flex justify-content-between align-items-center gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap">
                 <Button
                     label="Copiar enlace"
                     icon="pi pi-copy"
@@ -199,7 +233,15 @@ export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps
                     tooltip="Abrir en nueva pestaña"
                 />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
+                <Button
+                    label={isSharing ? "Compartiendo..." : "Compartir"}
+                    icon={isSharing ? "pi pi-spin pi-spinner" : "pi pi-share-alt"}
+                    onClick={shareQRImage}
+                    className="p-button-success p-button-sm"
+                    disabled={isSharing}
+                    tooltip="Compartir imagen del código QR"
+                />
                 <Button
                     label={isDownloading ? "Descargando..." : "Descargar"}
                     icon={isDownloading ? "pi pi-spin pi-spinner" : "pi pi-download"}
@@ -326,25 +368,13 @@ export const QRCodeDialog = ({ visible, onHide, uuid, title }: QRCodeDialogProps
                                 </p>
                             </div>
 
-                            {/*<div className="w-full">*/}
-                            {/*    <Button*/}
-                            {/*        label={showUrl ? "Ocultar enlace" : "Mostrar enlace"}*/}
-                            {/*        icon={showUrl ? "pi pi-chevron-up" : "pi pi-chevron-down"}*/}
-                            {/*        className="p-button-text p-button-sm w-full"*/}
-                            {/*        onClick={() => setShowUrl(!showUrl)}*/}
-                            {/*    />*/}
-
-                            {/*    {showUrl && (*/}
-                            {/*        <div className="mt-2 p-2 bg-gray-50 border-round">*/}
-                            {/*            <div className="flex align-items-center gap-2">*/}
-                            {/*                <i className="pi pi-link text-xs text-500"></i>*/}
-                            {/*                <code className="text-xs text-600 flex-1" style={{ wordBreak: 'break-all' }}>*/}
-                            {/*                    {formatUrlForDisplay(url)}*/}
-                            {/*                </code>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    )}*/}
-                            {/*</div>*/}
+                            {/* Indicador de compartir */}
+                            <div className="flex align-items-center justify-content-center gap-2 mt-2">
+                                <i className="pi pi-share-alt text-green-500"></i>
+                                <span className="text-xs text-500">
+                                    Usa "Compartir" para enviar la imagen del QR por WhatsApp, Telegram, etc.
+                                </span>
+                            </div>
                         </div>
                     </Card>
                 </div>

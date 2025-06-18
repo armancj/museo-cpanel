@@ -23,18 +23,10 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints">
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/AccordionHeader.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/CulturalError.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/CulturalLoading.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/FieldDisplay.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/HeritageHeader.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/component/InfoPanel.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/hook/useCulturalHeritageProperty.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/hook/useGenerateCulturalRecordSections.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/util/culture-function.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(full-page)/cultural-property-heritage/[uuid]/page.tsx" afterDir="false" />
+    <list default="true" id="d9477c40-8a66-4547-acba-706eab4f41a9" name="Changes" comment="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/component/QRCodeDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/component/QRCodeDialog.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,59 +41,6 @@
       </list>
     </option>
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
-      </map>
-    </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;history&quot;: [
-    {
-      &quot;state&quot;: &quot;MERGED&quot;
-    },
-    {
-      &quot;state&quot;: &quot;OPEN&quot;
-    }
-  ],
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;
-  }
-}</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: [
-    {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6ZD0fw&quot;,
-        &quot;number&quot;: 12
-      },
-      &quot;lastSeen&quot;: 1749569175384
-    },
-    {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6Z4p3_&quot;,
-        &quot;number&quot;: 15
-      },
-      &quot;lastSeen&quot;: 1749716500439
-    },
-    {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6aKpWL&quot;,
-        &quot;number&quot;: 16
-      },
-      &quot;lastSeen&quot;: 1749716534000
-    },
-    {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOMrwCVc6Z4n4R&quot;,
-        &quot;number&quot;: 14
-      },
-      &quot;lastSeen&quot;: 1749716572401
-    }
-  ]
-}</component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
       <RecentBranches>
@@ -139,76 +78,16 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/armancj/museo-cpanel.git&quot;,
-    &quot;accountId&quot;: &quot;d463e0b7-43ff-4237-a8ac-0b80c55fcffa&quot;
-  },
-  &quot;recentNewPullRequestHead&quot;: {
-    &quot;server&quot;: {
-      &quot;useHttp&quot;: false,
-      &quot;host&quot;: &quot;github.com&quot;,
-      &quot;port&quot;: null,
-      &quot;suffix&quot;: null
-    },
-    &quot;owner&quot;: &quot;armancj&quot;,
-    &quot;repository&quot;: &quot;museo-cpanel&quot;
-  }
-}</component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 6
-}</component>
-  <component name="ProjectId" id="2w8SXxlZMkAmQSrTPwRanXe1p6P" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/add-roles-manegemnt&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;H:/projects/museum/museo-cpanel&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/arman/AppData/Roaming/fnm/aliases/default/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;npm.backend run.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\prettier&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Pomodoro&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;H:\\projects\\museum\\museo-cpanel\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mongo&quot;
-    ]
-  }
-}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\projects\museum\museo-cpanel" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\projects\museum\museo-cpanel\app\(full-page)\cultural-property-heritage\hook" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -275,15 +154,7 @@
       <workItem from="1750084436977" duration="17379000" />
       <workItem from="1750164000718" duration="822000" />
       <workItem from="1750252555749" duration="49000" />
-      <workItem from="1750257317810" duration="4776000" />
-    </task>
-    <task id="LOCAL-00004" summary="Add generic classification management feature&#10;&#10;Implemented CRUD functionality for generic classifications, including services, hooks, and UI components. Added components for table display, data forms, toolbars, and export functionality, alongside routing, styles, and utility enhancements. Updated navigation and configuration for seamless integration.">
-      <option name="closed" value="true" />
-      <created>1745425330408</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1745425330408</updated>
+      <workItem from="1750257317810" duration="6710000" />
     </task>
     <task id="LOCAL-00005" summary="Add heritage type management feature&#10;&#10;Implemented CRUD functionality for heritage types, including hooks, services, and UI components such as forms, tables, and toolbars. Added routing, styles, and utility functions for seamless integration and enhanced user interaction. Updated navigation and configuration to support the new feature.">
       <option name="closed" value="true" />
@@ -669,11 +540,16 @@
       <option name="project" value="LOCAL" />
       <updated>1750184495811</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies">
+      <option name="closed" value="true" />
+      <created>1750262852216</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1750262852216</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -687,7 +563,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: fetch heritage types dynamically and improve loading state&#10;&#10;- Add `useEffect` in `CulturalHeritagePropertyPage` to fetch heritage types dynamically via `HeritageTypeService`&#10;- Move heritage types data fetching responsibility from `CulturalHeritagePropertyList` to parent component for better state management&#10;- Display loading spinner and message while fetching heritage type data&#10;- Pass fetched heritage types as props to `CulturalHeritagePropertyList` for usage in dropdown filtering" />
     <MESSAGE value="feat: refactor dropdown data handling and enhance component integration&#10;&#10;- Implement `useAllDropdownData` custom hook to centralize dropdown data fetching and state management&#10;- Integrate `useAllDropdownData` in `CulturalHeritagePropertyPage` to improve data loading and error handling&#10;- Remove inline dropdown data definitions in `CulturalRecordForm`, `EntryAndLocationForm`, and `CulturalHeritagePropertyList`&#10;- Update `CulturalHeritagePropertyWizard` to pass dropdown data as props to child forms&#10;- Improve component reusability and maintainability by standardizing dropdown handling logic" />
     <MESSAGE value="feat: optimize field components and enhance producer-author form integration&#10;&#10;- Add `disabled` prop support to `FieldWithHistory` for improved control over field interactions&#10;- Refactor `FieldWithHistory` layout and component rendering for cleaner code and maintainability&#10;- Introduce memoization and improved state management in `ProducerAuthorForm` to enhance performance&#10;- Optimize municipality fetching logic based on province input changes&#10;- Refactor repetitive field update logic in `ProducerAuthorForm` for better readability and consistency" />
     <MESSAGE value="feat: improve type safety in `CulturalRecordForm`&#10;&#10;- Update `getUpdatedStatus` call to enforce `Status` type casting for better type safety and consistency" />
@@ -712,10 +587,7 @@
     <MESSAGE value="feat: add organizational chart component&#10;&#10;- Introduce `OrganizationalChart` component for visualizing user hierarchies&#10;- Implement institution-based grouping and user-to-institution connections using React Flow&#10;- Add export functionality for PNG and PDF formats with `html2canvas` and `jsPDF`&#10;- Include custom node designs and color-coding based on institution data&#10;- Add `orgchart.css` for styling the organizational chart&#10;- Update dependencies to include `reactflow` and `jspdf`" />
     <MESSAGE value="feat: add organizational chart component enhancements&#10;&#10;- Migrate stylesheet from `.css` to `.scss` for improved maintainability&#10;- Add animations and responsive styles for better user experience&#10;- Refactor API integrations and route definitions for `webEnvConst.fileStorage`&#10;- Include additional npm dependencies: `@dabeng/react-orgchart`, `rxjs`, and `json-digger`&#10;- Update workspace configuration and lock files to align with new organizational chart functionality" />
     <MESSAGE value="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature/add-roles-manegemntfeat: update `.idea` workspace and add organizational chart dependencies&#10;&#10;- Update `.idea/workspace.xml` to reflect changes in components and tasks&#10;- Add `@dabeng/react-orgchart`, `json-digger`, and `rxjs` dependencies&#10;- Rename `orgchart.css` to `OrganizationalChart.scss` for SCSS compatibility&#10;- Refactor `webEnvConst` paths for consistency in `fileStorage` endpoints" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+    <MESSAGE value="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance cultural property heritage module&#10;&#10;- Add `CulturalError`, `CulturalLoading`, `AccordionHeader`, and `InfoPanel` components for improved modularity&#10;- Introduce `useCulturalHeritageProperty` hook to centralize state management and data fetching logic&#10;- Refactor layout and UI elements for `CulturalPropertyHeritage` pages&#10;- Implement reusable utility functions for consistent data formatting&#10;- Update `.idea/workspace.xml` to reflect new components and dependencies" />
   </component>
 </project>
