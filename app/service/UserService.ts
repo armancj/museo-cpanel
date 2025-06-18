@@ -93,22 +93,14 @@ export const UserService  =   {
         console.log('🔍 === DEBUGGING CREATE USER ===');
         console.log('📋 user.institution:', user.institution);
         console.log('🆔 user.institutionId:', user.institutionId);
+        console.log('🆔 user', user);
 
-        const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, institution, ...rest} = user;
-
-        const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
-        const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
-        const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
+        const {uuid: string, active, deleted, avatar, institution, ...rest} = user;
 
         const payload = {
-            nationality,
-            municipal,
-            province,
             institutionId: user.institutionId, // ✅ Usar institutionId
             ...rest
         };
-
-        console.log('📤 Payload final:', payload);
 
         return await post<UsersDatum>(WebEnvConst.user.post, payload);
     },

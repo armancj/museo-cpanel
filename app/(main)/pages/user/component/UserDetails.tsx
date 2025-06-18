@@ -38,14 +38,25 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
     const [isMunicipalityDisabled, setIsMunicipalityDisabled] = useState(true);
     const [isInstitutionDisabled, setIsInstitutionDisabled] = useState(true);
 
+    // ===== DEBUG: MOSTRAR ESTADO ACTUAL =====
+    console.log('🔍 ESTADO ACTUAL:', {
+        userMobile: user.mobile,
+        userPhone: user.phone,
+        userInstitutionId: user.institutionId,
+        userInstitution: user.institution,
+        submitted,
+        institutionsLength: institutions.length
+    });
+
     // ===== CARGAR PAÍSES AL INICIO =====
     useEffect(() => {
         const loadCountries = async () => {
             try {
                 const countriesData = await CountryService.getCountries();
                 setCountries(countriesData);
+                console.log('✅ Países cargados:', countriesData.length);
             } catch (error) {
-                console.error('Error loading countries:', error);
+                console.error('❌ Error loading countries:', error);
             }
         };
         loadCountries();
@@ -126,6 +137,11 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
             setMunicipalities([]);
             setInstitutions([]);
 
+            // Reset valores dependientes en el usuario
+            onInputChange({ target: { value: '' } } as any, 'province');
+            onInputChange({ target: { value: '' } } as any, 'municipal');
+            onInputChange({ target: { value: '' } } as any, 'institutionId');
+
             // Habilitar provincia, deshabilitar municipio e institución
             setIsProvinceDisabled(false);
             setIsMunicipalityDisabled(true);
@@ -149,6 +165,10 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
             // Reset estados dependientes
             setInstitutions([]);
 
+            // Reset valores dependientes en el usuario
+            onInputChange({ target: { value: '' } } as any, 'municipal');
+            onInputChange({ target: { value: '' } } as any, 'institutionId');
+
             // Habilitar municipio, deshabilitar institución
             setIsMunicipalityDisabled(false);
             setIsInstitutionDisabled(true);
@@ -171,6 +191,9 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
             );
             setInstitutions(filteredInstitutions);
 
+            // Reset valor dependiente en el usuario
+            onInputChange({ target: { value: '' } } as any, 'institutionId');
+
             // Habilitar institución
             setIsInstitutionDisabled(false);
         } catch (error) {
@@ -182,7 +205,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
         console.log('🏛️ Institución seleccionada:', selectedInstitution.name, 'UUID:', selectedInstitution.uuid);
 
         // Actualizar el institutionId (UUID)
-        onInputChange({ target: { value: selectedInstitution.uuid } } as any, 'institution');
+        onInputChange({ target: { value: selectedInstitution.uuid } } as any, 'institutionId');
     };
 
     // ===== FUNCIÓN PARA ENCONTRAR OPCIÓN POR VALOR =====
@@ -191,13 +214,20 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
         return options.find(option => option[field as keyof AddressOption] === value) || null;
     };
 
-    // ===== VALIDACIONES =====
-    const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const validateMobile = (mobile: string): boolean => {
-        return mobile.trim().length > 0;
+    // ===== VALIDACIONES MEJORADAS =====
+    const validateEmail = (email: string) => {
+        if (!email) return false;
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
 
-    // ===== RENDER CON ESTILOS DEL ORIGINAL =====
+    const validateMobile = (mobile: string): boolean => {
+        if (!mobile) return false;
+        // Remover espacios y caracteres especiales para validar
+        const cleanMobile = mobile.replace(/[\s\(\)\+\-]/g, '');
+        return cleanMobile.length >= 8; // Al menos 8 dígitos
+    };
+
+    // ===== RENDER =====
     return (
         <div className="grid">
             {/* Nombre */}
@@ -253,7 +283,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* Teléfono */}
+            {/* Teléfono - MEJORADO */}
             <div className="col-12 md:col-5 mt-2">
                 <label htmlFor="mobile">Teléfono*</label>
                 <div className="p-inputgroup">
@@ -263,7 +293,10 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                     <InputMask
                         id="mobile"
                         value={user.mobile || user.phone || ''}
-                        onChange={(e) => onInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>, 'mobile')}
+                        onChange={(e) => {
+                            console.log('📱 Teléfono cambiado:', e.target.value);
+                            onInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>, 'mobile');
+                        }}
                         mask="(+53) 99-99-99-99"
                         placeholder="(+53) 99-99-99-99"
                         required
@@ -275,7 +308,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* Rol - EXACTAMENTE como lo tenías */}
+            {/* Rol */}
             <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="roles">Rol*</label>
                 <Dropdown
@@ -296,7 +329,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* País - EXACTAMENTE como lo tenías */}
+            {/* País */}
             <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="nationality">País*</label>
                 <Dropdown
@@ -314,7 +347,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* Provincia - EXACTAMENTE como lo tenías */}
+            {/* Provincia */}
             <div className="field col-12 md:col-4 mt-2">
                 <label htmlFor="province">Provincia*</label>
                 <Dropdown
@@ -333,7 +366,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* Municipio - EXACTAMENTE como lo tenías */}
+            {/* Municipio */}
             <div className="field col-12 md:col-4">
                 <label htmlFor="municipal">Municipio*</label>
                 <Dropdown
@@ -352,16 +385,17 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 )}
             </div>
 
-            {/* Institución - EXACTAMENTE como lo tenías para Especialista y Técnico */}
+            {/* Institución */}
             {(user.roles === 'Especialista' || user.roles === 'Técnico') && (
                 <div className="field col-12 md:col-4">
                     <label htmlFor="institutionId">Institución*</label>
                     <Dropdown
                         id="institutionId"
                         value={(() => {
-                            // Para edición: buscar por UUID
-                            const institutionId = user.institution?.uuid || user.institution || user.institutionId;
-                            return institutions.find(inst => inst.uuid === institutionId) || null;
+                            const institutionId = user.institutionId || user.institution?.uuid;
+                            const found = institutions.find(inst => inst.uuid === institutionId);
+                            console.log('🔍 Buscando institución:', { institutionId, found, institutionsCount: institutions.length });
+                            return found || null;
                         })()}
                         options={institutions}
                         optionLabel="name"
@@ -369,11 +403,11 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                         placeholder="Seleccionar Institución"
                         disabled={isInstitutionDisabled}
                         className={classNames({
-                            'p-invalid': submitted && !user.institution && !user.institutionId
+                            'p-invalid': submitted && !user.institutionId
                         })}
                         filter
                     />
-                    {submitted && !user.institution && !user.institutionId && (
+                    {submitted && !user.institutionId && (
                         <small className="p-error">Institución es requerida.</small>
                     )}
                 </div>

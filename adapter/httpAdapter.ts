@@ -14,40 +14,32 @@ let isRedirecting = false;
 
 httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
+        console.log('✅ === RESPONSE SUCCESS ===');
+        console.log('✅ Status:', response.status);
+        console.log('✅ URL:', response.config.url);
         return response;
     },
     (error: AxiosError) => {
-        console.log('🔥 === INTERCEPTOR ERROR ===');
-        console.log('🔥 Status:', error.response?.status);
-        console.log('🔥 URL:', error.config?.url);
-        console.log('🔥 Method:', error.config?.method);
-        console.log('🔥 isRedirecting:', isRedirecting);
-        console.log('🔥 Current path:', window.location.pathname);
+        console.log('🚨 === RESPONSE ERROR ===');
+        console.log('🚨 Status:', error.response?.status);
+        console.log('🚨 URL:', error.config?.url);
+        console.log('🚨 Data:', error.response?.data);
 
-        if (error.response?.status === 401 && !isRedirecting) {
-            console.log('🚨 === REDIRIGIENDO AL LOGIN ===');
-            isRedirecting = true;
+        const status = error.response?.status;
+        const isAuthError = status === 401 || status === 403;
+        const isValidationError = status === 400 || status === 422;
 
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('authUser');
+        if (isAuthError) {
+            localStorage.removeItem('authUser');
+            localStorage.removeItem('token');
 
-                if (!window.location.pathname.includes('/auth/login')) {
-                    console.log('🚨 Redirect to login...');
-                    window.location.href = '/auth/login';
-                }
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+                window.location.href = '/auth/login';
             }
-
-            setTimeout(() => {
-                isRedirecting = false;
-            }, 1000);
-        }
-
-        if (error.response?.status && error.response.status >= 500) {
-            console.error('Error del servidor:', error.response?.data);
-        }
-
-        if (!error.response) {
-            console.error('Error de red:', error.message);
+        } else if (isValidationError) {
+            console.log('⚠️ Error de validación - NO redirigir');
+        } else {
+            console.log('❌ Otro tipo de error:', status);
         }
 
         return Promise.reject(error);
