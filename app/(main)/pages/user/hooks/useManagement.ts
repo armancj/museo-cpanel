@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
-import { CountryService } from '@/app/service/CountryService';
-import { ProvinceService } from '@/app/service/ProvinceService';
-import { MunicipalityService } from '@/app/service/MunicipalityService';
 import { ApiError } from '@/adapter/httpAdapter';
+import { removeEmptyFields } from '@/app/(main)/utilities/removeEmptyFields';
 
 export const emptyUser: UsersDatum = {
     password: '',
-    active: false, deleted: false, uuid: '',
+    active: false,
+    deleted: false,
+    uuid: '',
     mobile: '',
     municipal: '',
     email: '',
@@ -18,8 +18,10 @@ export const emptyUser: UsersDatum = {
     nationality: '',
     province: '',
     institution: '',
+    institutionId: '',
     avatar: {
-        id: '', nameFile: ''
+        id: '',
+        nameFile: ''
     },
     roles: ''
 };
@@ -30,6 +32,7 @@ export const useManagement = () => {
     const [userDialog, setUserDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
+    const [editingUser, setEditingUser] = useState<UsersDatum | null>(null);
 
     const toast = useRef<Toast>(null);
 
@@ -52,48 +55,86 @@ export const useManagement = () => {
         setSubmitted(true);
         if (user.name.trim()) {
             let _usersData = [...(usersResponse?.usersData || [])];
+
             if (user.uuid) {
-                // Actualizar usuario existente
                 try {
-                    const {active, uuid, deleted, avatar, ...userUpdated}=user;
-                    const updatedUserData = await UserService.updateUser(user.uuid, userUpdated);
-                    const index = _usersData.findIndex((u) => u.uuid === user.uuid);
+                    const {active, uuid, deleted, avatar, ...userUpdated} = user;
 
-                    if (selectedAvatar) {
-                        const response = await uploadAvatar(uuid, selectedAvatar);
-                        setSelectedAvatar(null);
-                        updatedUserData.avatar = response?.avatar
-                    }
+                    const filteredUserData = removeEmptyFields(userUpdated);
 
-                    if (index !== -1) {
-                        _usersData[index] = updatedUserData;
-                        toast.current?.show({ severity: 'success', summary: 'Usuario Actualizado', life: 5000 });
-                    }
+                        await UserService.updateUser(user.uuid, filteredUserData);
 
-                    setUserDialog(false);
+                        const index = _usersData.findIndex((u) => u.uuid === user.uuid);
+
+                        if (index !== -1) {
+                            _usersData[index] = {
+                                ..._usersData[index],
+                                ...userUpdated,
+                                uuid: user.uuid,
+                                active: _usersData[index].active,
+                                deleted: _usersData[index].deleted
+                            };
+                        }
+
+                        if (selectedAvatar) {
+                            const response = await uploadAvatar(uuid, selectedAvatar);
+                            setSelectedAvatar(null);
+                            if (response?.avatar && index !== -1) {
+                                _usersData[index].avatar = response.avatar;
+                            }
+                        }
+
+                        toast.current?.show({
+                            severity: 'success',
+                            summary: 'Usuario Actualizado',
+                            life: 5000
+                        });
+
+                        setUserDialog(false);
+                        setSubmitted(false);
+                        setUser(emptyUser);
+                        setEditingUser(null);
+
                 } catch (error) {
                     handleError(error, 'No se pudo actualizar el usuario');
                 }
             } else {
-                // Crear nuevo usuario
                 try {
+
                     const createdUser = await UserService.createUser(user);
 
                     if (selectedAvatar) {
                         const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
                         setSelectedAvatar(null);
-                        createdUser.avatar = response?.avatar
+                        createdUser.avatar = response?.avatar;
                     }
+
                     _usersData.push(createdUser);
-                    toast.current?.show({ severity: 'success', summary: 'Usuario Creado', life: 5000 });
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Usuario Creado',
+                        life: 5000
+                    });
 
                     setUserDialog(false);
+                    setSubmitted(false);
                     setUser(emptyUser);
+                    setEditingUser(null);
+
                 } catch (error) {
+                    console.error('❌ === ERROR EN CREACIÓN ===');
+                    console.error('❌ Error completo:', error);
+                    console.error('❌ Error status:', (error as any)?.status);
+                    console.error('❌ Error message:', (error as any)?.message);
                     handleError(error, 'No se pudo crear el usuario');
+                    return;
                 }
             }
-            setUsersResponse({ ...usersResponse, usersData: _usersData } as UsersResponse);
+
+            setUsersResponse({
+                ...usersResponse,
+                usersData: _usersData
+            } as UsersResponse);
         }
     };
 
@@ -106,7 +147,6 @@ export const useManagement = () => {
         };
 
         if (error instanceof ApiError) {
-            // El error ya viene procesado desde el httpAdapter
             show.severity = error.severity;
             show.detail = error.userMessage;
 
@@ -116,14 +156,11 @@ export const useManagement = () => {
                 show.summary = 'Error del servidor';
             }
         } else {
-            // Fallback para errores no procesados
-            console.error('Error no procesado:', error);
             show.detail = error?.message || defaultMessage;
         }
 
         toast.current?.show(show);
         setUserDialog(true);
-        console.log('Error manejado:', error);
     };
 
     const toggleUserActivation = async (uuid: string, active: boolean) => {
@@ -152,39 +189,34 @@ export const useManagement = () => {
     };
 
     const editUser = async (updatedUser: Partial<UsersDatum>): Promise<void> => {
-        const userToEdit = {
-            ...emptyUser,
+        const institutionId = (updatedUser.institution as any)?.uuid || '';
+
+        const userToEdit: UsersDatum = {
             ...updatedUser,
+            password: '',
+            institutionId,
+            active: updatedUser.active ?? false,
+            deleted: updatedUser.deleted ?? false,
+            uuid: updatedUser.uuid || '',
+            mobile: updatedUser.mobile || '',
+            municipal: updatedUser.municipal || '',
+            email: updatedUser.email || '',
+            address: updatedUser.address || '',
+            lastName: updatedUser.lastName || '',
+            name: updatedUser.name || '',
+            nationality: updatedUser.nationality || '',
+            province: updatedUser.province || '',
+            institution: updatedUser.institution || '',
+            avatar: updatedUser.avatar || { id: '', nameFile: '' },
+            roles: updatedUser.roles || ''
         };
 
         setUser(userToEdit);
+        setEditingUser(updatedUser as UsersDatum);
         setSelectedAvatar(null);
-
-        try {
-            // Cargar países
-            const countryData = (await CountryService.getCountries({name: userToEdit.nationality}))[0];
-
-            if (countryData) {
-                const provincesData = await ProvinceService.getProvinces(countryData);
-                if (userToEdit.province) {
-                    const province = provincesData.find((province) => province.name === userToEdit.province);
-                    if (province) {
-                        const municipalitiesData = await MunicipalityService.getMunicipalities(province);
-
-                        setUser((prev) => ({
-                            ...prev,
-                            nationality: countryData as any,
-                            province: provincesData as any,
-                        }));
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error cargando datos de país/provincia/municipio:', error);
-        }
-
         setUserDialog(true);
     };
+
 
     return {
         users: usersResponse?.usersData || [],
@@ -201,6 +233,7 @@ export const useManagement = () => {
         toggleUserActivation,
         deleteUser,
         editUser,
-        setSelectedAvatar
+        setSelectedAvatar,
+        editingUser
     };
 };

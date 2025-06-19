@@ -1,35 +1,22 @@
 'use client';
-import React, { useEffect, useState, useCallback } from 'react';
-import ReactFlow, {
-    Node,
-    Edge,
-    Controls,
-    Background,
-    useNodesState,
-    useEdgesState,
-    ReactFlowProvider,
-    Panel,
-    MiniMap,
-    useReactFlow,
-    MarkerType
-} from 'reactflow';
+import React, { useCallback, useEffect, useState } from 'react';
+import ReactFlow, { Background, Controls, Edge, MarkerType, MiniMap, Node, Panel, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Button } from 'primereact/button';
 import { UsersDatum } from '@/app/service/UserService';
 import { InstitutionResponse, InstitutionService } from '@/app/service/InstitutionService';
 import { FileStorageService } from '@/app/service/FileStorageService';
-import { CountryService, CountryResponse } from '@/app/service/CountryService';
-import { ProvinceService, ProvinceResponse } from '@/app/service/ProvinceService';
-import { MunicipalityService, MunicipalityResponse } from '@/app/service/MunicipalityService';
+import { CountryResponse, CountryService } from '@/app/service/CountryService';
+import { ProvinceResponse, ProvinceService } from '@/app/service/ProvinceService';
+import { MunicipalityResponse, MunicipalityService } from '@/app/service/MunicipalityService';
 import { UserRoles } from '@/app/(main)/pages/cultural-property-heritage/types';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-
 export enum BackgroundVariant {
-    Lines = "lines",
-    Dots = "dots",
-    Cross = "cross"
+    Lines = 'lines',
+    Dots = 'dots',
+    Cross = 'cross'
 }
 
 // Helper function to get user's institution ID (MOVIDA FUERA DEL COMPONENTE)
@@ -77,10 +64,8 @@ const GeographicNode = ({ data, id }: { data: any; id: string }) => {
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        console.log('🖱️ Node clicked:', id, 'hasChildren:', data.hasChildren, 'childrenCount:', data.childrenCount);
 
         if (data.hasChildren && data.onToggleExpand) {
-            console.log('🔄 Calling onToggleExpand...');
             data.onToggleExpand(id);
         }
     };
@@ -338,12 +323,10 @@ const OrganizationalChartFlow = ({
 
     // Toggle expansion
     const toggleNodeExpansion = useCallback((nodeId: string) => {
-        console.log('🔄 toggleNodeExpansion called with:', nodeId);
 
         setExpandedNodes(prev => {
             const newSet = new Set(prev);
             if (newSet.has(nodeId)) {
-                console.log('📤 Removing from expanded:', nodeId);
                 newSet.delete(nodeId);
 
                 // Remove children too based on hierarchy
@@ -371,46 +354,34 @@ const OrganizationalChartFlow = ({
                     });
                 }
             } else {
-                console.log('📥 Adding to expanded:', nodeId);
                 newSet.add(nodeId);
             }
-
-            console.log('🔄 New expanded set:', Array.from(newSet));
             return newSet;
         });
     }, []);
 
     // Helper function to check if province has users in hierarchy
     const provinceHasUsers = useCallback((provinceName: string) => {
-        const hasUsers = filteredUsers.some(user => user.province === provinceName);
-        console.log(`🔍 Province ${provinceName} has users: ${hasUsers}`);
-        return hasUsers;
+        return filteredUsers.some((user) => user.province === provinceName);
     }, [filteredUsers]);
 
     // Helper function to check if municipality has users in hierarchy
     const municipalityHasUsers = useCallback((municipalityName: string) => {
-        const hasUsers = filteredUsers.some(user => user.municipal === municipalityName);
-        console.log(`🔍 Municipality ${municipalityName} has users: ${hasUsers}`);
-        return hasUsers;
+        return filteredUsers.some((user) => user.municipal === municipalityName);
     }, [filteredUsers]);
 
     // Helper function to check if institution has users (CORREGIDO PARA OBJETOS)
     const institutionHasUsers = useCallback((institutionId: string) => {
         const usersInInstitution = filteredUsers.filter(user => {
             const userInstId = getUserInstitutionId(user);
-            const matches = userInstId === institutionId;
-            console.log(`👤 User ${user.name}: userInstId='${userInstId}', targetId='${institutionId}', matches=${matches}`);
-            return matches;
+            return userInstId === institutionId;
         });
 
-        const hasUsers = usersInInstitution.length > 0;
-        console.log(`🏢 Institution ${institutionId} has ${usersInInstitution.length} users:`, usersInInstitution.map(u => u.name));
-        return hasUsers;
+        return usersInInstitution.length > 0;
     }, [filteredUsers]);
 
     // Check if entity has direct children (CORREGIDO)
     const hasDirectChildren = useCallback((entityType: string, entityId: string, entityName?: string) => {
-        console.log(`🔍 Checking direct children for ${entityType}: ${entityName || entityId}`);
 
         switch (entityType) {
             case 'country':
@@ -418,7 +389,6 @@ const OrganizationalChartFlow = ({
                 const hasProvincesWithUsers = provinces.some(p =>
                     p.country === entityName && provinceHasUsers(p.name)
                 );
-                console.log(`Country ${entityName}: hasProvincesWithUsers=${hasProvincesWithUsers}`);
                 return hasProvincesWithUsers;
 
             case 'province':
@@ -429,38 +399,29 @@ const OrganizationalChartFlow = ({
                 const hasAdminsInProvince = filteredUsers.some(u =>
                     u.roles === UserRoles.administrator && u.province === entityName
                 );
-                console.log(`Province ${entityName}: hasMunicipalitiesWithUsers=${hasMunicipalitiesWithUsers}, hasAdminsInProvince=${hasAdminsInProvince}`);
                 return hasMunicipalitiesWithUsers || hasAdminsInProvince;
 
             case 'municipality':
                 // Solo cuenta instituciones con usuarios + managers de este municipio
-                console.log(`🔍 Checking municipality ${entityName}:`);
-
                 const institutionsInMunicipality = institutions.filter(i => i.municipality === entityName);
-                console.log(`🏢 Institutions in municipality ${entityName}:`, institutionsInMunicipality);
 
                 const hasInstitutionsWithUsers = institutionsInMunicipality.some(i => {
-                    const hasUsers = institutionHasUsers(i.uuid);
-                    console.log(`🏢 Institution ${i.name} (${i.uuid}) has users: ${hasUsers}`);
-                    return hasUsers;
+                    return institutionHasUsers(i.uuid);
                 });
 
                 const hasManagersInMunicipality = filteredUsers.some(u =>
                     u.roles === UserRoles.manager && u.municipal === entityName
                 );
-                console.log(`Municipality ${entityName}: hasInstitutionsWithUsers=${hasInstitutionsWithUsers}, hasManagersInMunicipality=${hasManagersInMunicipality}`);
-                return hasInstitutionsWithUsers || hasManagersInMunicipality;
+               return hasInstitutionsWithUsers || hasManagersInMunicipality;
 
             case 'institution':
                 // Solo cuenta empleados en esta institución (CORREGIDO)
-                const hasEmployees = filteredUsers.some(u => {
+                return filteredUsers.some((u) => {
                     const userInstId = getUserInstitutionId(u);
                     const belongsToInstitution = userInstId === entityId;
                     const isEmployee = u.roles === UserRoles.employee;
                     return belongsToInstitution && isEmployee;
                 });
-                console.log(`Institution ${entityId}: hasEmployees=${hasEmployees}`);
-                return hasEmployees;
 
             default:
                 return false;
@@ -491,16 +452,12 @@ const OrganizationalChartFlow = ({
                 break;
 
             case 'municipality':
-                console.log(`📊 Counting children for municipality ${entityName}:`);
 
                 // Cuenta instituciones con usuarios + managers de este municipio
                 const institutionsInMunicipality = institutions.filter(i => i.municipality === entityName);
-                console.log(`🏢 All institutions in municipality:`, institutionsInMunicipality);
 
                 const institutionsWithUsersCount = institutionsInMunicipality.filter(i => {
-                    const hasUsers = institutionHasUsers(i.uuid);
-                    console.log(`🏢 Institution ${i.name} has users: ${hasUsers}`);
-                    return hasUsers;
+                    return institutionHasUsers(i.uuid);
                 }).length;
 
                 const managerCount = filteredUsers.filter(u =>
@@ -508,7 +465,6 @@ const OrganizationalChartFlow = ({
                 ).length;
 
                 count = institutionsWithUsersCount + managerCount;
-                console.log(`📊 Municipality ${entityName} total count: institutions=${institutionsWithUsersCount}, managers=${managerCount}, total=${count}`);
                 break;
 
             case 'institution':
@@ -520,14 +476,11 @@ const OrganizationalChartFlow = ({
                     return belongsToInstitution && isEmployee;
                 });
                 count = employeesInInstitution.length;
-                console.log(`📊 Institution ${entityId} has ${count} employees:`, employeesInInstitution.map(u => u.name));
                 break;
 
             default:
                 count = 0;
         }
-
-        console.log(`📊 Direct children count for ${entityType} ${entityName || entityId}: ${count}`);
         return count;
     }, [provinces, municipalities, institutions, filteredUsers, provinceHasUsers, municipalityHasUsers, institutionHasUsers]);
 
@@ -551,8 +504,6 @@ const OrganizationalChartFlow = ({
     // Build nodes and edges with correct logic
     useEffect(() => {
         if (loading) return;
-
-        console.log('🔄 Building organizational chart...');
 
         const allNodes: Node[] = [];
         const allEdges: Edge[] = [];

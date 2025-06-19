@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { UserForm } from '@/app/(main)/pages/user/component/UserForm';
 import { Button } from 'primereact/button';
 import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
-import { emptyUser, useManagement } from '@/app/(main)/pages/user/useManagement';
+import { emptyUser, useManagement } from '@/app/(main)/pages/user/hooks/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
 import { OrganizationalChart } from '@/app/(main)/pages/user/component/OrganizationalChart';
@@ -24,10 +24,13 @@ export const UserList = () => {
         totalElement,
         setUser,
         submitted,
+        setSubmitted,
         toast,
-        toggleUserActivation
-        , deleteUser, editUser,
-        setSelectedAvatar
+        toggleUserActivation,
+        deleteUser,
+        editUser,
+        setSelectedAvatar,
+        editingUser
     } = useManagement();
 
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
@@ -38,11 +41,16 @@ export const UserList = () => {
     const dt = useRef<DataTable<UsersDatum[]>>(null);
 
     const openNew = () => {
+        console.log('🆕 === CREANDO NUEVO USUARIO ===');
         setUser(emptyUser);
+        setSubmitted(false);
         setUserDialog(true);
     };
 
+
     const hideDialog = () => {
+        console.log('🚪 === CERRANDO DIÁLOGO ===');
+        setSubmitted(false);
         setUserDialog(false);
     };
 
@@ -59,11 +67,23 @@ export const UserList = () => {
         </>
     );
 
-
     const handleImageUpload = (file: File) => {
         setSelectedAvatar(file);
         console.log("selected file:", file);
     };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
+        const { value } = e.target;
+
+        // 🔍 DEBUG TEMPORAL
+        console.log('🔥 Input change:', field, '=', value);
+
+        setUser(prevUser => ({
+            ...prevUser,
+            [field]: value
+        }));
+    };
+
 
     return (
         <div className="grid crud-demo">
@@ -97,15 +117,31 @@ export const UserList = () => {
                     ) : (
                         <OrganizationalChart users={users} />
                     )}
-                    <Dialog visible={userDialog} header="Detalles de usuarios" modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
+
+                    <Dialog
+                        visible={userDialog}
+                        header="Detalles de usuarios"
+                        modal
+                        className="p-fluid"
+                        footer={userDialogFooter}
+                        onHide={hideDialog}
+                    >
                         <UserForm
                             onImageUpload={handleImageUpload}
                             user={user}
-                            onInputChange={(e, field) => setUser({ ...user, [field]: e.target.value })}
+                            onInputChange={handleInputChange}
                             submitted={submitted}
+                            editingUser={editingUser}
                         />
                     </Dialog>
-                    <Dialog visible={deleteUserDialog} header="Confirm" modal footer={userDialogFooter} onHide={() => setDeleteUserDialog(false)}>
+
+                    <Dialog
+                        visible={deleteUserDialog}
+                        header="Confirm"
+                        modal
+                        footer={userDialogFooter}
+                        onHide={() => setDeleteUserDialog(false)}
+                    >
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {user && <span>¿Estás seguro de que deseas eliminar a <b>{user.name}</b>?</span>}

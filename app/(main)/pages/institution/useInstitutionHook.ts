@@ -13,16 +13,57 @@ export const useInstitutionHook = () => {
     const toast = useRef<Toast>(null);
     const [multipleDeleteDialog, setMultipleDeleteDialog] = useState(false);
 
-
     useEffect(() => {
         InstitutionService.getInstitutions().then((data) => setSelects(data));
     }, []);
 
     const save = async () => {
         setSubmitted(true);
-        if (data.name.trim()) {
+
+        // ✅ Campos requeridos CORREGIDOS - usar los nombres exactos que tienes en el formulario
+        const requiredFields = [
+            'name',
+            'street',
+            'number',
+            'referenceCode',
+            'betweenStreet1',
+            'betweenStreet2',
+            'district',
+            'locality',
+            'province',
+            'municipality', // 🔧 Cambiar de 'municipal' a 'municipality' según tu modelo
+            'country',  // 🔧 Cambiar de 'country' a 'nationality' según tu formulario
+            'phone1',
+            'phone2',
+            'email',
+            'website',
+            'institutionType',
+            'classification',
+            'typology',
+            'category'
+        ];
+
+        // ✅ Validación mejorada con logs para debug
+        const invalidFields = requiredFields.filter(field => {
+            const value = data[field as keyof InstitutionResponse];
+            const isValid = value && value.toString().trim() !== '';
+
+            // 🐛 Log para debug - quitar después
+            if (!isValid) {
+                console.log(`❌ Campo inválido: ${field}, valor:`, value);
+            }
+
+            return !isValid;
+        });
+
+        console.log('🔍 Campos inválidos:', invalidFields);
+        console.log('📋 Datos actuales:', data);
+
+        if (invalidFields.length === 0) {
+            // ✅ Todos los campos válidos, proceder a guardar
             let _data = [...selects];
             data.name = capitalize(data.name);
+
             if (data.uuid) {
                 try {
                     const { uuid, deleted, ...updated } = data;
@@ -30,9 +71,14 @@ export const useInstitutionHook = () => {
                     const index = _data.findIndex((u) => u.uuid === data.uuid);
                     if (index !== -1) {
                         _data[index] = data;
-                        toast.current?.show({ severity: 'success', summary: 'Editado satisfactoriamente', life: 5000 });
+                        toast.current?.show({
+                            severity: 'success',
+                            summary: 'Editado satisfactoriamente',
+                            life: 5000
+                        });
                     }
                     setDialog(false);
+                    setSubmitted(false); // 🔧 Reset submitted after success
                 } catch (error) {
                     handleError(error, 'No se pudo Editar');
                 }
@@ -40,16 +86,31 @@ export const useInstitutionHook = () => {
                 try {
                     const created = await InstitutionService.create(data);
                     _data.push(created);
-                    toast.current?.show({ severity: 'success', summary: 'Creado Satisfactoriamente', life: 5000 });
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Creado Satisfactoriamente',
+                        life: 5000
+                    });
                     setDialog(false);
                     setData(emptyInstitution);
+                    setSubmitted(false); // 🔧 Reset submitted after success
                 } catch (error) {
                     handleError(error, 'No se pudo crear');
                 }
             }
             setSelects(_data);
+        } else {
+            // ❌ Campos faltantes
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: `Por favor complete los campos requeridos: ${invalidFields.join(', ')}`,
+                life: 5000,
+            });
         }
     };
+
+    // ... resto del código igual ...
 
     const handleError = (error: any, defaultMessage: string) => {
         const show: ToastMessage = {
@@ -96,6 +157,7 @@ export const useInstitutionHook = () => {
 
         setData({ ...updated });
         setDialog(true);
+        setSubmitted(false); // 🔧 Reset submitted when opening for edit
     };
 
     const deleteSelected = async (selectedInstitutions: InstitutionResponse[]) => {
@@ -129,7 +191,6 @@ export const useInstitutionHook = () => {
             console.error('Error al eliminar instituciones:', error);
         }
     };
-
 
     return {
         datum: selects,
