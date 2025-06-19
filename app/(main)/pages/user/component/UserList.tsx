@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { UserForm } from '@/app/(main)/pages/user/component/UserForm';
 import { Button } from 'primereact/button';
 import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
-import { emptyUser, useManagement } from '@/app/(main)/pages/user/useManagement';
+import { emptyUser, useManagement } from '@/app/(main)/pages/user/hooks/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
 import { OrganizationalChart } from '@/app/(main)/pages/user/component/OrganizationalChart';

@@ -1,5 +1,3 @@
-
-
 export const findOptionByValue = <T extends { [key: string]: any }>(
     options: T[],
     value: string,

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Panel } from 'primereact/panel';
 import { InstitutionResponse } from '@/app/service/InstitutionService';
-import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
+import { useAddressData } from '@/app/(main)/pages/user/hooks/useAddressData';
 import { AddressResponse } from '@/app/service/UserService';
 import { useAddress } from '@/app/(main)/pages/hooks/useAddress';
 import { ContactInformationForm } from '@/app/(main)/pages/institution/component/ContactInformationForm';

@@ -3,7 +3,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { NameField } from '@/app/common/component/NameFieldProps';
-import { useUserDetailsForm } from '@/app/(main)/pages/user/useUserDetailsForm';
+import { useUserDetailsForm } from '@/app/(main)/pages/user/hooks/useUserDetailsForm';
 import { ROLES_REQUIRING_INSTITUTION, USER_ROLES } from '@/app/(main)/pages/user/util/user-roles.const';
 import { EmailField } from '@/app/common/component/EmailField';
 import { PhoneField } from '@/app/common/component/PhoneField';
