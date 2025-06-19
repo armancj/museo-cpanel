@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { InputText } from 'primereact/inputtext';
+import React from 'react';
 import { Dropdown } from 'primereact/dropdown';
-import { InputMask } from 'primereact/inputmask';
+import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import { InstitutionService } from '@/app/service/InstitutionService';
-import { ProvinceService } from '@/app/service/ProvinceService';
-import { MunicipalityService } from '@/app/service/MunicipalityService';
-import { CountryService } from '@/app/service/CountryService';
+import { NameField } from '@/app/common/component/NameFieldProps';
+import { useUserDetailsForm } from '@/app/(main)/pages/user/useUserDetailsForm';
+import { ROLES_REQUIRING_INSTITUTION, USER_ROLES } from '@/app/(main)/pages/user/util/user-roles.const';
+import { EmailField } from '@/app/common/component/EmailField';
+import { PhoneField } from '@/app/common/component/PhoneField';
+import { findOptionByValue } from '@/app/(main)/pages/user/util/validation';
+
 
 interface UserDetailsFormProps {
     user: any;
@@ -15,193 +17,36 @@ interface UserDetailsFormProps {
     editingUser?: any | null;
 }
 
-interface AddressOption {
-    uuid: string;
-    name: string;
-    municipality?: string;
-}
-
 const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                                                              user,
                                                              onInputChange,
                                                              submitted,
                                                              editingUser
                                                          }) => {
-    console.log('editingUser', editingUser)
-    const [countries, setCountries] = useState<AddressOption[]>([]);
-    const [provinces, setProvinces] = useState<AddressOption[]>([]);
-    const [municipalities, setMunicipalities] = useState<AddressOption[]>([]);
-    const [institutions, setInstitutions] = useState<AddressOption[]>([]);
+    const {
+        countries,
+        provinces,
+        municipalities,
+        institutions,
+        isProvinceDisabled,
+        isMunicipalityDisabled,
+        isInstitutionDisabled,
+        handleCountryChange,
+        handleProvinceChange,
+        handleMunicipalityChange,
+        handleInstitutionChange,
+    } = useUserDetailsForm({ editingUser, onInputChange });
 
-    const [isProvinceDisabled, setIsProvinceDisabled] = useState(true);
-    const [isMunicipalityDisabled, setIsMunicipalityDisabled] = useState(true);
-    const [isInstitutionDisabled, setIsInstitutionDisabled] = useState(true);
+    const showInstitutionField = ROLES_REQUIRING_INSTITUTION.includes(user.roles as any);
 
-
-    useEffect(() => {
-        const loadCountries = async () => {
-            try {
-                const countriesData = await CountryService.getCountries();
-                setCountries(countriesData);
-            } catch (error) {
-                console.error('❌ Error loading countries:', error);
-            }
-        };
-        loadCountries();
-    }, []);
-
-    useEffect(() => {
-        if (editingUser && countries.length > 0) {
-            initializeForEdit();
-        } else if (!editingUser) {
-            resetDependentStates();
-        }
-    }, [editingUser, countries]);
-
-    const initializeForEdit = async () => {
-        try {
-            const country = countries.find(c => c.name === editingUser.nationality);
-            if (!country) return;
-
-            const provincesData = await ProvinceService.getProvinces(country);
-            setProvinces(provincesData);
-            setIsProvinceDisabled(false);
-
-            if (editingUser.province) {
-
-                const province = provincesData.find(p => p.name === editingUser.province);
-                if (province) {
-                    const municipalitiesData = await MunicipalityService.getMunicipalities(province);
-                    setMunicipalities(municipalitiesData);
-                    setIsMunicipalityDisabled(false);
-
-                    if (editingUser.municipal) {
-                        const municipality = municipalitiesData.find(m => m.name === editingUser.municipal);
-                        if (municipality) {
-                            const institutionsData = await InstitutionService.getInstitutions(municipality);
-                            const filteredInstitutions = institutionsData.filter(
-                                institution => institution.municipality === municipality.name
-                            );
-                            setInstitutions(filteredInstitutions);
-                            setIsInstitutionDisabled(false);
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error initializing edit data:', error);
-        }
-    };
-
-    const resetDependentStates = () => {
-        setProvinces([]);
-        setMunicipalities([]);
-        setInstitutions([]);
-        setIsProvinceDisabled(true);
-        setIsMunicipalityDisabled(true);
-        setIsInstitutionDisabled(true);
-    };
-
-    const handleCountryChange = async (selectedCountry: AddressOption) => {
-        onInputChange({ target: { value: selectedCountry.name } } as any, 'nationality');
-
-        try {
-            const provincesData = await ProvinceService.getProvinces(selectedCountry);
-            setProvinces(provincesData);
-
-            setMunicipalities([]);
-            setInstitutions([]);
-
-            onInputChange({ target: { value: '' } } as any, 'province');
-            onInputChange({ target: { value: '' } } as any, 'municipal');
-            onInputChange({ target: { value: '' } } as any, 'institutionId');
-
-            setIsProvinceDisabled(false);
-            setIsMunicipalityDisabled(true);
-            setIsInstitutionDisabled(true);
-        } catch (error) {
-            console.error('Error fetching provinces:', error);
-        }
-    };
-
-    const handleProvinceChange = async (selectedProvince: AddressOption) => {
-        onInputChange({ target: { value: selectedProvince.name } } as any, 'province');
-
-        try {
-            const municipalitiesData = await MunicipalityService.getMunicipalities(selectedProvince);
-            setMunicipalities(municipalitiesData);
-
-            setInstitutions([]);
-
-            onInputChange({ target: { value: '' } } as any, 'municipal');
-            onInputChange({ target: { value: '' } } as any, 'institutionId');
-
-            setIsMunicipalityDisabled(false);
-            setIsInstitutionDisabled(true);
-        } catch (error) {
-            console.error('Error fetching municipalities:', error);
-        }
-    };
-
-    const handleMunicipalityChange = async (selectedMunicipality: AddressOption) => {
-        onInputChange({ target: { value: selectedMunicipality.name } } as any, 'municipal');
-
-        try {
-            const institutionsData = await InstitutionService.getInstitutions(selectedMunicipality);
-            const filteredInstitutions = institutionsData.filter(
-                institution => institution.municipality === selectedMunicipality.name
-            );
-            setInstitutions(filteredInstitutions);
-
-            onInputChange({ target: { value: '' } } as any, 'institutionId');
-
-            setIsInstitutionDisabled(false);
-        } catch (error) {
-            console.error('Error fetching institutions:', error);
-        }
-    };
-
-    const handleInstitutionChange = (selectedInstitution: AddressOption) => {
-        onInputChange({ target: { value: selectedInstitution.uuid } } as any, 'institutionId');
-    };
-
-    const findOptionByValue = (options: AddressOption[], value: string, field: string = 'name') => {
-        if (!value || !options?.length) return null;
-        return options.find(option => option[field as keyof AddressOption] === value) || null;
-    };
-
-    const validateEmail = (email: string) => {
-        if (!email) return false;
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    };
-
-    const validateMobile = (mobile: string): boolean => {
-        if (!mobile) return false;
-
-        const cleanMobile = mobile.replace(/[\s\(\)\+\-]/g, '');
-        return cleanMobile.length >= 8;
-    };
-
-    // ===== RENDER =====
     return (
         <div className="grid">
-            {/* Nombre */}
-            <div className="col-12 md:col-5">
-                <label htmlFor="name">Nombre*</label>
-                <div className="p-inputgroup">
-                    <span className="p-inputgroup-addon">
-                        <i className="pi pi pi-user"></i>
-                    </span>
-                    <InputText
-                        id="name"
-                        value={user.name || ''}
-                        onChange={(e) => onInputChange(e, 'name')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !user.name })}
-                    />
-                </div>
-                {submitted && !user.name && <small className="p-error">Nombre es requerido.</small>}
-            </div>
+            <NameField
+                value={user.name}
+                onChange={(e) => onInputChange(e, 'name')}
+                submitted={submitted}
+                required
+            />
 
             {/* Apellidos */}
             <div className="col-12 md:col-7">
@@ -218,50 +63,17 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 </div>
             </div>
 
-            {/* Email */}
-            <div className="col-12 md:col-7 mt-2">
-                <label htmlFor="email">Correo*</label>
-                <div className="p-inputgroup">
-                     <span className="p-inputgroup-addon">
-                        <i className="pi pi-envelope"></i>
-                     </span>
-                    <InputText
-                        id="email"
-                        value={user.email || ''}
-                        onChange={(e) => onInputChange(e, 'email')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateEmail(user.email || '') })}
-                    />
-                </div>
-                {submitted && !validateEmail(user.email || '') && (
-                    <small className="p-error">Correo no válido.</small>
-                )}
-            </div>
+            <EmailField
+                value={user.email}
+                onChange={(e) => onInputChange(e, 'email')}
+                submitted={submitted}
+            />
 
-            {/* Teléfono - MEJORADO */}
-            <div className="col-12 md:col-5 mt-2">
-                <label htmlFor="mobile">Teléfono*</label>
-                <div className="p-inputgroup">
-                     <span className="p-inputgroup-addon">
-                        <i className="pi pi-phone"></i>
-                     </span>
-                    <InputMask
-                        id="mobile"
-                        value={user.mobile || user.phone || ''}
-                        onChange={(e) => {
-                            console.log('📱 Teléfono cambiado:', e.target.value);
-                            onInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>, 'mobile');
-                        }}
-                        mask="(+53) 99-99-99-99"
-                        placeholder="(+53) 99-99-99-99"
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateMobile(user.mobile || user.phone || '') })}
-                    />
-                </div>
-                {submitted && !validateMobile(user.mobile || user.phone || '') && (
-                    <small className="p-error">Teléfono no válido.</small>
-                )}
-            </div>
+            <PhoneField
+                value={user.mobile || user.phone}
+                onChange={(e) => onInputChange(e as React.ChangeEvent<HTMLInputElement>, 'mobile')}
+                submitted={submitted}
+            />
 
             {/* Rol */}
             <div className="field col-12 md:col-3 mt-2">
@@ -269,12 +81,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                 <Dropdown
                     id="roles"
                     value={user.roles}
-                    options={[
-                        { label: 'Super Administrador', value: 'Super Administrador' },
-                        { label: 'Administrador', value: 'Administrador' },
-                        { label: 'Especialista', value: 'Especialista' },
-                        { label: 'Técnico', value: 'Técnico' }
-                    ]}
+                    options={USER_ROLES}
                     onChange={(e) => onInputChange({ target: { value: e.value } } as any, 'roles')}
                     placeholder="Seleccionar Rol"
                     className={classNames({ 'p-invalid': submitted && !user.roles })}
@@ -341,16 +148,14 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
             </div>
 
             {/* Institución */}
-            {(user.roles === 'Especialista' || user.roles === 'Técnico') && (
+            {showInstitutionField && (
                 <div className="field col-12 md:col-4">
                     <label htmlFor="institutionId">Institución*</label>
                     <Dropdown
                         id="institutionId"
                         value={(() => {
                             const institutionId = user.institutionId || user.institution?.uuid;
-                            const found = institutions.find(inst => inst.uuid === institutionId);
-                            console.log('🔍 Buscando institución:', { institutionId, found, institutionsCount: institutions.length });
-                            return found || null;
+                            return institutions.find(inst => inst.uuid === institutionId) || null;
                         })()}
                         options={institutions}
                         optionLabel="name"
