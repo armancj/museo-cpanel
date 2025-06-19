@@ -40,6 +40,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                     user={user}
                     onInputChange={onInputChange}
                     submitted={submitted}
+                    editingUser={editingUser}
                 />
             </Fieldset>
 

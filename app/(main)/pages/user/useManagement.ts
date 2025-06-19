@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Toast, ToastMessage } from 'primereact/toast';
 import { UsersDatum, UserService, UsersResponse } from '@/app/service/UserService';
 import { ApiError } from '@/adapter/httpAdapter';
+import { removeEmptyFields } from '@/app/(main)/utilities/removeEmptyFields';
 
 export const emptyUser: UsersDatum = {
     password: '',
@@ -51,38 +52,30 @@ export const useManagement = () => {
     };
 
     const saveUser = async () => {
-        console.log('🚀 === DEBUGGING SAVE USER ===');
-        console.log('📋 Usuario completo:', user);
-        console.log('🏢 user.institutionId:', user.institutionId);
-
         setSubmitted(true);
         if (user.name.trim()) {
             let _usersData = [...(usersResponse?.usersData || [])];
 
             if (user.uuid) {
-                // ✅ ACTUALIZAR usuario existente
                 try {
                     const {active, uuid, deleted, avatar, ...userUpdated} = user;
 
-                    // Llamar al endpoint que devuelve boolean
-                    const success = await UserService.updateUser(user.uuid, userUpdated);
+                    const filteredUserData = removeEmptyFields(userUpdated);
 
-                    if (success) {
-                        // ✅ Actualización exitosa - actualizar estado local
+                        await UserService.updateUser(user.uuid, filteredUserData);
+
                         const index = _usersData.findIndex((u) => u.uuid === user.uuid);
 
                         if (index !== -1) {
-                            // Actualizar con los nuevos datos del formulario
                             _usersData[index] = {
-                                ..._usersData[index], // Mantener datos existentes
-                                ...userUpdated,       // Aplicar cambios
-                                uuid: user.uuid,      // Mantener UUID
-                                active: _usersData[index].active, // Mantener estado activo
-                                deleted: _usersData[index].deleted // Mantener estado deleted
+                                ..._usersData[index],
+                                ...userUpdated,
+                                uuid: user.uuid,
+                                active: _usersData[index].active,
+                                deleted: _usersData[index].deleted
                             };
                         }
 
-                        // Manejar avatar si se subió uno nuevo
                         if (selectedAvatar) {
                             const response = await uploadAvatar(uuid, selectedAvatar);
                             setSelectedAvatar(null);
@@ -102,28 +95,18 @@ export const useManagement = () => {
                         setUser(emptyUser);
                         setEditingUser(null);
 
-                    } else {
-                        throw new Error('Error al actualizar usuario');
-                    }
-
                 } catch (error) {
                     handleError(error, 'No se pudo actualizar el usuario');
                 }
             } else {
-                // ✅ CREAR nuevo usuario
                 try {
-                    console.log('🆕 === INICIANDO CREACIÓN ===');
-                    console.log('📤 Datos a enviar:', user);
 
                     const createdUser = await UserService.createUser(user);
-                    console.log('✅ Usuario creado exitosamente:', createdUser);
 
                     if (selectedAvatar) {
-                        console.log('📸 Subiendo avatar...');
                         const response = await uploadAvatar(createdUser.uuid, selectedAvatar);
                         setSelectedAvatar(null);
                         createdUser.avatar = response?.avatar;
-                        console.log('✅ Avatar subido:', response?.avatar);
                     }
 
                     _usersData.push(createdUser);
@@ -147,7 +130,7 @@ export const useManagement = () => {
                     return;
                 }
             }
-            // Actualizar el estado con los cambios
+
             setUsersResponse({
                 ...usersResponse,
                 usersData: _usersData
@@ -173,13 +156,11 @@ export const useManagement = () => {
                 show.summary = 'Error del servidor';
             }
         } else {
-            console.error('Error no procesado:', error);
             show.detail = error?.message || defaultMessage;
         }
 
         toast.current?.show(show);
         setUserDialog(true);
-        console.log('Error manejado:', error);
     };
 
     const toggleUserActivation = async (uuid: string, active: boolean) => {
@@ -208,20 +189,12 @@ export const useManagement = () => {
     };
 
     const editUser = async (updatedUser: Partial<UsersDatum>): Promise<void> => {
-        console.log('🔧 === EDIT USER ===');
-        console.log('👤 editUser - Usuario recibido:', updatedUser.name);
-        console.log('🏢 editUser - institution objeto completo:', (updatedUser.institution as any)?.name || 'N/A');
-
-        // ✅ Extraer institutionId del objeto institution que viene del backend
         const institutionId = (updatedUser.institution as any)?.uuid || '';
 
-        // ✅ Preparar usuario para el formulario
         const userToEdit: UsersDatum = {
             ...updatedUser,
-            password: '', // ✅ Limpiar password para edición
-            institutionId, // ✅ UUID extraído para el formulario (no el objeto completo)
-
-            // ✅ Completar campos requeridos con valores por defecto seguros
+            password: '',
+            institutionId,
             active: updatedUser.active ?? false,
             deleted: updatedUser.deleted ?? false,
             uuid: updatedUser.uuid || '',
@@ -233,19 +206,15 @@ export const useManagement = () => {
             name: updatedUser.name || '',
             nationality: updatedUser.nationality || '',
             province: updatedUser.province || '',
-            institution: updatedUser.institution || '', // ✅ Mantener objeto original para referencia
+            institution: updatedUser.institution || '',
             avatar: updatedUser.avatar || { id: '', nameFile: '' },
             roles: updatedUser.roles || ''
         };
 
-        console.log('🏢 editUser - institutionId extraído:', institutionId);
-        console.log('✅ editUser - usuario preparado para formulario:', userToEdit.name);
-
-        // ✅ Establecer estados
-        setUser(userToEdit);           // Para el formulario
-        setEditingUser(updatedUser as UsersDatum); // Para referencia original
-        setSelectedAvatar(null);       // Limpiar avatar seleccionado
-        setUserDialog(true);          // Abrir diálogo
+        setUser(userToEdit);
+        setEditingUser(updatedUser as UsersDatum);
+        setSelectedAvatar(null);
+        setUserDialog(true);
     };
 
 

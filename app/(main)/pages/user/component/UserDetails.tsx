@@ -27,34 +27,22 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                                                              submitted,
                                                              editingUser
                                                          }) => {
-    // ===== ESTADOS =====
+    console.log('editingUser', editingUser)
     const [countries, setCountries] = useState<AddressOption[]>([]);
     const [provinces, setProvinces] = useState<AddressOption[]>([]);
     const [municipalities, setMunicipalities] = useState<AddressOption[]>([]);
     const [institutions, setInstitutions] = useState<AddressOption[]>([]);
 
-    // Estados para habilitar/deshabilitar dropdowns
     const [isProvinceDisabled, setIsProvinceDisabled] = useState(true);
     const [isMunicipalityDisabled, setIsMunicipalityDisabled] = useState(true);
     const [isInstitutionDisabled, setIsInstitutionDisabled] = useState(true);
 
-    // ===== DEBUG: MOSTRAR ESTADO ACTUAL =====
-    console.log('🔍 ESTADO ACTUAL:', {
-        userMobile: user.mobile,
-        userPhone: user.phone,
-        userInstitutionId: user.institutionId,
-        userInstitution: user.institution,
-        submitted,
-        institutionsLength: institutions.length
-    });
 
-    // ===== CARGAR PAÍSES AL INICIO =====
     useEffect(() => {
         const loadCountries = async () => {
             try {
                 const countriesData = await CountryService.getCountries();
                 setCountries(countriesData);
-                console.log('✅ Países cargados:', countriesData.length);
             } catch (error) {
                 console.error('❌ Error loading countries:', error);
             }
@@ -62,30 +50,25 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
         loadCountries();
     }, []);
 
-    // ===== INICIALIZAR PARA EDICIÓN =====
     useEffect(() => {
         if (editingUser && countries.length > 0) {
-            console.log('🔄 Inicializando para edición:', editingUser.name);
             initializeForEdit();
         } else if (!editingUser) {
             resetDependentStates();
         }
     }, [editingUser, countries]);
 
-    // ===== FUNCIÓN PARA INICIALIZAR EDICIÓN =====
     const initializeForEdit = async () => {
         try {
-            // 1. Buscar país
             const country = countries.find(c => c.name === editingUser.nationality);
             if (!country) return;
 
-            // 2. Cargar provincias
             const provincesData = await ProvinceService.getProvinces(country);
             setProvinces(provincesData);
             setIsProvinceDisabled(false);
 
             if (editingUser.province) {
-                // 3. Buscar provincia y cargar municipios
+
                 const province = provincesData.find(p => p.name === editingUser.province);
                 if (province) {
                     const municipalitiesData = await MunicipalityService.getMunicipalities(province);
@@ -93,7 +76,6 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
                     setIsMunicipalityDisabled(false);
 
                     if (editingUser.municipal) {
-                        // 4. Buscar municipio y cargar instituciones
                         const municipality = municipalitiesData.find(m => m.name === editingUser.municipal);
                         if (municipality) {
                             const institutionsData = await InstitutionService.getInstitutions(municipality);
@@ -111,7 +93,6 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
         }
     };
 
-    // ===== RESET STATES =====
     const resetDependentStates = () => {
         setProvinces([]);
         setMunicipalities([]);
@@ -121,28 +102,20 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
         setIsInstitutionDisabled(true);
     };
 
-    // ===== HANDLERS PARA CAMBIOS EN DROPDOWNS =====
     const handleCountryChange = async (selectedCountry: AddressOption) => {
-        console.log('🌍 País seleccionado:', selectedCountry.name);
-
-        // Actualizar el usuario
         onInputChange({ target: { value: selectedCountry.name } } as any, 'nationality');
 
         try {
-            // Cargar provincias
             const provincesData = await ProvinceService.getProvinces(selectedCountry);
             setProvinces(provincesData);
 
-            // Reset estados dependientes
             setMunicipalities([]);
             setInstitutions([]);
 
-            // Reset valores dependientes en el usuario
             onInputChange({ target: { value: '' } } as any, 'province');
             onInputChange({ target: { value: '' } } as any, 'municipal');
             onInputChange({ target: { value: '' } } as any, 'institutionId');
 
-            // Habilitar provincia, deshabilitar municipio e institución
             setIsProvinceDisabled(false);
             setIsMunicipalityDisabled(true);
             setIsInstitutionDisabled(true);
@@ -152,24 +125,17 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
     };
 
     const handleProvinceChange = async (selectedProvince: AddressOption) => {
-        console.log('🏘️ Provincia seleccionada:', selectedProvince.name);
-
-        // Actualizar el usuario
         onInputChange({ target: { value: selectedProvince.name } } as any, 'province');
 
         try {
-            // Cargar municipios
             const municipalitiesData = await MunicipalityService.getMunicipalities(selectedProvince);
             setMunicipalities(municipalitiesData);
 
-            // Reset estados dependientes
             setInstitutions([]);
 
-            // Reset valores dependientes en el usuario
             onInputChange({ target: { value: '' } } as any, 'municipal');
             onInputChange({ target: { value: '' } } as any, 'institutionId');
 
-            // Habilitar municipio, deshabilitar institución
             setIsMunicipalityDisabled(false);
             setIsInstitutionDisabled(true);
         } catch (error) {
@@ -178,23 +144,17 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
     };
 
     const handleMunicipalityChange = async (selectedMunicipality: AddressOption) => {
-        console.log('🏘️ Municipio seleccionado:', selectedMunicipality.name);
-
-        // Actualizar el usuario
         onInputChange({ target: { value: selectedMunicipality.name } } as any, 'municipal');
 
         try {
-            // Cargar instituciones
             const institutionsData = await InstitutionService.getInstitutions(selectedMunicipality);
             const filteredInstitutions = institutionsData.filter(
                 institution => institution.municipality === selectedMunicipality.name
             );
             setInstitutions(filteredInstitutions);
 
-            // Reset valor dependiente en el usuario
             onInputChange({ target: { value: '' } } as any, 'institutionId');
 
-            // Habilitar institución
             setIsInstitutionDisabled(false);
         } catch (error) {
             console.error('Error fetching institutions:', error);
@@ -202,19 +162,14 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
     };
 
     const handleInstitutionChange = (selectedInstitution: AddressOption) => {
-        console.log('🏛️ Institución seleccionada:', selectedInstitution.name, 'UUID:', selectedInstitution.uuid);
-
-        // Actualizar el institutionId (UUID)
         onInputChange({ target: { value: selectedInstitution.uuid } } as any, 'institutionId');
     };
 
-    // ===== FUNCIÓN PARA ENCONTRAR OPCIÓN POR VALOR =====
     const findOptionByValue = (options: AddressOption[], value: string, field: string = 'name') => {
         if (!value || !options?.length) return null;
         return options.find(option => option[field as keyof AddressOption] === value) || null;
     };
 
-    // ===== VALIDACIONES MEJORADAS =====
     const validateEmail = (email: string) => {
         if (!email) return false;
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -222,9 +177,9 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
 
     const validateMobile = (mobile: string): boolean => {
         if (!mobile) return false;
-        // Remover espacios y caracteres especiales para validar
+
         const cleanMobile = mobile.replace(/[\s\(\)\+\-]/g, '');
-        return cleanMobile.length >= 8; // Al menos 8 dígitos
+        return cleanMobile.length >= 8;
     };
 
     // ===== RENDER =====
