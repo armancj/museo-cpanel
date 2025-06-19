@@ -42,6 +42,7 @@ export const EntryAndLocationForm = ({
     const [entryInfoStatus, setEntryInfoStatus] = useState<Status | null>(null);
     const [objectLocationStatus, setObjectLocationStatus] = useState<Status | null>(null);
 
+
     // Status options for dropdown
     const statusOptions = [
         { label: 'Pendiente', value: Status.Pending },
@@ -100,9 +101,20 @@ export const EntryAndLocationForm = ({
         }
 
         const { entryAndLocation } = data;
+
         const requiredFields = [
+            entryAndLocation.auxiliaryInventory.value,
+            entryAndLocation.declarationType.value,
+            entryAndLocation.entryDate.value,
+            entryAndLocation.entryMethod.value,
+            entryAndLocation.genericClassification.value,
+            entryAndLocation.heritageType.value,
+            entryAndLocation.initialDescription.value,
+            entryAndLocation.institutionType.value,
             entryAndLocation.inventoryNumber.value,
-            entryAndLocation.objectName.value
+            entryAndLocation.pieceInventory.value,
+            entryAndLocation.objectName.value,
+            entryAndLocation.objectLocation.value
         ];
 
         const isValid = requiredFields.every(field => field !== null && field !== undefined && field !== '');
@@ -593,143 +605,38 @@ export const EntryAndLocationForm = ({
                         );
                     }}
                 >
-                    <div className="grid">
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Piso"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.floor || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('floor', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese el piso"
-                            />
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Sala de Exposición"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.exhibitionRoom || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('exhibitionRoom', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese la sala de exposición"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid">
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Almacén"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.storage || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('storage', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese el almacén"
-                            />
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Vitrina/Estante"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.showcaseShelf || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('showcaseShelf', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese la vitrina o estante"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid">
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Estante/Cajón"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.shelfDrawer || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('shelfDrawer', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese el estante o cajón"
-                            />
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Caja"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.box || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('box', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese la caja"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid">
-                        <div className="col-12 md:col-6">
-                            <FieldWithHistory
-                                label="Carpeta/Archivo"
-                                field={{
-                                    ...data.entryAndLocation.objectLocation,
-                                    value: data.entryAndLocation.objectLocation.value?.fileFolder || ''
-                                }}
-                                type="text"
-                                onChange={(value) => updateObjectLocationField('fileFolder', value)}
-                                onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
-                                onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
-                                canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
-                                canViewHistory={canViewHistory()}
-                                canChangeStatus={canChangeStatus()}
-                                openHistoryDialog={openHistoryDialog}
-                                placeholder="Ingrese la carpeta o archivo"
-                            />
-                        </div>
-                    </div>
+                    <FieldWithHistory
+                        label="Ubicación del Objeto"
+                        field={data.entryAndLocation.objectLocation}
+                        type="objectLocation"
+                        onChange={() => {}} // No se usa para este tipo
+                        onStatusChange={(status) => updateFieldStatus('objectLocation', status)}
+                        onCommentChange={(comment) => updateFieldComment('objectLocation', comment)}
+                        canEdit={canEditField(data.entryAndLocation.objectLocation.status as Status)}
+                        canViewHistory={canViewHistory()}
+                        canChangeStatus={canChangeStatus()}
+                        openHistoryDialog={openHistoryDialog}
+                        placeholder="Configure la ubicación del objeto"
+                        onSubfieldChange={updateObjectLocationField}
+                        subfieldLabels={{
+                            floor: "Piso",
+                            exhibitionRoom: "Sala de Exposición",
+                            storage: "Almacén",
+                            showcaseShelf: "Vitrina/Estante",
+                            shelfDrawer: "Estante/Cajón",
+                            box: "Caja",
+                            fileFolder: "Carpeta/Archivo"
+                        }}
+                        subfieldPlaceholders={{
+                            floor: "Ingrese el piso",
+                            exhibitionRoom: "Ingrese la sala de exposición",
+                            storage: "Ingrese el almacén",
+                            showcaseShelf: "Ingrese la vitrina o estante",
+                            shelfDrawer: "Ingrese el estante o cajón",
+                            box: "Ingrese la caja",
+                            fileFolder: "Ingrese la carpeta o archivo"
+                        }}
+                    />
                 </Panel>
             </div>
         </div>

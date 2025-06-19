@@ -13,7 +13,7 @@ import { Status } from '../types';
 interface FieldWithHistoryProps {
     label: string;
     field: any;
-    type: 'text' | 'textarea' | 'dropdown' | 'date' | 'number' | 'multiselect' | 'checkbox' | 'daterange';
+    type: 'text' | 'objectLocation' | 'textarea' | 'dropdown' | 'date' | 'number' | 'multiselect' | 'checkbox' | 'daterange';
     options?: any[];
     onChange: (value: any) => void;
     onStatusChange?: (status: Status) => void;
@@ -26,6 +26,9 @@ interface FieldWithHistoryProps {
     className?: string;
     placeholder?: string;
     disabled?: boolean;
+    onSubfieldChange?: (subfield: string, value: any) => void;
+    subfieldLabels?: Record<string, string>;
+    subfieldPlaceholders?: Record<string, string>;
 }
 
 export const FieldWithHistory = ({
@@ -44,17 +47,47 @@ export const FieldWithHistory = ({
     className = '',
     placeholder = '',
     disabled = false,
+    onSubfieldChange,
+    subfieldLabels,
+    subfieldPlaceholders
 }: FieldWithHistoryProps) => {
     const [showComment, setShowComment] = useState(false);
 
+    const handleDateChange = (dateValue: Date | null) => {
+        console.log('🔍 Date field change:', { label, dateValue });
+
+        // Process the date value - convert to ISO string if it's a valid date, otherwise use empty string
+        let processedValue = '';
+        if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+            processedValue = dateValue.toISOString();
+        }
+
+        console.log('🔍 Processed date value:', processedValue);
+        onChange(processedValue);
+    };
+
+    // Function to handle daterange changes
+    const handleDateRangeChange = (field: 'start' | 'end', dateValue: Date | null) => {
+        let processedValue = '';
+        if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+            processedValue = dateValue.toISOString();
+        }
+
+        const currentRange = field.value || {};
+        onChange({
+            ...currentRange,
+            [field]: processedValue
+        });
+    };
+
     // 🔍 DEBUGGING: Log field data when it changes
     useEffect(() => {
-        if (label === 'Condiciones de Acceso') {
-            console.log('🔍 FIELD WITH HISTORY - Field data for "Condiciones de Acceso":', field);
-            console.log('🔍 FIELD WITH HISTORY - Field keys:', field ? Object.keys(field) : 'null');
-            console.log('🔍 FIELD WITH HISTORY - History exists?', !!field?.history);
-            console.log('🔍 FIELD WITH HISTORY - History length:', field?.history?.length);
-            console.log('🔍 FIELD WITH HISTORY - Full history array:', field?.history);
+        if (label.includes('Fecha')) {
+            console.log(`🔍 FIELD WITH HISTORY - Date field "${label}":`, {
+                value: field.value,
+                status: field.status,
+                hasValue: !!field.value
+            });
         }
     }, [field, label]);
 
@@ -98,13 +131,28 @@ export const FieldWithHistory = ({
         }
     };
 
-    const handleHistoryClick = () => {
-        console.log('🔍 FIELD WITH HISTORY - History button clicked');
-        console.log('🔍 FIELD WITH HISTORY - About to call openHistoryDialog with:', field);
-        console.log('🔍 FIELD WITH HISTORY - Label:', label);
-        console.log('🔍 FIELD WITH HISTORY - Field history before calling:', field?.history);
+    const renderObjectLocation = () => {
+        if (!onSubfieldChange || !subfieldLabels || !subfieldPlaceholders) {
+            return <div>Error: Configuración incompleta para objectLocation</div>;
+        }
 
-        openHistoryDialog(field, label);
+        const locationValue = field.value || {};
+        const subfields = ['floor', 'exhibitionRoom', 'storage', 'showcaseShelf', 'shelfDrawer', 'box', 'fileFolder'];
+
+        return (
+            <div className="grid">
+                {subfields.map((subfieldKey, index) => (
+                    <div key={subfieldKey} className="col-12 md:col-6">
+                        <label className="block mb-1">{subfieldLabels[subfieldKey]}</label>
+                        {canEdit ? (
+                            <InputText value={locationValue[subfieldKey] || ''} onChange={(e) => onSubfieldChange(subfieldKey, e.target.value)} className="w-full" placeholder={subfieldPlaceholders[subfieldKey]} disabled={disabled} />
+                        ) : (
+                            <div className="p-2 border-1 border-gray-300 border-round">{locationValue[subfieldKey] || 'No definido'}</div>
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
     };
 
     // Render the appropriate input based on type
@@ -112,7 +160,10 @@ export const FieldWithHistory = ({
         if (!canEdit) {
             // Read-only view
             switch (type) {
+                case 'objectLocation':
+                    return <div className="p-2 border-1 border-gray-300 border-round">{renderObjectLocation()}</div>;
                 case 'text':
+                    return <div className="p-2 border-1 border-gray-300 border-round">{field.value || 'No definido'}</div>;
                 case 'textarea':
                     return <div className="p-2 border-1 border-gray-300 border-round">{field.value || 'No definido'}</div>;
                 case 'dropdown':
@@ -145,15 +196,24 @@ export const FieldWithHistory = ({
 
         // Editable inputs
         switch (type) {
+            case 'objectLocation':
+                return renderObjectLocation();
             case 'text':
                 return <InputText value={field.value || ''} onChange={(e) => onChange(e.target.value)} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'textarea':
                 return <InputTextarea value={field.value || ''} onChange={(e) => onChange(e.target.value)} rows={5} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'dropdown':
-                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter/>;
+                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
             case 'date':
                 return (
-                    <Calendar value={field.value ? new Date(field.value) : null} onChange={(e) => onChange(e.value)} dateFormat="dd/mm/yy" className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una fecha'} required={required} />
+                    <Calendar
+                        value={field.value ? new Date(field.value) : null}
+                        onChange={(e) => handleDateChange(e.value)}
+                        dateFormat="dd/mm/yy"
+                        className={`w-full ${className}`}
+                        placeholder={placeholder || 'Seleccione una fecha'}
+                        required={required}
+                    />
                 );
             case 'daterange':
                 return (
@@ -162,7 +222,7 @@ export const FieldWithHistory = ({
                             <label className="block mb-1">Fecha Inicio</label>
                             <Calendar
                                 value={field.value?.start ? new Date(field.value.start) : null}
-                                onChange={(e) => onChange({ ...field.value, start: e.value })}
+                                onChange={(e) => handleDateRangeChange('start', e.value)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha inicio"
@@ -173,7 +233,7 @@ export const FieldWithHistory = ({
                             <label className="block mb-1">Fecha Fin</label>
                             <Calendar
                                 value={field.value?.end ? new Date(field.value.end) : null}
-                                onChange={(e) => onChange({ ...field.value, end: e.value })}
+                                onChange={(e) => handleDateRangeChange('end', e.value)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha fin"

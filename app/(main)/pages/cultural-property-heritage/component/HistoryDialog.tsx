@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { UsersDatum, UserService } from '@/app/service/UserService';
 import { useEffect, useState } from 'react';
+import { FileStorageService } from '@/app/service/FileStorageService';
 
 interface HistoryDialogProps {
     visible: boolean;
@@ -147,24 +148,50 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
         const user = users.get(userUuid);
 
         if (user) {
+            console.log('sssssssssssssssssssssssssssss', user.avatar)
             return (
                 <div className="flex align-items-center">
                     <div className="user-avatar mr-2">
-                        {user.avatar?.nameFile ? (
+                        {user.avatar?.id ? (
                             <img
-                                src={`/api/files/${user.avatar.nameFile}`}
+                                src={FileStorageService.getFileUrl(user.avatar.id)}
                                 alt={`${user.name} ${user.lastName}`}
                                 className="w-2rem h-2rem border-circle"
                                 style={{ objectFit: 'cover' }}
                             />
-                        ) : (
-                            <div className="w-2rem h-2rem border-circle bg-primary text-white flex align-items-center justify-content-center">
+                        ) : user.name && user.lastName ? (
+                            // Iniciales con fondo azul
+                            <div
+                                className="w-2rem h-2rem border-circle flex align-items-center justify-content-center"
+                                style={{
+                                    backgroundColor: 'var(--primary-color)',
+                                    color: 'white'
+                                }}
+                            >
+                            <span className="font-medium text-sm">
                                 {user.name.charAt(0)}{user.lastName.charAt(0)}
+                            </span>
+                            </div>
+                        ) : (
+                            // Ícono con fondo gris
+                            <div
+                                className="w-2rem h-2rem border-circle flex align-items-center justify-content-center"
+                                style={{
+                                    backgroundColor: '#e9ecef',
+                                    color: '#6c757d'
+                                }}
+                            >
+                                <i className="pi pi-user"></i>
                             </div>
                         )}
                     </div>
                     <div>
-                        <div className="font-medium">{user.name} {user.lastName}</div>
+                        <div className="font-medium">
+                            {user.name && user.lastName
+                                ? `${user.name} ${user.lastName}`
+                                : 'Usuario'
+                            }
+                        </div>
                         <small className="text-muted">{user.email}</small>
                     </div>
                 </div>

@@ -182,12 +182,10 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
 
             const saveResult = (await save('cultural-property')) as unknown as boolean;
 
-            if (saveResult && onBackToList) {
-                // Short delay to allow the toast to be seen
-                setTimeout(() => {
-                    onBackToList();
-                }, 1500);
-            }
+            console.log('saveResult:', saveResult);
+
+            if (saveResult && onBackToList) onBackToList();
+
         } catch (error) {
             console.error('Error al guardar:', error);
         }
