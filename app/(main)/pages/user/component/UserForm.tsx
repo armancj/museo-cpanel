@@ -53,7 +53,7 @@ export const UserForm: React.FC<UserFormProps> = ({
             </Fieldset>
 
             <Fieldset legend="Seguridad" className="col-12 md:col-4 lg:col-3">
-                <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} />
+                <UserPassword user={user} onInputChange={onInputChange} submitted={submitted} editingUser={editingUser} />
             </Fieldset>
         </div>
     );

@@ -8,13 +8,14 @@ import { ROLES_REQUIRING_INSTITUTION, USER_ROLES } from '@/app/(main)/pages/user
 import { EmailField } from '@/app/common/component/EmailField';
 import { PhoneField } from '@/app/common/component/PhoneField';
 import { findOptionByValue } from '@/app/(main)/pages/user/util/validation';
+import { UsersDatum } from '@/app/service/UserService';
 
 
 interface UserDetailsFormProps {
     user: any;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
     submitted: boolean;
-    editingUser?: any | null;
+    editingUser?: UsersDatum | null | undefined;
 }
 
 const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
