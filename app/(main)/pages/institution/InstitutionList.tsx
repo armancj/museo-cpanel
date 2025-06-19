@@ -63,47 +63,6 @@ export function InstitutionList() {
 
     const exportExcel = createdExportExcel(dt);
 
-    const validateAndSave = () => {
-        setSubmitted(true);
-
-        const requiredFields = [
-            'name',
-            'street',
-            'number',
-            'referenceCode',
-            'betweenStreet1',
-            'betweenStreet2',
-            'district',
-            'locality',
-            'province',
-            'municipality',
-            'country',
-            'phone1',
-            'phone2',
-            'email',
-            'website',
-            'institutionType',
-            'classification',
-            'typology',
-            'category'
-        ];
-
-        const allFieldsValid = requiredFields.every(field =>
-            data[field as keyof InstitutionResponse]?.toString().trim() !== '',
-        );
-
-        if (allFieldsValid) {
-            save().then(()=> console.log('Institution saved.'));
-        } else {
-            toast.current?.show({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: 'Por favor complete todos los campos requeridos',
-                life: 3000,
-            });
-        }
-    };
-
     const dialogFooter = (
         <>
             <Button
@@ -118,7 +77,7 @@ export function InstitutionList() {
                 label="Guardar"
                 icon="pi pi-check"
                 text
-                onClick={validateAndSave}
+                onClick={save}
                 className="p-button-rounded p-button-success"
             />
         </>
