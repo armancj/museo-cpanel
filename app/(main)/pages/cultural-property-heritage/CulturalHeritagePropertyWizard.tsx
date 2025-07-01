@@ -15,7 +15,6 @@ import { AssociatedDocumentationForm } from './component/AssociatedDocumentation
 import { DescriptionControlForm } from './component/DescriptionControlForm';
 import { NotesForm } from './component/NotesForm';
 import { HistoryDialog } from './component/HistoryDialog';
-import { useLocalStorage } from 'primereact/hooks';
 
 interface DropdownData {
     valueGradeOptions: { label: string; value: string }[];
@@ -36,10 +35,11 @@ interface CulturalHeritagePropertyWizardProps {
     currentUserRole: UserRoles;
     setCurrentUserRole: (role: UserRoles) => void;
     isSuperAdmin: boolean;
+    isViewMode?: boolean;
     dropdownData: DropdownData;
 }
 
-export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, currentUserRole, setCurrentUserRole, isSuperAdmin, dropdownData }: CulturalHeritagePropertyWizardProps) => {
+export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = false, hookData, currentUserRole, setCurrentUserRole, isSuperAdmin, dropdownData }: CulturalHeritagePropertyWizardProps) => {
     // State for the wizard
     const [activeIndex, setActiveIndex] = useState(0);
     const [isCompleted, setIsCompleted] = useState<boolean[]>([false, false, false, false, false, false, false]);
@@ -112,6 +112,8 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
 
     // Function to check if navigation to a step is allowed
     const canNavigate = (index: number) => {
+        if (isViewMode) return true;
+
         // If all steps are completed, allow free navigation
         if (allStepsCompleted) return true;
 
@@ -149,6 +151,7 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
 
     // Function to mark current step as completed
     const markStepCompleted = (index: number, completed: boolean) => {
+        if (isViewMode) return;
         const newCompleted = [...isCompleted];
         newCompleted[index] = completed;
         setIsCompleted(newCompleted);
@@ -193,6 +196,8 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
 
     // Function to check if a field can be edited based on role and status
     const canEditField = (status: Status) => {
+        if (isViewMode) return false;
+
         if (currentUserRole === UserRoles.employee) {
             // Technical users can edit fields that are in Pending, HasIssue, or ToReview status
             return status === Status.HasIssue || status === Status.Pending || status === Status.ToReview;
@@ -208,6 +213,8 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
 
     // Function to check if user can change status
     const canChangeStatus = () => {
+        if (isViewMode) return false;
+
         return currentUserRole === UserRoles.administrator || currentUserRole === UserRoles.superAdmin || currentUserRole === UserRoles.manager;
     };
 
@@ -256,7 +263,7 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
     };
 
     // Role selector for testing purposes
-    const roleSelector = isSuperAdmin ? (
+    const roleSelector = isSuperAdmin && !isViewMode ? (
         <div className="flex justify-content-end mb-3">
             <div className="field">
                 <label htmlFor="userRole" className="block text-900 font-medium mb-2">
@@ -285,11 +292,19 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
         <div className="grid">
             <Toast ref={toast} />
             <div className="col-12">
-                <Card title="Bien Patrimonial Cultural" subTitle={isEditMode ? 'Editar registro' : 'Nuevo registro'}>
+                <Card title="Bien Patrimonial Cultural" subTitle={
+                    isViewMode ? 'Ver registro' :
+                        isEditMode ? 'Editar registro' : 'Nuevo registro'
+                }>
                     {roleSelector}
 
                     <div className="mb-5">
-                        <Steps model={wizardItems} activeIndex={activeIndex} onSelect={(e) => setActiveIndex(e.index)} readOnly={!allStepsCompleted} />
+                        <Steps
+                            model={wizardItems}
+                            activeIndex={activeIndex}
+                            onSelect={(e) => setActiveIndex(e.index)}
+                            readOnly={!allStepsCompleted  && !isViewMode
+                        } />
                     </div>
 
                     <div className="p-fluid">{renderStepContent()}</div>
@@ -297,10 +312,38 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, hookData, current
                     <div className="flex justify-content-between mt-4">
                         <Button label="Anterior" icon="pi pi-arrow-left" onClick={prevStep} disabled={activeIndex === 0} className="p-button-secondary" />
 
-                        {activeIndex < wizardItems.length - 1 ? (
-                            <Button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" onClick={nextStep} disabled={!isCompleted[activeIndex]} />
+                        {isViewMode ? (
+                            activeIndex < wizardItems.length - 1 ? (
+                                <Button
+                                    label="Siguiente"
+                                    icon="pi pi-arrow-right"
+                                    iconPos="right"
+                                    onClick={nextStep}
+                                />
+                            ) : (
+                                <Button
+                                    label="Volver al Listado"
+                                    icon="pi pi-list"
+                                    onClick={onBackToList}
+                                />
+                            )
                         ) : (
-                            <Button label={isEditMode ? 'Guardar Cambios' : 'Guardar'} icon="pi pi-save" onClick={saveForm} disabled={!allStepsCompleted} />
+                            activeIndex < wizardItems.length - 1 ? (
+                                <Button
+                                    label="Siguiente"
+                                    icon="pi pi-arrow-right"
+                                    iconPos="right"
+                                    onClick={nextStep}
+                                    disabled={!isCompleted[activeIndex]}
+                                />
+                            ) : (
+                                <Button
+                                    label={isEditMode ? 'Guardar Cambios' : 'Guardar'}
+                                    icon="pi pi-save"
+                                    onClick={saveForm}
+                                    disabled={!allStepsCompleted}
+                                />
+                            )
                         )}
                     </div>
                 </Card>

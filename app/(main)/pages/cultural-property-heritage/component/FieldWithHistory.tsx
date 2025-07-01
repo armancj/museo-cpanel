@@ -9,6 +9,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { Status } from '../types';
+import { hasHistory } from '@/app/(main)/pages/cultural-property-heritage/utils/statusUtils';
 
 interface FieldWithHistoryProps {
     label: string;
@@ -67,29 +68,19 @@ export const FieldWithHistory = ({
     };
 
     // Function to handle daterange changes
-    const handleDateRangeChange = (field: 'start' | 'end', dateValue: Date | null) => {
+    const handleDateRangeChange = (dateField: 'start' | 'end', dateValue: Date | null) => {
         let processedValue = '';
         if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
             processedValue = dateValue.toISOString();
         }
 
-        const currentRange = field.value || {};
+        const currentRange = (field && field.value) ? field.value : {};
+
         onChange({
             ...currentRange,
-            [field]: processedValue
+            [dateField]: processedValue
         });
     };
-
-    // 🔍 DEBUGGING: Log field data when it changes
-    useEffect(() => {
-        if (label.includes('Fecha')) {
-            console.log(`🔍 FIELD WITH HISTORY - Date field "${label}":`, {
-                value: field.value,
-                status: field.status,
-                hasValue: !!field.value
-            });
-        }
-    }, [field, label]);
 
     // Status options for dropdown
     const statusOptions = [
@@ -221,7 +212,7 @@ export const FieldWithHistory = ({
                         <div className="col-6">
                             <label className="block mb-1">Fecha Inicio</label>
                             <Calendar
-                                value={field.value?.start ? new Date(field.value.start) : null}
+                                value={field?.value?.start ? new Date(field.value.start) : null}
                                 onChange={(e) => handleDateRangeChange('start', e.value)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
@@ -232,7 +223,7 @@ export const FieldWithHistory = ({
                         <div className="col-6">
                             <label className="block mb-1">Fecha Fin</label>
                             <Calendar
-                                value={field.value?.end ? new Date(field.value.end) : null}
+                                value={field?.value?.end ? new Date(field.value.end) : null}
                                 onChange={(e) => handleDateRangeChange('end', e.value)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
@@ -263,7 +254,7 @@ export const FieldWithHistory = ({
             <div className="flex justify-content-between align-items-center mb-2">
                 <label className={required ? 'required' : ''}>{label}</label>
                 <div className="flex gap-2">
-                    {canViewHistory && field.history && field.history.length > 0 && <Button icon="pi pi-history" className="p-button-rounded p-button-text p-button-sm" tooltip="Ver historial" onClick={() => openHistoryDialog(field, label)} />}
+                    {canViewHistory && hasHistory(field) && field.history && field.history.length > 0 && <Button icon="pi pi-history" className="p-button-rounded p-button-text p-button-sm" tooltip="Ver historial" onClick={() => openHistoryDialog(field, label)} />}
                     {canChangeStatus && <Button icon="pi pi-comment" className="p-button-rounded p-button-text p-button-sm" tooltip="Agregar comentario" onClick={() => setShowComment(!showComment)} />}
                 </div>
             </div>
@@ -272,9 +263,16 @@ export const FieldWithHistory = ({
 
             {/* Status indicator */}
             <div className="flex justify-content-between align-items-center">
-                <div className={`text-sm px-2 py-1 border-round ${getStatusClass(field.status)}`}>{getStatusLabel(field.status)}</div>
+                <div className={`text-sm px-2 py-1 border-round ${getStatusClass(field?.status || Status.Pending
+                )}`}>{getStatusLabel(field?.status || Status.Pending)}</div>
 
-                {canChangeStatus && <Dropdown value={field.status} options={statusOptions} onChange={(e) => onStatusChange && onStatusChange(e.value)} className="p-inputtext-sm" disabled={disabled} />}
+                {canChangeStatus &&
+                    <Dropdown
+                        value={field?.status || Status.Pending}
+                        options={statusOptions}
+                        onChange={(e) => onStatusChange && onStatusChange(e.value)}
+                        className="p-inputtext-sm"
+                        disabled={disabled} />}
             </div>
 
             {/* Comment section */}

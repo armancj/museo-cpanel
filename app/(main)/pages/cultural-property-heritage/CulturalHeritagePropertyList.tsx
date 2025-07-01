@@ -14,18 +14,18 @@ import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
 import { QRCodeDialog } from '@/app/common/component/QRCodeDialog';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
-    onEditOrView?: () => void;
+    onView?: () => void;
+    onEdit?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
     heritageTypeOptions: { label: string; value: string }[];
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onView, onEdit, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
     const [qrDialogVisible, setQrDialogVisible] = useState<boolean>(false);
     const [selectedProperty, setSelectedProperty] = useState<CulturalHeritageProperty | null>(null);
@@ -203,9 +203,10 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         setData(rowData);
-                        if (onEditOrView) {
-                            onEditOrView();
-                        } else {
+                        if (onView) {
+                            onView();
+                        }
+                        else {
                             onAddNew(); // Fallback para compatibilidad
                         }
                     }}
@@ -217,8 +218,8 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         editData(rowData);
-                        if (onEditOrView) {
-                            onEditOrView();
+                        if (onEdit) {
+                            onEdit();
                         } else {
                             onAddNew(); // Fallback para compatibilidad
                         }

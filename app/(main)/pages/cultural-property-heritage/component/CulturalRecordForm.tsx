@@ -5,7 +5,7 @@ import { CulturalHeritageProperty, Status } from '../types';
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
-import { getUpdatedStatus } from '../utils/statusUtils';
+import { getFieldStatus, getUpdatedStatus } from '../utils/statusUtils';
 
 interface CulturalRecordFormProps {
     data: CulturalHeritageProperty;
@@ -63,8 +63,8 @@ export const CulturalRecordForm = ({
         const requiredFields = [
             culturalRecord.objectTitle.value,
             culturalRecord.objectDescription.value,
-            culturalRecord.extremeDates.value.start,
-            culturalRecord.extremeDates.value.end
+            culturalRecord.extremeDates?.value?.start,
+            culturalRecord.extremeDates?.value?.end
         ];
 
         const isValid = requiredFields.every(field => field !== null && field !== undefined && field !== '');
@@ -93,6 +93,23 @@ export const CulturalRecordForm = ({
     const updateField = (field: string, value: any) => {
         // Get the current field data
         const currentField = data.culturalRecord[field as keyof typeof data.culturalRecord];
+
+        if (!currentField) {
+            console.warn(`Field ${field} not found in cultural record, creating default structure`);
+            setData({
+                ...data,
+                culturalRecord: {
+                    ...data.culturalRecord,
+                    [field]: {
+                        value,
+                        status: Status.Pending,
+                        comment: '',
+                        history: []
+                    }
+                }
+            });
+            return;
+        }
 
         // Automatically update status based on whether the field is filled
         const newStatus = getUpdatedStatus(value, currentField.status as Status);
@@ -429,7 +446,7 @@ export const CulturalRecordForm = ({
                                 onChange={(value) => updateField('extremeDates', value)}
                                 onStatusChange={(status) => updateFieldStatus('extremeDates', status)}
                                 onCommentChange={(comment) => updateFieldComment('extremeDates', comment)}
-                                canEdit={canEditField(data.culturalRecord.extremeDates.status)}
+                                canEdit={canEditField(getFieldStatus(data.culturalRecord?.extremeDates))}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}

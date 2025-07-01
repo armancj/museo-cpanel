@@ -11,6 +11,8 @@ import { UserRoles } from '@/app/(main)/pages/cultural-property-heritage/types';
 
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
+    const [isViewMode, setIsViewMode] = useState(false);
+
     const isEditModeRef = useRef(false);
 
     const [currentUserRole, setCurrentUserRole] = useState<UserRoles>(UserRoles.employee);
@@ -72,10 +74,16 @@ const CulturalHeritagePropertyPage = () => {
         setShowWizard(true);
     };
 
-    const handleEditOrView = () => {
-        isEditModeRef.current = true;
+    const handleView = () => {
+        setIsViewMode(true); // Activar modo solo lectura
         setShowWizard(true);
     };
+
+    const handleEdit = () => {
+        setIsViewMode(false); // Activar modo edición
+        setShowWizard(true);
+    };
+
 
 
     const handleBackToList = () => {
@@ -121,6 +129,7 @@ const CulturalHeritagePropertyPage = () => {
                         currentUserRole={currentUserRole}
                         setCurrentUserRole={setCurrentUserRole}
                         isSuperAdmin={isSuperAdmin}
+                        isViewMode={isViewMode}
                         dropdownData={{
                             valueGradeOptions,
                             descriptionInstrumentOptions,
@@ -138,7 +147,8 @@ const CulturalHeritagePropertyPage = () => {
             ) : (
                 <CulturalHeritagePropertyList
                     onAddNew={handleAddNew}
-                    onEditOrView={handleEditOrView}
+                    onView={handleView}
+                    onEdit={handleEdit}
                     hookData={hookData}
                     heritageTypeOptions={heritageTypeOptions}
                 />
