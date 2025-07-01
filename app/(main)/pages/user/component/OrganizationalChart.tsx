@@ -19,6 +19,26 @@ export enum BackgroundVariant {
     Cross = 'cross'
 }
 
+// Paleta de colores específicos para provincias
+const PROVINCE_COLORS = {
+    'La Habana': '#e74c3c',
+    'Artemisa': '#3498db',
+    'Mayabeque': '#2ecc71',
+    'Matanzas': '#f39c12',
+    'Villa Clara': '#9b59b6',
+    'Cienfuegos': '#1abc9c',
+    'Sancti Spíritus': '#34495e',
+    'Ciego de Ávila': '#e67e22',
+    'Camagüey': '#95a5a6',
+    'Las Tunas': 'rgb(19,168,3)',
+    'Holguín': '#27ae60',
+    'Granma': '#f1c40f',
+    'Santiago de Cuba': '#c0392b',
+    'Guantánamo': '#2980b9',
+    'Pinar del Río': '#16a085',
+    'Isla de la Juventud': '#7f8c8d'
+};
+
 // Helper function to get user's institution ID (MOVIDA FUERA DEL COMPONENTE)
 const getUserInstitutionId = (user: UsersDatum): string | null => {
     if (user.institutionId) {
@@ -38,6 +58,11 @@ const getUserInstitutionId = (user: UsersDatum): string | null => {
     return null;
 };
 
+// Helper function to get province color
+const getProvinceColor = (provinceName: string): string => {
+    return PROVINCE_COLORS[provinceName as keyof typeof PROVINCE_COLORS] || '#3498db';
+};
+
 // Custom node component for geographic entities
 const GeographicNode = ({ data, id }: { data: any; id: string }) => {
     let iconClass = 'pi pi-globe';
@@ -50,11 +75,11 @@ const GeographicNode = ({ data, id }: { data: any; id: string }) => {
             break;
         case 'province':
             iconClass = 'pi pi-map';
-            nodeColor = '#4CAF50';
+            nodeColor = data.provinceColor || '#4CAF50';
             break;
         case 'municipality':
             iconClass = 'pi pi-building';
-            nodeColor = '#F44336';
+            nodeColor = data.provinceColor || '#F44336';
             break;
         case 'institution':
             iconClass = 'pi pi-home';
@@ -121,6 +146,31 @@ const GeographicNode = ({ data, id }: { data: any; id: string }) => {
                 {data.institutionName}
             </div>
 
+            {/* Indicador de color de provincia para municipios e instituciones */}
+            {(data.entityType === 'municipality' || data.entityType === 'institution') && data.provinceName && (
+                <div style={{
+                    backgroundColor: data.provinceColor,
+                    height: '4px',
+                    borderRadius: '2px',
+                    marginBottom: '8px',
+                    border: `1px solid ${data.provinceColor}`,
+                    position: 'relative'
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '-20px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '9px',
+                        color: data.provinceColor,
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap'
+                    }}>
+                        {data.provinceName}
+                    </div>
+                </div>
+            )}
+
             {data.hasChildren && (
                 <div style={{
                     backgroundColor: data.isExpanded ? '#e8f5e8' : '#fff3e0',
@@ -150,15 +200,15 @@ const UserNode = ({ data }: { data: any }) => {
             break;
         case UserRoles.administrator:
             iconClass = 'pi pi-shield';
-            nodeColor = '#F44336';
+            nodeColor = data.provinceColor || '#F44336';
             break;
         case UserRoles.manager:
             iconClass = 'pi pi-user';
-            nodeColor = '#f97316';
+            nodeColor = data.provinceColor || '#f97316';
             break;
         case UserRoles.employee:
             iconClass = 'pi pi-cog';
-            nodeColor = '#b8152d';
+            nodeColor = data.institutionColor || '#b8152d';
             break;
     }
 
@@ -231,6 +281,30 @@ const UserNode = ({ data }: { data: any }) => {
             }}>
                 {data.roles}
             </div>
+
+            {/* Indicador de provincia para usuarios */}
+            {data.provinceName && (
+                <div style={{
+                    backgroundColor: data.provinceColor,
+                    height: '3px',
+                    borderRadius: '2px',
+                    marginBottom: '4px',
+                    position: 'relative'
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '-15px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '8px',
+                        color: data.provinceColor,
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap'
+                    }}>
+                        {data.provinceName}
+                    </div>
+                </div>
+            )}
 
             {data.institutionName && data.institutionName !== data.roles && (
                 <div style={{
@@ -323,7 +397,6 @@ const OrganizationalChartFlow = ({
 
     // Toggle expansion
     const toggleNodeExpansion = useCallback((nodeId: string) => {
-
         setExpandedNodes(prev => {
             const newSet = new Set(prev);
             if (newSet.has(nodeId)) {
@@ -382,7 +455,6 @@ const OrganizationalChartFlow = ({
 
     // Check if entity has direct children (CORREGIDO)
     const hasDirectChildren = useCallback((entityType: string, entityId: string, entityName?: string) => {
-
         switch (entityType) {
             case 'country':
                 // Solo cuenta provincias que tienen usuarios
@@ -412,7 +484,7 @@ const OrganizationalChartFlow = ({
                 const hasManagersInMunicipality = filteredUsers.some(u =>
                     u.roles === UserRoles.manager && u.municipal === entityName
                 );
-               return hasInstitutionsWithUsers || hasManagersInMunicipality;
+                return hasInstitutionsWithUsers || hasManagersInMunicipality;
 
             case 'institution':
                 // Solo cuenta empleados en esta institución (CORREGIDO)
@@ -452,7 +524,6 @@ const OrganizationalChartFlow = ({
                 break;
 
             case 'municipality':
-
                 // Cuenta instituciones con usuarios + managers de este municipio
                 const institutionsInMunicipality = institutions.filter(i => i.municipality === entityName);
 
@@ -484,20 +555,23 @@ const OrganizationalChartFlow = ({
         return count;
     }, [provinces, municipalities, institutions, filteredUsers, provinceHasUsers, municipalityHasUsers, institutionHasUsers]);
 
-    // Create edge
+    // Create edge with improved styling
     const createEdge = useCallback((sourceId: string, targetId: string, color: string): Edge => ({
         id: `edge-${sourceId}-${targetId}`,
         source: sourceId,
         target: targetId,
-        type: 'smoothstep',
+        type: 'default', // Cambiado a 'default' para mejor visibilidad
         animated: true,
         style: {
             stroke: color,
-            strokeWidth: 3,
+            strokeWidth: 4, // Líneas más gruesas
+            strokeDasharray: '5,5', // Líneas punteadas para mejor visibilidad
         },
         markerEnd: {
             type: MarkerType.ArrowClosed,
             color: color,
+            width: 20,
+            height: 20,
         },
     }), []);
 
@@ -547,6 +621,7 @@ const OrganizationalChartFlow = ({
                     const hasChildren = hasDirectChildren('province', province.uuid, province.name);
                     const isProvinceExpanded = expandedNodes.has(provinceNodeId);
                     const childrenCount = getDirectChildrenCount('province', province.uuid, province.name);
+                    const provinceColor = getProvinceColor(province.name);
 
                     treeNodes.push({
                         id: provinceNodeId,
@@ -557,6 +632,8 @@ const OrganizationalChartFlow = ({
                             name: province.name,
                             institutionName: 'Provincia',
                             entityType: 'province',
+                            provinceColor,
+                            provinceName: province.name,
                             hasChildren,
                             isExpanded: isProvinceExpanded,
                             childrenCount,
@@ -564,7 +641,7 @@ const OrganizationalChartFlow = ({
                         }
                     });
 
-                    allEdges.push(createEdge(countryNodeId, provinceNodeId, '#4CAF50'));
+                    allEdges.push(createEdge(countryNodeId, provinceNodeId, provinceColor));
 
                     // Level 2: Administrators + Municipalities
                     if (isProvinceExpanded) {
@@ -591,12 +668,13 @@ const OrganizationalChartFlow = ({
                                     lastName: admin.lastName,
                                     roles: admin.roles,
                                     institutionName: `Admin. ${admin.province}`,
-                                    institutionColor: '#F44336',
+                                    provinceColor,
+                                    provinceName: admin.province,
                                     avatarUrl,
                                 }
                             });
 
-                            allEdges.push(createEdge(provinceNodeId, adminNodeId, '#F44336'));
+                            allEdges.push(createEdge(provinceNodeId, adminNodeId, provinceColor));
                         });
 
                         // Municipalities
@@ -619,6 +697,8 @@ const OrganizationalChartFlow = ({
                                     name: municipality.name,
                                     institutionName: 'Municipio',
                                     entityType: 'municipality',
+                                    provinceColor,
+                                    provinceName: province.name,
                                     hasChildren,
                                     isExpanded: isMunicipalityExpanded,
                                     childrenCount,
@@ -626,7 +706,7 @@ const OrganizationalChartFlow = ({
                                 }
                             });
 
-                            allEdges.push(createEdge(provinceNodeId, municipalityNodeId, '#ff0741'));
+                            allEdges.push(createEdge(provinceNodeId, municipalityNodeId, provinceColor));
 
                             // Level 3: Managers + Institutions
                             if (isMunicipalityExpanded) {
@@ -653,12 +733,13 @@ const OrganizationalChartFlow = ({
                                             lastName: manager.lastName,
                                             roles: manager.roles,
                                             institutionName: `Especialista ${municipality.name}`,
-                                            institutionColor: '#4CAF50',
+                                            provinceColor,
+                                            provinceName: province.name,
                                             avatarUrl,
                                         }
                                     });
 
-                                    allEdges.push(createEdge(municipalityNodeId, managerNodeId, '#4CAF50'));
+                                    allEdges.push(createEdge(municipalityNodeId, managerNodeId, provinceColor));
                                 });
 
                                 // Institutions
@@ -685,6 +766,8 @@ const OrganizationalChartFlow = ({
                                             institutionName: 'Institución',
                                             entityType: 'institution',
                                             institutionColor,
+                                            provinceColor,
+                                            provinceName: province.name,
                                             hasChildren,
                                             isExpanded: isInstitutionExpanded,
                                             childrenCount,
@@ -721,6 +804,8 @@ const OrganizationalChartFlow = ({
                                                     roles: employee.roles,
                                                     institutionName: institution.name,
                                                     institutionColor,
+                                                    provinceColor,
+                                                    provinceName: province.name,
                                                     avatarUrl,
                                                 }
                                             });
@@ -843,7 +928,7 @@ const OrganizationalChartFlow = ({
             <MiniMap
                 nodeColor={(node: Node) => {
                     if (node.type === 'geographicNode') return '#e0e0e0';
-                    return node.data?.institutionColor || '#2196F3';
+                    return node.data?.institutionColor || node.data?.provinceColor || '#2196F3';
                 }}
                 maskColor="rgba(240, 240, 240, 0.8)"
             />
@@ -915,8 +1000,10 @@ export const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
                 const institutionsData = await InstitutionService.getInstitutions({});
                 setInstitutions(institutionsData);
 
+                // CAMBIO: Permitir acceso a todos los roles, no solo superAdmin
                 switch (authUser.roles) {
                     case UserRoles.superAdmin:
+                        // SuperAdmin ve todo el organigrama
                         const countriesData = await CountryService.getCountries({});
                         setCountries(countriesData);
                         const allProvinces = await ProvinceService.getProvinces({});
@@ -927,6 +1014,7 @@ export const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
                         break;
 
                     case UserRoles.administrator:
+                        // Administrator ve su país, provincia y subordinados
                         if (authUser.nationality) {
                             const countryData = await CountryService.getCountries({ name: authUser.nationality });
                             setCountries(countryData);
@@ -944,6 +1032,7 @@ export const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
                         break;
 
                     case UserRoles.manager:
+                        // Manager ve su país, provincia, municipio y subordinados
                         if (authUser.nationality && authUser.province && authUser.municipal) {
                             const countryData = await CountryService.getCountries({ name: authUser.nationality });
                             setCountries(countryData);
@@ -960,6 +1049,16 @@ export const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
                         break;
 
                     case UserRoles.employee:
+                        // Employee ve su organización jerárquica limitada
+                        if (authUser.nationality && authUser.province && authUser.municipal) {
+                            const countryData = await CountryService.getCountries({ name: authUser.nationality });
+                            setCountries(countryData);
+                            const provinceData = await ProvinceService.getProvinces({ name: authUser.province });
+                            setProvinces(provinceData);
+                            const municipalityData = await MunicipalityService.getMunicipalities({ name: authUser.municipal });
+                            setMunicipalities(municipalityData);
+                        }
+
                         if (authUser.institutionId || authUser.institution) {
                             const authInstitution = authUser.institutionId || authUser.institution;
                             setFilteredUsers(users.filter(user =>
