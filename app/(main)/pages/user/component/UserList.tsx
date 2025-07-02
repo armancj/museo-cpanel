@@ -9,8 +9,8 @@ import { UserTable } from '@/app/(main)/pages/user/component/UserTable';
 import { emptyUser, useManagement } from '@/app/(main)/pages/user/hooks/useManagement';
 import { DataTable } from 'primereact/datatable';
 import { UserToolbar } from '@/app/(main)/pages/user/component/UserToolbar';
-import { OrganizationalChart } from '@/app/(main)/pages/user/component/OrganizationalChart';
 import { createdExportExcel } from '@/app/(main)/pages/util/export.functions';
+import OrganizationalChart from '@/app/(main)/pages/user/component/OrganizationalChart';
 
 
 export const UserList = () => {

@@ -27,7 +27,7 @@ const CulturalPropertyTable = ({ latestEntries, loading }: { latestEntries: any[
     };
 
     const truncateText = (text: string, maxLength: number = 50): string => {
-        if (!text || text.length <= maxLength) return text || '';
+        if (!text || text.length <= maxLength) return text || 'Sin Titulo';
         return text.substring(0, maxLength).trim() + '...';
     };
 
@@ -62,7 +62,7 @@ const CulturalPropertyTable = ({ latestEntries, loading }: { latestEntries: any[
                                 color: '#007ad9',
                                 fontWeight: '500'
                             }}
-                            title={data?.culturalRecord?.objectTitle?.value}
+                            title={data?.culturalRecord?.objectTitle?.value ||  'Sin Titulo'}
                         >
                             {truncateText(data?.culturalRecord?.objectTitle?.value, 15)}
                         </span>
