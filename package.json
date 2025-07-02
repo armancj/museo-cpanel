@@ -22,7 +22,6 @@
         "jspdf": "^2.5.1",
         "jwt-decode": "^4.0.0",
         "next": "15.2.3",
-        "nextjs-cors": "^2.2.0",
         "primeflex": "^3.3.1",
         "primeicons": "^6.0.1",
         "primereact": "10.2.1",
@@ -35,8 +34,8 @@
         "zod": "^3.23.8"
     },
     "devDependencies": {
-        "@types/dagre": "^0.7.53",
         "@playwright/test": "^1.41.2",
+        "@types/dagre": "^0.7.53",
         "eslint": "8.43.0",
         "eslint-config-next": "13.4.6",
         "prettier": "^2.8.8",
