@@ -37,7 +37,6 @@ export interface UsersDatum {
     deleted:     boolean;
     institution: string | InstitutionResponse;
     institutionId?: string;
-
 }
 
 export interface Avatar {

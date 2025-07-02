@@ -1,358 +1,1095 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
-import ReactFlow, { Background, Controls, Edge, MarkerType, MiniMap, Node, Panel, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from 'reactflow';
-import 'reactflow/dist/style.css';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import ReactFlow, {
+    Node,
+    Edge,
+    Controls,
+    Background,
+    useNodesState,
+    useEdgesState,
+    Position,
+    NodeTypes,
+    MiniMap,
+    Panel,
+    useReactFlow,
+    ReactFlowProvider,
+    Handle
+} from 'reactflow';
 import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Badge } from 'primereact/badge';
+import { Card } from 'primereact/card';
 import { UsersDatum } from '@/app/service/UserService';
-import { InstitutionResponse, InstitutionService } from '@/app/service/InstitutionService';
-import { FileStorageService } from '@/app/service/FileStorageService';
-import { CountryResponse, CountryService } from '@/app/service/CountryService';
-import { ProvinceResponse, ProvinceService } from '@/app/service/ProvinceService';
-import { MunicipalityResponse, MunicipalityService } from '@/app/service/MunicipalityService';
 import { UserRoles } from '@/app/(main)/pages/cultural-property-heritage/types';
 import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import 'reactflow/dist/style.css';
+import * as jsPDF from 'jspdf';
+import { InstitutionResponse } from '@/app/service/InstitutionService';
 
-export enum BackgroundVariant {
-    Lines = 'lines',
-    Dots = 'dots',
-    Cross = 'cross'
+const PROVINCE_COLORS = {
+    'La Habana': '#e74c3c',
+    'Artemisa': '#3498db',
+    'Mayabeque': '#2ecc71',
+    'Matanzas': '#f39c12',
+    'Villa Clara': '#9b59b6',
+    'Cienfuegos': '#1abc9c',
+    'Sancti Spíritus': '#34495e',
+    'Ciego de Ávila': '#e67e22',
+    'Camagüey': '#95a5a6',
+    'Las Tunas': '#8e44ad',
+    'Holguín': '#27ae60',
+    'Granma': '#f1c40f',
+    'Santiago de Cuba': '#c0392b',
+    'Guantánamo': '#2980b9',
+    'Pinar del Río': '#16a085',
+    'Isla de la Juventud': '#7f8c8d'
+};
+
+// Paleta de colores para municipios (diferentes tonos)
+const MUNICIPALITY_COLORS = [
+    '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+    '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#8e44ad',
+    '#27ae60', '#f1c40f', '#c0392b', '#2980b9', '#16a085',
+    '#7f8c8d', '#d35400', '#8e44ad', '#2c3e50', '#27ae60'
+];
+
+// Paleta de colores para instituciones (tonos más suaves)
+const INSTITUTION_COLORS = [
+    '#ec7063', '#5dade2', '#58d68d', '#f7dc6f', '#bb8fce',
+    '#76d7c4', '#85929e', '#f0b27a', '#a9b2b6', '#d2b4de',
+    '#82e0aa', '#f9e79f', '#cd6155', '#5499c7', '#52c4a5',
+    '#909497', '#dc7633', '#a569bd', '#34495e', '#58d68d'
+];
+
+// Estructura del árbol jerárquico
+interface TreeNode {
+    id: string;
+    name: string;
+    type: 'root' | 'country' | 'province' | 'municipality' | 'institution' | 'user' | 'superAdmin';
+    children: TreeNode[];
+    data?: any;
+    users?: UsersDatum[];
 }
 
-// Helper function to get user's institution ID (MOVIDA FUERA DEL COMPONENTE)
+// Helper functions
 const getUserInstitutionId = (user: UsersDatum): string | null => {
     if (user.institutionId) {
         return String(user.institutionId);
     }
-
     if (user.institution) {
         if (typeof user.institution === 'object') {
-            // Si institution es un objeto, extraer el UUID
             return (user.institution as any).uuid || (user.institution as any).id || null;
         } else {
-            // Si institution es un string, usarlo directamente
             return String(user.institution);
         }
     }
-
     return null;
 };
 
-// Custom node component for geographic entities
-const GeographicNode = ({ data, id }: { data: any; id: string }) => {
-    let iconClass = 'pi pi-globe';
-    let nodeColor = '#2196F3';
+const getProvinceColor = (provinceName: string): string => {
+    return PROVINCE_COLORS[provinceName as keyof typeof PROVINCE_COLORS] || '#3498db';
+};
 
-    switch (data.entityType) {
-        case 'country':
-            iconClass = 'pi pi-globe';
-            nodeColor = '#2196F3';
-            break;
-        case 'province':
-            iconClass = 'pi pi-map';
-            nodeColor = '#4CAF50';
-            break;
-        case 'municipality':
-            iconClass = 'pi pi-building';
-            nodeColor = '#F44336';
-            break;
-        case 'institution':
-            iconClass = 'pi pi-home';
-            nodeColor = data.institutionColor || '#9C27B0';
-            break;
-    }
+const getMunicipalityColor = (index: number): string => {
+    return MUNICIPALITY_COLORS[index % MUNICIPALITY_COLORS.length];
+};
 
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
+const getInstitutionColor = (index: number): string => {
+    return INSTITUTION_COLORS[index % INSTITUTION_COLORS.length];
+};
 
-        if (data.hasChildren && data.onToggleExpand) {
-            data.onToggleExpand(id);
+
+const buildOrgChartTree = (usersData: UsersDatum[]): TreeNode => {
+    const activeUsers = usersData.filter(user => user.active);
+
+    // Usuarios con ubicación geográfica
+    const locationUsers = activeUsers.filter(user =>
+        user.nationality && user.province &&
+        user.roles !== 'Super Administrador' && user.roles !== UserRoles.superAdmin
+    );
+
+    const countriesMap = new Map<string, TreeNode>();
+    const provincesMap = new Map<string, TreeNode>();
+    const municipalitiesMap = new Map<string, TreeNode>();
+    const institutionsMap = new Map<string, TreeNode>();
+
+    locationUsers.forEach(user => {
+        const countryName = user.nationality!;
+        const provinceName = user.province!;
+        const municipalName = user.municipal;
+        const institutionId = getUserInstitutionId(user);
+        const institutionName = (user.institution as InstitutionResponse)?.name ||
+            (typeof user.institution === 'object' ? user.institution.name : null);
+
+        if (!countriesMap.has(countryName)) {
+            countriesMap.set(countryName, {
+                id: `country-${countryName}`,
+                name: countryName,
+                type: 'country',
+                children: [],
+                users: []
+            });
         }
+        const countryNode = countriesMap.get(countryName)!;
+
+        const provinceKey = `${countryName}-${provinceName}`;
+        if (!provincesMap.has(provinceKey)) {
+            const provinceNode: TreeNode = {
+                id: `province-${provinceKey}`,
+                name: provinceName,
+                type: 'province',
+                children: [],
+                users: [],
+                data: { countryName }
+            };
+            provincesMap.set(provinceKey, provinceNode);
+            countryNode.children.push(provinceNode);
+        }
+        const provinceNode = provincesMap.get(provinceKey)!;
+
+        if (user.roles === 'Administrador' || user.roles === UserRoles.administrator) {
+            provinceNode.users = provinceNode.users || [];
+            provinceNode.users.push(user);
+            return;
+        }
+
+        if (!municipalName) {
+            provinceNode.users = provinceNode.users || [];
+            provinceNode.users.push(user);
+            return;
+        }
+
+        const municipalKey = `${provinceKey}-${municipalName}`;
+        if (!municipalitiesMap.has(municipalKey)) {
+            const municipalNode: TreeNode = {
+                id: `municipality-${municipalKey}`,
+                name: municipalName,
+                type: 'municipality',
+                children: [],
+                users: [],
+                data: { countryName, provinceName }
+            };
+            municipalitiesMap.set(municipalKey, municipalNode);
+            provinceNode.children.push(municipalNode);
+        }
+        const municipalNode = municipalitiesMap.get(municipalKey)!;
+
+        if (user.roles === 'Especialista' || user.roles === UserRoles.manager) {
+            municipalNode.users = municipalNode.users || [];
+            municipalNode.users.push(user);
+            return;
+        }
+
+        if (!institutionId || !institutionName) {
+            municipalNode.users = municipalNode.users || [];
+            municipalNode.users.push(user);
+            return;
+        }
+
+        const institutionKey = `${municipalKey}-${institutionId}`;
+        if (!institutionsMap.has(institutionKey)) {
+            const institutionNode: TreeNode = {
+                id: `institution-${institutionKey}`,
+                name: institutionName,
+                type: 'institution',
+                children: [],
+                users: [],
+                data: {
+                    countryName,
+                    provinceName,
+                    municipalName,
+                    institutionId,
+                    uuid: institutionId
+                }
+            };
+            institutionsMap.set(institutionKey, institutionNode);
+            municipalNode.children.push(institutionNode);
+        }
+        const institutionNode = institutionsMap.get(institutionKey)!;
+
+        institutionNode.users = institutionNode.users || [];
+        institutionNode.users.push(user);
+    });
+
+    const rootNode: TreeNode = {
+        id: 'root',
+        name: 'Organigrama',
+        type: 'root',
+        children: []
     };
 
-    return (
-        <div
-            className="geographic-node"
-            style={{
-                background: 'white',
-                border: `3px solid ${nodeColor}`,
-                borderRadius: '12px',
-                width: '180px',
-                padding: '12px',
-                textAlign: 'center',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                cursor: data.hasChildren ? 'pointer' : 'default',
-                userSelect: 'none'
-            }}
-            onClick={handleClick}
+    countriesMap.forEach(country => {
+        rootNode.children.push(country);
+    });
+
+    return rootNode;
+};
+
+// Node Types
+interface NodeData {
+    label: string;
+    type: 'root' | 'country' | 'province' | 'municipality' | 'institution' | 'user' | 'superAdmin';
+    role?: string;
+    provinceName?: string;
+    provinceColor?: string;
+    municipalityColor?: string;
+    institutionColor?: string;
+    avatarUrl?: string;
+    description?: string;
+    uuid?: string;
+    email?: string;
+    phone?: string;
+    institutionName?: string;
+    fullName?: string;
+    childrenCount?: number;
+    expanded?: boolean;
+    onToggle?: () => void;
+}
+
+// Country Node Component
+const CountryNode = ({ data }: { data: NodeData }) => (
+    <>
+        <Handle type="source" position={Position.Bottom} />
+        <div style={{
+            background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+            color: 'white',
+            padding: '25px 35px',
+            borderRadius: '20px',
+            boxShadow: '0 12px 35px rgba(44, 62, 80, 0.25)',
+            border: '4px solid #34495e',
+            minWidth: '280px',
+            textAlign: 'center',
+            cursor: data.onToggle ? 'pointer' : 'default',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden'
+        }}
+             onClick={data.onToggle}
+             onMouseEnter={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1.05)';
+                     e.currentTarget.style.boxShadow = '0 20px 50px rgba(44, 62, 80, 0.35)';
+                 }
+             }}
+             onMouseLeave={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1)';
+                     e.currentTarget.style.boxShadow = '0 12px 35px rgba(44, 62, 80, 0.25)';
+                 }
+             }}
         >
-            <div style={{ marginBottom: '8px' }}>
-                <div
-                    style={{
-                        width: '50px',
-                        height: '50px',
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '6px',
+                background: 'linear-gradient(90deg, #3498db, #2ecc71, #f39c12, #e74c3c)',
+            }} />
+            <div style={{ fontSize: '28px', marginBottom: '12px' }}>🇨🇺</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}>{data.label}</div>
+            <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '15px' }}>República de Cuba</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
+                {data.childrenCount && (
+                    <Badge
+                        value={`${data.childrenCount} provincias`}
+                        style={{
+                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '6px 12px'
+                        }}
+                    />
+                )}
+                {data.onToggle && (
+                    <div style={{
+                        width: '32px',
+                        height: '32px',
                         borderRadius: '50%',
-                        backgroundColor: nodeColor,
+                        backgroundColor: 'rgba(255,255,255,0.3)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        margin: '0 auto',
-                        color: 'white',
-                        fontSize: '1.5rem'
-                    }}
-                >
-                    <i className={iconClass}></i>
-                </div>
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        transition: 'all 0.2s ease'
+                    }}>
+                        {data.expanded ? '−' : '+'}
+                    </div>
+                )}
             </div>
+        </div>
+    </>
+);
 
-            <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '4px', color: '#2c3e50' }}>
-                {data.name}
-            </div>
-
+// Province Node Component
+const ProvinceNode = ({ data }: { data: NodeData }) => (
+    <>
+        <Handle type="target" position={Position.Top} />
+        <Handle type="source" position={Position.Bottom} />
+        <div style={{
+            background: `linear-gradient(135deg, ${data.provinceColor} 0%, ${data.provinceColor}dd 100%)`,
+            color: 'white',
+            padding: '20px 30px',
+            borderRadius: '16px',
+            boxShadow: `0 10px 30px ${data.provinceColor}40`,
+            border: `3px solid ${data.provinceColor}`,
+            minWidth: '240px',
+            textAlign: 'center',
+            cursor: data.onToggle ? 'pointer' : 'default',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            transition: 'all 0.3s ease',
+            position: 'relative'
+        }}
+             onClick={data.onToggle}
+             onMouseEnter={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1.05)';
+                     e.currentTarget.style.boxShadow = `0 15px 40px ${data.provinceColor}60`;
+                 }
+             }}
+             onMouseLeave={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1)';
+                     e.currentTarget.style.boxShadow = `0 10px 30px ${data.provinceColor}40`;
+                 }
+             }}
+        >
             <div style={{
-                backgroundColor: nodeColor,
-                color: 'white',
-                borderRadius: '8px',
-                padding: '4px 8px',
-                fontSize: '11px',
-                display: 'inline-block',
-                marginBottom: '8px'
-            }}>
-                {data.institutionName}
+                position: 'absolute',
+                top: '-8px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: data.provinceColor,
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '10px',
+                fontWeight: 'bold',
+                border: '2px solid white'
+            }}>PROVINCIA</div>
+            <div style={{ fontSize: '24px', marginBottom: '10px', marginTop: '8px' }}>🗺️</div>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>{data.label}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
+                {data.childrenCount && (
+                    <Badge
+                        value={data.childrenCount}
+                        style={{
+                            backgroundColor: 'rgba(255,255,255,0.3)',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px 8px'
+                        }}
+                    />
+                )}
+                {data.onToggle && (
+                    <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(255,255,255,0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '16px',
+                        fontWeight: 'bold'
+                    }}>
+                        {data.expanded ? '−' : '+'}
+                    </div>
+                )}
             </div>
+        </div>
+    </>
+);
 
-            {data.hasChildren && (
+// Municipality Node Component
+const MunicipalityNode = ({ data }: { data: NodeData }) => (
+    <>
+        <Handle type="target" position={Position.Top} />
+        <Handle type="source" position={Position.Bottom} />
+        <div style={{
+            background: `linear-gradient(135deg, ${data.municipalityColor} 0%, ${data.municipalityColor}dd 100%)`,
+            color: 'white',
+            padding: '16px 24px',
+            borderRadius: '14px',
+            boxShadow: `0 8px 25px ${data.municipalityColor}30`,
+            border: `2px solid ${data.municipalityColor}`,
+            minWidth: '200px',
+            textAlign: 'center',
+            cursor: data.onToggle ? 'pointer' : 'default',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            transition: 'all 0.3s ease',
+            position: 'relative'
+        }}
+             onClick={data.onToggle}
+             onMouseEnter={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1.05)';
+                     e.currentTarget.style.boxShadow = `0 12px 35px ${data.municipalityColor}50`;
+                 }
+             }}
+             onMouseLeave={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1)';
+                     e.currentTarget.style.boxShadow = `0 8px 25px ${data.municipalityColor}30`;
+                 }
+             }}
+        >
+            <div style={{
+                position: 'absolute',
+                top: '-6px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: data.municipalityColor,
+                padding: '2px 8px',
+                borderRadius: '8px',
+                fontSize: '9px',
+                fontWeight: 'bold',
+                border: '1px solid white'
+            }}>MUNICIPIO</div>
+            <div style={{ fontSize: '20px', marginBottom: '8px', marginTop: '6px' }}>🏛️</div>
+            <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '6px' }}>{data.label}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center' }}>
+                {data.childrenCount && (
+                    <Badge
+                        value={data.childrenCount}
+                        style={{
+                            backgroundColor: 'rgba(255,255,255,0.4)',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '3px 6px'
+                        }}
+                    />
+                )}
+                {data.onToggle && (
+                    <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(255,255,255,0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                    }}>
+                        {data.expanded ? '−' : '+'}
+                    </div>
+                )}
+            </div>
+        </div>
+    </>
+);
+
+// Institution Node Component
+const InstitutionNode = ({ data }: { data: NodeData }) => (
+    <>
+        <Handle type="target" position={Position.Top} />
+        <Handle type="source" position={Position.Bottom} />
+        <div style={{
+            background: `linear-gradient(135deg, ${data.institutionColor} 0%, ${data.institutionColor}dd 100%)`,
+            color: 'white',
+            padding: '18px 28px',
+            borderRadius: '16px',
+            boxShadow: `0 10px 30px ${data.institutionColor}40`,
+            border: `3px solid ${data.institutionColor}`,
+            minWidth: '260px',
+            textAlign: 'center',
+            cursor: data.onToggle ? 'pointer' : 'default',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            position: 'relative',
+            transition: 'all 0.3s ease'
+        }}
+             onClick={data.onToggle}
+             onMouseEnter={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1.05)';
+                     e.currentTarget.style.boxShadow = `0 15px 40px ${data.institutionColor}60`;
+                 }
+             }}
+             onMouseLeave={(e) => {
+                 if (data.onToggle) {
+                     e.currentTarget.style.transform = 'scale(1)';
+                     e.currentTarget.style.boxShadow = `0 10px 30px ${data.institutionColor}40`;
+                 }
+             }}
+        >
+            <div style={{
+                position: 'absolute',
+                top: '-8px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: data.institutionColor,
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '10px',
+                fontWeight: 'bold',
+                border: '2px solid white'
+            }}>INSTITUCIÓN</div>
+            <div style={{ fontSize: '24px', marginBottom: '10px', marginTop: '8px' }}>🏢</div>
+            <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>
+                {data.label.length > 30 ? `${data.label.substring(0, 30)}...` : data.label}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
+                {data.childrenCount && (
+                    <Badge
+                        value={`${data.childrenCount} empleados`}
+                        style={{
+                            backgroundColor: 'rgba(255,255,255,0.3)',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px 8px'
+                        }}
+                    />
+                )}
+                {data.onToggle && (
+                    <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(255,255,255,0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '16px',
+                        fontWeight: 'bold'
+                    }}>
+                        {data.expanded ? '−' : '+'}
+                    </div>
+                )}
+            </div>
+            {/* Province indicator stripe */}
+            {data.provinceName && (
                 <div style={{
-                    backgroundColor: data.isExpanded ? '#e8f5e8' : '#fff3e0',
-                    border: `1px solid ${nodeColor}30`,
-                    borderRadius: '6px',
-                    padding: '4px 8px',
-                    fontSize: '10px',
-                    fontWeight: 'bold',
-                    color: nodeColor
-                }}>
-                    {data.isExpanded ? '▼ CONTRAER' : '▶ EXPANDIR'} ({data.childrenCount})
-                </div>
+                    position: 'absolute',
+                    bottom: '0',
+                    left: '0',
+                    right: '0',
+                    height: '6px',
+                    background: `linear-gradient(90deg, ${data.provinceColor}, ${data.provinceColor}dd)`,
+                    borderBottomLeftRadius: '13px',
+                    borderBottomRightRadius: '13px'
+                }} />
             )}
         </div>
-    );
-};
+    </>
+);
 
-// Custom node component for users
-const UserNode = ({ data }: { data: any }) => {
-    let nodeColor = data.institutionColor || '#2196F3';
-    let iconClass = 'pi pi-user';
+// User Node Component
+const UserNode = ({ data }: { data: NodeData }) => {
+    const getRoleColor = () => {
+        switch (data.role) {
+            case UserRoles.superAdmin:
+            case 'Super Administrador':
+                return '#8e44ad';
+            case UserRoles.administrator:
+            case 'Administrador':
+                return data.provinceColor || '#e74c3c';
+            case UserRoles.manager:
+            case 'Especialista':
+                return data.municipalityColor || '#f39c12';
+            case UserRoles.employee:
+            case 'Técnico':
+                return data.institutionColor || '#27ae60';
+            default:
+                return '#3498db';
+        }
+    };
 
-    switch (data.roles) {
-        case UserRoles.superAdmin:
-            iconClass = 'pi pi-star';
-            nodeColor = '#9C27B0';
-            break;
-        case UserRoles.administrator:
-            iconClass = 'pi pi-shield';
-            nodeColor = '#F44336';
-            break;
-        case UserRoles.manager:
-            iconClass = 'pi pi-user';
-            nodeColor = '#f97316';
-            break;
-        case UserRoles.employee:
-            iconClass = 'pi pi-cog';
-            nodeColor = '#b8152d';
-            break;
-    }
+    const getRoleIcon = () => {
+        switch (data.role) {
+            case UserRoles.superAdmin:
+            case 'Super Administrador':
+                return '⭐';
+            case UserRoles.administrator:
+            case 'Administrador':
+                return '🛡️';
+            case UserRoles.manager:
+            case 'Especialista':
+                return '👤';
+            case UserRoles.employee:
+            case 'Técnico':
+                return '⚙️';
+            default:
+                return '👤';
+        }
+    };
 
-    let avatarContent;
-    if (data.avatarUrl &&
-        !data.avatarUrl.includes('user.png') &&
-        !data.avatarUrl.includes('cog.png') &&
-        !data.avatarUrl.includes('shield.png') &&
-        !data.avatarUrl.includes('star.png') &&
-        !data.avatarUrl.includes('/layout/images/')) {
-        avatarContent = (
-            <img
-                src={data.avatarUrl}
-                alt={data.name}
-                style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: `3px solid ${nodeColor}`
-                }}
-            />
-        );
-    } else {
-        avatarContent = (
-            <div
-                style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    backgroundColor: nodeColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '1.8rem'
-                }}
-            >
-                <i className={iconClass}></i>
-            </div>
-        );
-    }
+    const getRoleTitle = () => {
+        switch (data.role) {
+            case UserRoles.superAdmin:
+            case 'Super Administrador':
+                return 'Super Administrador';
+            case UserRoles.administrator:
+            case 'Administrador':
+                return 'Administrador Provincial';
+            case UserRoles.manager:
+            case 'Especialista':
+                return 'Especialista Municipal';
+            case UserRoles.employee:
+            case 'Técnico':
+                return 'Técnico';
+            default:
+                return 'Usuario';
+        }
+    };
+
+    const roleColor = getRoleColor();
 
     return (
-        <div style={{
-            background: 'white',
-            border: `3px solid ${nodeColor}`,
-            borderRadius: '12px',
-            width: '200px',
-            padding: '12px',
-            textAlign: 'center',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-        }}>
-            <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>
-                {avatarContent}
-            </div>
-
-            <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '4px', color: '#2c3e50' }}>
-                {data.name} {data.lastName}
-            </div>
-
+        <>
+            <Handle type="target" position={Position.Top} />
             <div style={{
-                backgroundColor: nodeColor,
-                color: 'white',
-                borderRadius: '8px',
-                padding: '4px 8px',
-                fontSize: '11px',
-                display: 'inline-block',
-                marginBottom: '4px'
-            }}>
-                {data.roles}
-            </div>
-
-            {data.institutionName && data.institutionName !== data.roles && (
+                background: 'white',
+                border: `4px solid ${roleColor}`,
+                borderRadius: '20px',
+                padding: '0',
+                minWidth: '300px',
+                maxWidth: '300px',
+                boxShadow: `0 12px 40px ${roleColor}30`,
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                overflow: 'hidden',
+                transition: 'all 0.3s ease'
+            }}
+                 onMouseEnter={(e) => {
+                     e.currentTarget.style.transform = 'scale(1.03)';
+                     e.currentTarget.style.boxShadow = `0 20px 60px ${roleColor}40`;
+                 }}
+                 onMouseLeave={(e) => {
+                     e.currentTarget.style.transform = 'scale(1)';
+                     e.currentTarget.style.boxShadow = `0 12px 40px ${roleColor}30`;
+                 }}
+            >
+                {/* Header con degradado */}
                 <div style={{
-                    backgroundColor: `${nodeColor}20`,
-                    color: nodeColor,
-                    borderRadius: '6px',
-                    padding: '2px 6px',
-                    fontSize: '10px',
-                    border: `1px solid ${nodeColor}40`
+                    background: `linear-gradient(135deg, ${roleColor} 0%, ${roleColor}dd 100%)`,
+                    padding: '20px',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '15px',
+                    position: 'relative'
                 }}>
-                    {data.institutionName}
+                    {/* Avatar */}
+                    <div style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '50%',
+                        background: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '3px solid rgba(255,255,255,0.3)',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                    }}>
+                        {data.avatarUrl && !data.avatarUrl.includes('bamboo-watch.jpg') ? (
+                            <img
+                                src={data.avatarUrl}
+                                alt={data.label}
+                                style={{
+                                    width: '54px',
+                                    height: '54px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover'
+                                }}
+                            />
+                        ) : (
+                            <span style={{ fontSize: '28px', color: roleColor }}>
+                                {getRoleIcon()}
+                            </span>
+                        )}
+                    </div>
+
+                    {/* Nombre y rol */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            marginBottom: '4px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                        }}>
+                            {data.label}
+                        </div>
+                        <div style={{
+                            fontSize: '12px',
+                            opacity: 0.95,
+                            fontWeight: '600',
+                            background: 'rgba(255,255,255,0.2)',
+                            padding: '2px 8px',
+                            borderRadius: '8px',
+                            display: 'inline-block'
+                        }}>
+                            {getRoleTitle()}
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+
+                {/* Cuerpo de la tarjeta */}
+                <div style={{ padding: '16px' }}>
+                    {/* Institución */}
+                    {data.institutionName && (
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px',
+                            marginBottom: '12px',
+                            padding: '12px',
+                            background: `linear-gradient(135deg, ${roleColor}10, ${roleColor}05)`,
+                            borderRadius: '8px',
+                            border: `2px solid ${roleColor}20`
+                        }}>
+                            <span style={{ fontSize: '16px', flexShrink: 0 }}>🏢</span>
+                            <div>
+                                <div style={{
+                                    fontSize: '12px',
+                                    fontWeight: '700',
+                                    color: '#2c3e50',
+                                    lineHeight: '1.3',
+                                    marginBottom: '2px'
+                                }}>
+                                    {data.institutionName.length > 25 ? `${data.institutionName.substring(0, 25)}...` : data.institutionName}
+                                </div>
+                                <div style={{
+                                    fontSize: '10px',
+                                    color: '#7f8c8d',
+                                    fontWeight: '500'
+                                }}>
+                                    Institución de trabajo
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Información de contacto */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {data.email && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '11px',
+                                color: '#555',
+                                padding: '6px 10px',
+                                backgroundColor: '#f8f9fa',
+                                borderRadius: '6px'
+                            }}>
+                                <span style={{ fontSize: '14px' }}>✉️</span>
+                                <span style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    flex: 1,
+                                    fontWeight: '500'
+                                }}>
+                                    {data.email}
+                                </span>
+                            </div>
+                        )}
+                        {data.phone && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '11px',
+                                color: '#555',
+                                padding: '6px 10px',
+                                backgroundColor: '#f8f9fa',
+                                borderRadius: '6px'
+                            }}>
+                                <span style={{ fontSize: '14px' }}>📞</span>
+                                <span style={{ fontWeight: '500' }}>{data.phone}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Indicador de provincia en la base */}
+                {data.provinceName && (
+                    <>
+                        <div style={{
+                            height: '4px',
+                            background: `linear-gradient(90deg, ${data.provinceColor || data.municipalityColor || data.institutionColor}, ${data.provinceColor || data.municipalityColor || data.institutionColor}dd)`,
+                            width: '100%'
+                        }} />
+                        <div style={{
+                            padding: '6px 16px',
+                            background: `linear-gradient(135deg, ${data.provinceColor || data.municipalityColor || data.institutionColor}15, ${data.provinceColor || data.municipalityColor || data.institutionColor}08)`,
+                            textAlign: 'center',
+                            fontSize: '10px',
+                            fontWeight: '700',
+                            color: data.provinceColor || data.municipalityColor || data.institutionColor,
+                            borderTop: `1px solid ${data.provinceColor || data.municipalityColor || data.institutionColor}30`
+                        }}>
+                            📍 {data.provinceName}
+                        </div>
+                    </>
+                )}
+            </div>
+        </>
     );
 };
 
-const nodeTypes = {
-    userNode: UserNode,
-    geographicNode: GeographicNode,
+// Node types
+const nodeTypes: NodeTypes = {
+    country: CountryNode,
+    province: ProvinceNode,
+    municipality: MunicipalityNode,
+    institution: InstitutionNode,
+    user: UserNode
 };
 
-// Tree layout calculation
-const calculateTreePositions = (
-    nodes: any[],
-    levelHeight = 300,
-    nodeWidth = 200,
-    nodeSpacing = 50
-) => {
-    const positions = new Map();
-    const levelNodes = new Map();
+// Layout helper mejorado para evitar solapamientos y posicionar al mismo nivel
+const calculateLayout = (nodes: Node[], edges: Edge[]) => {
+    // Separar nodos por niveles
+    const countryNodes = nodes.filter(n => n.type === 'country');
+    const provinceNodes = nodes.filter(n => n.type === 'province');
+    const municipalityNodes = nodes.filter(n => n.type === 'municipality');
+    const institutionNodes = nodes.filter(n => n.type === 'institution');
+    const userNodes = nodes.filter(n => n.type === 'user');
 
-    // Group nodes by level
-    nodes.forEach((node: any) => {
-        const level = node.level;
-        if (!levelNodes.has(level)) {
-            levelNodes.set(level, []);
+    let yPosition = 100;
+    const levelSpacing = 350;
+    const nodeSpacingX = 400;
+
+    // 1. País (nivel superior)
+    countryNodes.forEach((node) => {
+        node.position = {
+            x: 0, // Centro
+            y: yPosition
+        };
+    });
+    yPosition += levelSpacing;
+
+    // 2. Provincias (distribuidas horizontalmente)
+    const provinceCount = provinceNodes.length;
+    const provinceStartX = -(provinceCount - 1) * nodeSpacingX / 2;
+    provinceNodes.forEach((node, index) => {
+        node.position = {
+            x: provinceStartX + index * nodeSpacingX,
+            y: yPosition
+        };
+    });
+    yPosition += levelSpacing;
+
+    // 3. Municipios y Administradores Provinciales (mismo nivel)
+    let municipalityY = yPosition;
+    const provinceMunicipalityMap = new Map<string, { municipalities: Node[], administrators: Node[] }>();
+
+    // Agrupar municipios y administradores por provincia
+    municipalityNodes.forEach((node) => {
+        const parentProvinceEdge = edges.find(e => e.target === node.id && e.source.startsWith('province-'));
+        if (parentProvinceEdge) {
+            const provinceId = parentProvinceEdge.source;
+            if (!provinceMunicipalityMap.has(provinceId)) {
+                provinceMunicipalityMap.set(provinceId, { municipalities: [], administrators: [] });
+            }
+            provinceMunicipalityMap.get(provinceId)!.municipalities.push(node);
         }
-        levelNodes.get(level).push(node);
     });
 
-    // Calculate positions for each level
-    levelNodes.forEach((nodesInLevel, level) => {
-        const totalWidth = nodesInLevel.length * (nodeWidth + nodeSpacing) - nodeSpacing;
-        let startX = -totalWidth / 2;
+    // Agrupar administradores provinciales
+    const provinceAdministrators = userNodes.filter(node =>
+        node.data.role === 'Administrador' || node.data.role === UserRoles.administrator
+    );
 
-        nodesInLevel.forEach((node: any, index: number) => {
-            const x = startX + index * (nodeWidth + nodeSpacing);
-            const y = level * levelHeight;
-            positions.set(node.id, { x, y });
-        });
+    provinceAdministrators.forEach((node) => {
+        const parentProvinceEdge = edges.find(e => e.target === node.id && e.source.startsWith('province-'));
+        if (parentProvinceEdge) {
+            const provinceId = parentProvinceEdge.source;
+            if (!provinceMunicipalityMap.has(provinceId)) {
+                provinceMunicipalityMap.set(provinceId, { municipalities: [], administrators: [] });
+            }
+            provinceMunicipalityMap.get(provinceId)!.administrators.push(node);
+        }
     });
 
-    return positions;
+    // Posicionar municipios y administradores en el mismo nivel
+    provinceMunicipalityMap.forEach((group, provinceId) => {
+        const parentProvince = nodes.find(n => n.id === provinceId);
+        if (parentProvince) {
+            const allNodesInLevel = [...group.municipalities, ...group.administrators];
+            const totalNodes = allNodesInLevel.length;
+            const startX = parentProvince.position.x - (totalNodes - 1) * 160;
+
+            allNodesInLevel.forEach((node, index) => {
+                node.position = {
+                    x: startX + index * 320,
+                    y: municipalityY
+                };
+            });
+        }
+    });
+    yPosition = municipalityY + levelSpacing;
+
+    // 4. Instituciones y Especialistas Municipales (mismo nivel)
+    let institutionY = yPosition;
+    const municipalityInstitutionMap = new Map<string, { institutions: Node[], specialists: Node[] }>();
+
+    // Agrupar instituciones por municipio
+    institutionNodes.forEach((node) => {
+        const parentMunicipalityEdge = edges.find(e => e.target === node.id && e.source.startsWith('municipality-'));
+        if (parentMunicipalityEdge) {
+            const municipalityId = parentMunicipalityEdge.source;
+            if (!municipalityInstitutionMap.has(municipalityId)) {
+                municipalityInstitutionMap.set(municipalityId, { institutions: [], specialists: [] });
+            }
+            municipalityInstitutionMap.get(municipalityId)!.institutions.push(node);
+        }
+    });
+
+    // Agrupar especialistas municipales
+    const municipalitySpecialists = userNodes.filter(node =>
+        node.data.role === 'Especialista' || node.data.role === UserRoles.manager
+    );
+
+    municipalitySpecialists.forEach((node) => {
+        const parentMunicipalityEdge = edges.find(e => e.target === node.id && e.source.startsWith('municipality-'));
+        if (parentMunicipalityEdge) {
+            const municipalityId = parentMunicipalityEdge.source;
+            if (!municipalityInstitutionMap.has(municipalityId)) {
+                municipalityInstitutionMap.set(municipalityId, { institutions: [], specialists: [] });
+            }
+            municipalityInstitutionMap.get(municipalityId)!.specialists.push(node);
+        }
+    });
+
+    // Posicionar instituciones y especialistas en el mismo nivel
+    municipalityInstitutionMap.forEach((group, municipalityId) => {
+        const parentMunicipality = nodes.find(n => n.id === municipalityId);
+        if (parentMunicipality) {
+            const allNodesInLevel = [...group.institutions, ...group.specialists];
+            const totalNodes = allNodesInLevel.length;
+            const startX = parentMunicipality.position.x - (totalNodes - 1) * 140;
+
+            allNodesInLevel.forEach((node, index) => {
+                node.position = {
+                    x: startX + index * 280,
+                    y: institutionY
+                };
+            });
+        }
+    });
+    yPosition = institutionY + levelSpacing;
+
+    // 5. Técnicos y empleados (nivel final)
+    let userY = yPosition;
+    const institutionUserMap = new Map<string, number>();
+
+    const institutionEmployees = userNodes.filter(node =>
+        node.data.role === 'Técnico' || node.data.role === UserRoles.employee
+    );
+
+    institutionEmployees.forEach((node) => {
+        const parentEdge = edges.find(e => e.target === node.id && e.source.startsWith('institution-'));
+        if (parentEdge) {
+            const parent = nodes.find(n => n.id === parentEdge.source);
+            if (parent) {
+                if (!institutionUserMap.has(parent.id)) {
+                    institutionUserMap.set(parent.id, 0);
+                }
+                const userIndex = institutionUserMap.get(parent.id)!;
+                institutionUserMap.set(parent.id, userIndex + 1);
+
+                const offsetX = (userIndex % 3 - 1) * 320;
+                const offsetY = Math.floor(userIndex / 3) * 300;
+
+                node.position = {
+                    x: parent.position.x + offsetX,
+                    y: userY + offsetY
+                };
+            }
+        }
+    });
+
+    return { nodes, edges };
 };
 
-// Componente interno
-const OrganizationalChartFlow = ({
-                                     users,
-                                     institutions,
-                                     countries,
-                                     provinces,
-                                     municipalities,
-                                     filteredUsers,
-                                     loading
-                                 }: {
-    users: UsersDatum[];
-    institutions: InstitutionResponse[];
-    countries: CountryResponse[];
-    provinces: ProvinceResponse[];
-    municipalities: MunicipalityResponse[];
-    filteredUsers: UsersDatum[];
-    loading: boolean;
-}) => {
+// Componente principal del organigrama
+const OrganizationalChartFlow = ({ users }: { users: UsersDatum[] }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-    const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-    const { fitView } = useReactFlow();
+    const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['country-Cuba'])); // Cuba expandido por defecto
 
-    // Generate colors
-    const getInstitutionColor = useCallback((institutionId: any) => {
-        const colors = [
-            '#2196F3', '#4CAF50', '#f97316', '#9C27B0', '#F44336',
-            '#009688', '#673AB7', '#FF5722', '#795548', '#607D8B'
-        ];
-        if (!institutionId) return colors[0];
-        const hash = String(institutionId).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return colors[hash % colors.length];
-    }, []);
+    // Estados de filtrado
+    const [searchText, setSearchText] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+    const [selectedMunicipality, setSelectedMunicipality] = useState<string | null>(null);
+    const [selectedRole, setSelectedRole] = useState<string | null>(null);
+    const [showOnlyActive, setShowOnlyActive] = useState(true);
 
-    // Toggle expansion
-    const toggleNodeExpansion = useCallback((nodeId: string) => {
+    const { fitView, zoomIn, zoomOut } = useReactFlow();
 
+    // Filtrar usuarios según los criterios
+    const filteredUsers = useMemo(() => {
+        return users.filter(user => {
+            // Filtro de búsqueda
+            if (searchText) {
+                const search = searchText.toLowerCase();
+                const fullName = `${user.name} ${user.lastName}`.toLowerCase();
+                const email = user.email?.toLowerCase() || '';
+                const institution = (user.institution as InstitutionResponse)?.name?.toLowerCase() || '';
+
+                if (!fullName.includes(search) && !email.includes(search) && !institution.includes(search)) {
+                    return false;
+                }
+            }
+
+            // Filtro de provincia
+            if (selectedProvince && user.province !== selectedProvince) {
+                return false;
+            }
+
+            if (selectedProvince && user.municipal !== selectedMunicipality) {
+                return false;
+            }
+
+            // Filtro de rol
+            if (selectedRole && user.roles !== selectedRole) {
+                return false;
+            }
+
+            return !(showOnlyActive && !user.active);
+        });
+    }, [users, searchText, selectedProvince, selectedMunicipality, selectedRole, showOnlyActive]);
+
+    // Opciones para dropdowns
+    const provinceOptions = useMemo(() => {
+        const provinces = Array.from(new Set(users.map(u => u.province).filter(Boolean)));
+        return provinces.map(p => ({ label: p, value: p }));
+    }, [users]);
+
+    const municipalityOptions = useMemo(() => {
+        const municipalities = Array.from(new Set(users.map(u => u.municipal).filter(Boolean)));
+        return municipalities.map(municipality => ({ label: municipality, value: municipality }));
+    }, [users]);
+
+    const roleOptions = useMemo(() => {
+        const roles = Array.from(new Set(users.map(u => u.roles).filter(Boolean)));
+        return roles.map(r => ({ label: r, value: r }));
+    }, [users]);
+
+    const toggleExpansion = useCallback((nodeId: string) => {
         setExpandedNodes(prev => {
             const newSet = new Set(prev);
             if (newSet.has(nodeId)) {
                 newSet.delete(nodeId);
-
-                // Remove children too based on hierarchy
-                const [type] = nodeId.split('-');
-                if (type === 'country') {
-                    Array.from(newSet).forEach(expandedId => {
-                        if (expandedId.startsWith('province-') ||
-                            expandedId.startsWith('municipality-') ||
-                            expandedId.startsWith('institution-')) {
-                            newSet.delete(expandedId);
-                        }
-                    });
-                } else if (type === 'province') {
-                    Array.from(newSet).forEach(expandedId => {
-                        if (expandedId.startsWith('municipality-') ||
-                            expandedId.startsWith('institution-')) {
-                            newSet.delete(expandedId);
-                        }
-                    });
-                } else if (type === 'municipality') {
-                    Array.from(newSet).forEach(expandedId => {
-                        if (expandedId.startsWith('institution-')) {
-                            newSet.delete(expandedId);
-                        }
-                    });
-                }
             } else {
                 newSet.add(nodeId);
             }
@@ -360,651 +1097,430 @@ const OrganizationalChartFlow = ({
         });
     }, []);
 
-    // Helper function to check if province has users in hierarchy
-    const provinceHasUsers = useCallback((provinceName: string) => {
-        return filteredUsers.some((user) => user.province === provinceName);
-    }, [filteredUsers]);
+    // Construir nodos y edges del organigrama
+    const buildChart = useCallback(() => {
+        const tree = buildOrgChartTree(filteredUsers);
+        const chartNodes: Node[] = [];
+        const chartEdges: Edge[] = [];
+        const edgeIdSet = new Set<string>(); // Para evitar edges duplicados
 
-    // Helper function to check if municipality has users in hierarchy
-    const municipalityHasUsers = useCallback((municipalityName: string) => {
-        return filteredUsers.some((user) => user.municipal === municipalityName);
-    }, [filteredUsers]);
+        // Contadores para colores únicos
+        let municipalityColorIndex = 0;
+        let institutionColorIndex = 0;
 
-    // Helper function to check if institution has users (CORREGIDO PARA OBJETOS)
-    const institutionHasUsers = useCallback((institutionId: string) => {
-        const usersInInstitution = filteredUsers.filter(user => {
-            const userInstId = getUserInstitutionId(user);
-            return userInstId === institutionId;
-        });
+        const processNode = (node: TreeNode, parentId?: string) => {
+            const nodeId = node.id;
+            const isExpanded = expandedNodes.has(nodeId);
 
-        return usersInInstitution.length > 0;
-    }, [filteredUsers]);
-
-    // Check if entity has direct children (CORREGIDO)
-    const hasDirectChildren = useCallback((entityType: string, entityId: string, entityName?: string) => {
-
-        switch (entityType) {
-            case 'country':
-                // Solo cuenta provincias que tienen usuarios
-                const hasProvincesWithUsers = provinces.some(p =>
-                    p.country === entityName && provinceHasUsers(p.name)
-                );
-                return hasProvincesWithUsers;
-
-            case 'province':
-                // Solo cuenta municipios que tienen usuarios + administradores de esta provincia
-                const hasMunicipalitiesWithUsers = municipalities.some(m =>
-                    m.province === entityName && municipalityHasUsers(m.name)
-                );
-                const hasAdminsInProvince = filteredUsers.some(u =>
-                    u.roles === UserRoles.administrator && u.province === entityName
-                );
-                return hasMunicipalitiesWithUsers || hasAdminsInProvince;
-
-            case 'municipality':
-                // Solo cuenta instituciones con usuarios + managers de este municipio
-                const institutionsInMunicipality = institutions.filter(i => i.municipality === entityName);
-
-                const hasInstitutionsWithUsers = institutionsInMunicipality.some(i => {
-                    return institutionHasUsers(i.uuid);
-                });
-
-                const hasManagersInMunicipality = filteredUsers.some(u =>
-                    u.roles === UserRoles.manager && u.municipal === entityName
-                );
-               return hasInstitutionsWithUsers || hasManagersInMunicipality;
-
-            case 'institution':
-                // Solo cuenta empleados en esta institución (CORREGIDO)
-                return filteredUsers.some((u) => {
-                    const userInstId = getUserInstitutionId(u);
-                    const belongsToInstitution = userInstId === entityId;
-                    const isEmployee = u.roles === UserRoles.employee;
-                    return belongsToInstitution && isEmployee;
-                });
-
-            default:
-                return false;
-        }
-    }, [provinces, municipalities, institutions, filteredUsers, provinceHasUsers, municipalityHasUsers, institutionHasUsers]);
-
-    // Count direct children (CORREGIDO)
-    const getDirectChildrenCount = useCallback((entityType: string, entityId: string, entityName?: string) => {
-        let count = 0;
-
-        switch (entityType) {
-            case 'country':
-                // Solo cuenta provincias que tienen usuarios
-                count = provinces.filter(p =>
-                    p.country === entityName && provinceHasUsers(p.name)
-                ).length;
-                break;
-
-            case 'province':
-                // Cuenta municipios con usuarios + administradores de esta provincia
-                const municipalitiesWithUsersCount = municipalities.filter(m =>
-                    m.province === entityName && municipalityHasUsers(m.name)
-                ).length;
-                const adminCount = filteredUsers.filter(u =>
-                    u.roles === UserRoles.administrator && u.province === entityName
-                ).length;
-                count = municipalitiesWithUsersCount + adminCount;
-                break;
-
-            case 'municipality':
-
-                // Cuenta instituciones con usuarios + managers de este municipio
-                const institutionsInMunicipality = institutions.filter(i => i.municipality === entityName);
-
-                const institutionsWithUsersCount = institutionsInMunicipality.filter(i => {
-                    return institutionHasUsers(i.uuid);
-                }).length;
-
-                const managerCount = filteredUsers.filter(u =>
-                    u.roles === UserRoles.manager && u.municipal === entityName
-                ).length;
-
-                count = institutionsWithUsersCount + managerCount;
-                break;
-
-            case 'institution':
-                // Solo cuenta empleados en esta institución (CORREGIDO)
-                const employeesInInstitution = filteredUsers.filter(u => {
-                    const userInstId = getUserInstitutionId(u);
-                    const belongsToInstitution = userInstId === entityId;
-                    const isEmployee = u.roles === UserRoles.employee;
-                    return belongsToInstitution && isEmployee;
-                });
-                count = employeesInInstitution.length;
-                break;
-
-            default:
-                count = 0;
-        }
-        return count;
-    }, [provinces, municipalities, institutions, filteredUsers, provinceHasUsers, municipalityHasUsers, institutionHasUsers]);
-
-    // Create edge
-    const createEdge = useCallback((sourceId: string, targetId: string, color: string): Edge => ({
-        id: `edge-${sourceId}-${targetId}`,
-        source: sourceId,
-        target: targetId,
-        type: 'smoothstep',
-        animated: true,
-        style: {
-            stroke: color,
-            strokeWidth: 3,
-        },
-        markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: color,
-        },
-    }), []);
-
-    // Build nodes and edges with correct logic
-    useEffect(() => {
-        if (loading) return;
-
-        const allNodes: Node[] = [];
-        const allEdges: Edge[] = [];
-        const treeNodes: any[] = [];
-
-        // Level 0: Countries
-        const countriesWithUsers = countries.filter(country =>
-            provinces.some(p => p.country === country.name && provinceHasUsers(p.name))
-        );
-
-        countriesWithUsers.forEach((country) => {
-            const countryNodeId = `country-${country.uuid}`;
-            const hasChildren = hasDirectChildren('country', country.uuid, country.name);
-            const isExpanded = expandedNodes.has(countryNodeId);
-            const childrenCount = getDirectChildrenCount('country', country.uuid, country.name);
-
-            treeNodes.push({
-                id: countryNodeId,
-                level: 0,
-                parentId: null,
-                type: 'geographicNode',
-                data: {
-                    name: country.name,
-                    institutionName: 'País',
-                    entityType: 'country',
-                    hasChildren,
-                    isExpanded,
-                    childrenCount,
-                    onToggleExpand: toggleNodeExpansion
-                }
-            });
-
-            // Level 1: Provinces
-            if (isExpanded) {
-                const countryProvinces = provinces.filter(province =>
-                    province.country === country.name && provinceHasUsers(province.name)
-                );
-
-                countryProvinces.forEach((province) => {
-                    const provinceNodeId = `province-${province.uuid}`;
-                    const hasChildren = hasDirectChildren('province', province.uuid, province.name);
-                    const isProvinceExpanded = expandedNodes.has(provinceNodeId);
-                    const childrenCount = getDirectChildrenCount('province', province.uuid, province.name);
-
-                    treeNodes.push({
-                        id: provinceNodeId,
-                        level: 1,
-                        parentId: countryNodeId,
-                        type: 'geographicNode',
-                        data: {
-                            name: province.name,
-                            institutionName: 'Provincia',
-                            entityType: 'province',
-                            hasChildren,
-                            isExpanded: isProvinceExpanded,
-                            childrenCount,
-                            onToggleExpand: toggleNodeExpansion
-                        }
-                    });
-
-                    allEdges.push(createEdge(countryNodeId, provinceNodeId, '#4CAF50'));
-
-                    // Level 2: Administrators + Municipalities
-                    if (isProvinceExpanded) {
-                        // Administrators
-                        const provinceAdmins = filteredUsers.filter(user =>
-                            user.roles === UserRoles.administrator &&
-                            user.province === province.name
-                        );
-
-                        provinceAdmins.forEach((admin) => {
-                            let avatarUrl = '';
-                            if (admin.avatar && admin.avatar.id) {
-                                avatarUrl = FileStorageService.getFileUrl(admin.avatar.id);
-                            }
-
-                            const adminNodeId = `admin-${admin.uuid}`;
-                            treeNodes.push({
-                                id: adminNodeId,
-                                level: 2,
-                                parentId: provinceNodeId,
-                                type: 'userNode',
-                                data: {
-                                    name: admin.name,
-                                    lastName: admin.lastName,
-                                    roles: admin.roles,
-                                    institutionName: `Admin. ${admin.province}`,
-                                    institutionColor: '#F44336',
-                                    avatarUrl,
-                                }
-                            });
-
-                            allEdges.push(createEdge(provinceNodeId, adminNodeId, '#F44336'));
-                        });
-
-                        // Municipalities
-                        const provinceMunicipalities = municipalities.filter(municipality =>
-                            municipality.province === province.name && municipalityHasUsers(municipality.name)
-                        );
-
-                        provinceMunicipalities.forEach((municipality) => {
-                            const municipalityNodeId = `municipality-${municipality.uuid}`;
-                            const hasChildren = hasDirectChildren('municipality', municipality.uuid, municipality.name);
-                            const isMunicipalityExpanded = expandedNodes.has(municipalityNodeId);
-                            const childrenCount = getDirectChildrenCount('municipality', municipality.uuid, municipality.name);
-
-                            treeNodes.push({
-                                id: municipalityNodeId,
-                                level: 2,
-                                parentId: provinceNodeId,
-                                type: 'geographicNode',
-                                data: {
-                                    name: municipality.name,
-                                    institutionName: 'Municipio',
-                                    entityType: 'municipality',
-                                    hasChildren,
-                                    isExpanded: isMunicipalityExpanded,
-                                    childrenCount,
-                                    onToggleExpand: toggleNodeExpansion
-                                }
-                            });
-
-                            allEdges.push(createEdge(provinceNodeId, municipalityNodeId, '#ff0741'));
-
-                            // Level 3: Managers + Institutions
-                            if (isMunicipalityExpanded) {
-                                // Managers
-                                const municipalityManagers = filteredUsers.filter(user =>
-                                    user.roles === UserRoles.manager &&
-                                    user.municipal === municipality.name
-                                );
-
-                                municipalityManagers.forEach((manager) => {
-                                    let avatarUrl = '';
-                                    if (manager.avatar && manager.avatar.id) {
-                                        avatarUrl = FileStorageService.getFileUrl(manager.avatar.id);
-                                    }
-
-                                    const managerNodeId = `manager-${manager.uuid}`;
-                                    treeNodes.push({
-                                        id: managerNodeId,
-                                        level: 3,
-                                        parentId: municipalityNodeId,
-                                        type: 'userNode',
-                                        data: {
-                                            name: manager.name,
-                                            lastName: manager.lastName,
-                                            roles: manager.roles,
-                                            institutionName: `Especialista ${municipality.name}`,
-                                            institutionColor: '#4CAF50',
-                                            avatarUrl,
-                                        }
-                                    });
-
-                                    allEdges.push(createEdge(municipalityNodeId, managerNodeId, '#4CAF50'));
-                                });
-
-                                // Institutions
-                                const municipalityInstitutions = institutions.filter(institution => {
-                                    const belongsToMunicipality = institution.municipality === municipality.name;
-                                    const hasUsers = institutionHasUsers(institution.uuid);
-                                    return belongsToMunicipality && hasUsers;
-                                });
-
-                                municipalityInstitutions.forEach((institution) => {
-                                    const institutionNodeId = `institution-${institution.uuid}`;
-                                    const hasChildren = hasDirectChildren('institution', institution.uuid);
-                                    const isInstitutionExpanded = expandedNodes.has(institutionNodeId);
-                                    const childrenCount = getDirectChildrenCount('institution', institution.uuid);
-                                    const institutionColor = getInstitutionColor(institution.uuid);
-
-                                    treeNodes.push({
-                                        id: institutionNodeId,
-                                        level: 3,
-                                        parentId: municipalityNodeId,
-                                        type: 'geographicNode',
-                                        data: {
-                                            name: institution.name,
-                                            institutionName: 'Institución',
-                                            entityType: 'institution',
-                                            institutionColor,
-                                            hasChildren,
-                                            isExpanded: isInstitutionExpanded,
-                                            childrenCount,
-                                            onToggleExpand: toggleNodeExpansion
-                                        }
-                                    });
-
-                                    allEdges.push(createEdge(municipalityNodeId, institutionNodeId, institutionColor));
-
-                                    // Level 4: Employees
-                                    if (isInstitutionExpanded) {
-                                        const institutionEmployees = filteredUsers.filter(user => {
-                                            const userInstId = getUserInstitutionId(user);
-                                            const belongsToInstitution = userInstId === institution.uuid;
-                                            const isEmployee = user.roles === UserRoles.employee;
-                                            return belongsToInstitution && isEmployee;
-                                        });
-
-                                        institutionEmployees.forEach((employee) => {
-                                            let avatarUrl = '';
-                                            if (employee.avatar && employee.avatar.id) {
-                                                avatarUrl = FileStorageService.getFileUrl(employee.avatar.id);
-                                            }
-
-                                            const employeeNodeId = `employee-${employee.uuid}`;
-                                            treeNodes.push({
-                                                id: employeeNodeId,
-                                                level: 4,
-                                                parentId: institutionNodeId,
-                                                type: 'userNode',
-                                                data: {
-                                                    name: employee.name,
-                                                    lastName: employee.lastName,
-                                                    roles: employee.roles,
-                                                    institutionName: institution.name,
-                                                    institutionColor,
-                                                    avatarUrl,
-                                                }
-                                            });
-
-                                            allEdges.push(createEdge(institutionNodeId, employeeNodeId, institutionColor));
-                                        });
-                                    }
-                                });
-                            }
-                        });
+            // Crear nodo según su tipo
+            if (node.type === 'country') {
+                chartNodes.push({
+                    id: nodeId,
+                    type: 'country',
+                    position: { x: 0, y: 0 },
+                    data: {
+                        label: node.name,
+                        type: 'country',
+                        childrenCount: node.children.length,
+                        expanded: isExpanded,
+                        onToggle: () => toggleExpansion(nodeId)
                     }
                 });
-            }
-        });
+            } else if (node.type === 'province') {
+                const provinceColor = getProvinceColor(node.name);
+                chartNodes.push({
+                    id: nodeId,
+                    type: 'province',
+                    position: { x: 0, y: 0 },
+                    data: {
+                        label: node.name,
+                        type: 'province',
+                        provinceColor,
+                        childrenCount: node.children.length + (node.users?.length || 0),
+                        expanded: isExpanded,
+                        onToggle: () => toggleExpansion(nodeId)
+                    }
+                });
 
-        // Calculate tree positions
-        const positions = calculateTreePositions(treeNodes);
+                // Agregar usuarios de provincia (administradores) - MISMO NIVEL QUE MUNICIPIOS
+                if (node.users && isExpanded) {
+                    node.users.forEach((user, index) => {
+                        const userNodeId = `${nodeId}-user-${user.uuid || index}`;
+                        const avatarUrl = user.avatar?.id
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}file-storage/${user.avatar.id}`
+                            : null;
 
-        // Convert tree nodes to ReactFlow nodes
-        treeNodes.forEach(treeNode => {
-            const position = positions.get(treeNode.id) || { x: 0, y: 0 };
-            allNodes.push({
-                id: treeNode.id,
-                type: treeNode.type,
-                position,
-                data: treeNode.data
-            });
-        });
-
-        setNodes(allNodes);
-        setEdges(allEdges);
-
-        setTimeout(() => fitView({ duration: 800, padding: 0.1 }), 100);
-    }, [
-        loading,
-        expandedNodes,
-        filteredUsers,
-        institutions,
-        countries,
-        provinces,
-        municipalities,
-        setNodes,
-        setEdges,
-        fitView,
-        toggleNodeExpansion,
-        hasDirectChildren,
-        getDirectChildrenCount,
-        createEdge,
-        getInstitutionColor,
-        provinceHasUsers,
-        municipalityHasUsers,
-        institutionHasUsers
-    ]);
-
-    // Reset and expand functions
-    const resetExpansions = useCallback(() => {
-        setExpandedNodes(new Set());
-    }, []);
-
-    const expandAllCountries = useCallback(() => {
-        const countriesWithUsers = countries.filter(country =>
-            provinces.some(p => p.country === country.name && provinceHasUsers(p.name))
-        );
-        setExpandedNodes(new Set(countriesWithUsers.map(c => `country-${c.uuid}`)));
-    }, [countries, provinces, provinceHasUsers]);
-
-    // Export functions
-    const exportAsImage = useCallback(() => {
-        const flowElement = document.querySelector('.react-flow');
-        if (!flowElement) return;
-
-        html2canvas(flowElement as HTMLElement, {
-            backgroundColor: '#ffffff',
-            scale: 2
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = imgData;
-            link.download = `organigrama_${new Date().toISOString().split('T')[0]}.png`;
-            link.click();
-        });
-    }, []);
-
-    const exportAsPDF = useCallback(() => {
-        const flowElement = document.querySelector('.react-flow');
-        if (!flowElement) return;
-
-        html2canvas(flowElement as HTMLElement, {
-            backgroundColor: '#ffffff',
-            scale: 1.5
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a3'
-            });
-
-            const imgWidth = 400;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-            pdf.save(`organigrama_${new Date().toISOString().split('T')[0]}.pdf`);
-        });
-    }, []);
-
-    return (
-        <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            nodeTypes={nodeTypes}
-            fitView
-            attributionPosition="bottom-right"
-            defaultViewport={{ x: 0, y: 0, zoom: 0.6 }}
-        >
-            <Controls />
-            <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
-            <MiniMap
-                nodeColor={(node: Node) => {
-                    if (node.type === 'geographicNode') return '#e0e0e0';
-                    return node.data?.institutionColor || '#2196F3';
-                }}
-                maskColor="rgba(240, 240, 240, 0.8)"
-            />
-            <Panel position="top-right">
-                <div className="flex flex-column gap-2">
-                    <Button
-                        icon="pi pi-refresh"
-                        label="Resetear"
-                        onClick={resetExpansions}
-                        className="p-button-sm p-button-secondary"
-                        tooltip="Contraer todos los nodos"
-                    />
-                    <Button
-                        icon="pi pi-plus-circle"
-                        label="Expandir"
-                        onClick={expandAllCountries}
-                        className="p-button-sm p-button-info"
-                        tooltip="Expandir países"
-                    />
-                    <div style={{ borderTop: '1px solid #dee2e6', margin: '4px 0' }} />
-                    <Button
-                        icon="pi pi-image"
-                        label="PNG"
-                        onClick={exportAsImage}
-                        className="p-button-sm p-button-success"
-                        tooltip="Exportar como imagen PNG"
-                    />
-                    <Button
-                        icon="pi pi-file-pdf"
-                        label="PDF"
-                        onClick={exportAsPDF}
-                        className="p-button-sm p-button-danger"
-                        tooltip="Exportar como PDF"
-                    />
-                </div>
-            </Panel>
-        </ReactFlow>
-    );
-};
-
-// Componente principal
-export const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
-    const [institutions, setInstitutions] = useState<InstitutionResponse[]>([]);
-    const [countries, setCountries] = useState<CountryResponse[]>([]);
-    const [provinces, setProvinces] = useState<ProvinceResponse[]>([]);
-    const [municipalities, setMunicipalities] = useState<MunicipalityResponse[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [authUser, setAuthUser] = useState<UsersDatum | null>(null);
-    const [filteredUsers, setFilteredUsers] = useState<UsersDatum[]>([]);
-
-    useEffect(() => {
-        try {
-            const authUserStr = localStorage.getItem('authUser');
-            if (authUserStr) {
-                const user = JSON.parse(authUserStr) as UsersDatum;
-                setAuthUser(user);
-            }
-        } catch (error) {
-            console.error('Error getting authenticated user:', error);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!authUser) return;
-
-        const fetchInitialData = async () => {
-            setLoading(true);
-            try {
-                const institutionsData = await InstitutionService.getInstitutions({});
-                setInstitutions(institutionsData);
-
-                switch (authUser.roles) {
-                    case UserRoles.superAdmin:
-                        const countriesData = await CountryService.getCountries({});
-                        setCountries(countriesData);
-                        const allProvinces = await ProvinceService.getProvinces({});
-                        setProvinces(allProvinces);
-                        const allMunicipalities = await MunicipalityService.getMunicipalities({});
-                        setMunicipalities(allMunicipalities);
-                        setFilteredUsers(users);
-                        break;
-
-                    case UserRoles.administrator:
-                        if (authUser.nationality) {
-                            const countryData = await CountryService.getCountries({ name: authUser.nationality });
-                            setCountries(countryData);
-                            if (authUser.province) {
-                                const provinceData = await ProvinceService.getProvinces({ name: authUser.province });
-                                setProvinces(provinceData);
-                                const municipalitiesData = await MunicipalityService.getMunicipalities({ name: authUser.province });
-                                setMunicipalities(municipalitiesData);
+                        chartNodes.push({
+                            id: userNodeId,
+                            type: 'user',
+                            position: { x: 0, y: 0 },
+                            data: {
+                                label: `${user.name} ${user.lastName}`,
+                                type: 'user',
+                                role: user.roles,
+                                provinceName: node.name,
+                                provinceColor,
+                                avatarUrl,
+                                email: user.email,
+                                phone: user.mobile,
+                                institutionName: (user.institution as InstitutionResponse)?.name
                             }
-                        }
-                        setFilteredUsers(users.filter(user =>
-                            user.nationality === authUser.nationality &&
-                            user.province === authUser.province
-                        ));
-                        break;
+                        });
 
-                    case UserRoles.manager:
-                        if (authUser.nationality && authUser.province && authUser.municipal) {
-                            const countryData = await CountryService.getCountries({ name: authUser.nationality });
-                            setCountries(countryData);
-                            const provinceData = await ProvinceService.getProvinces({ name: authUser.province });
-                            setProvinces(provinceData);
-                            const municipalityData = await MunicipalityService.getMunicipalities({ name: authUser.municipal });
-                            setMunicipalities(municipalityData);
+                        const edgeId = `${nodeId}-to-${userNodeId}`;
+                        if (!edgeIdSet.has(edgeId)) {
+                            chartEdges.push({
+                                id: edgeId,
+                                source: nodeId,
+                                target: userNodeId,
+                                type: 'straight',
+                                style: { stroke: provinceColor, strokeWidth: 3 }
+                            });
+                            edgeIdSet.add(edgeId);
                         }
-                        setFilteredUsers(users.filter(user =>
-                            user.nationality === authUser.nationality &&
-                            user.province === authUser.province &&
-                            user.municipal === authUser.municipal
-                        ));
-                        break;
-
-                    case UserRoles.employee:
-                        if (authUser.institutionId || authUser.institution) {
-                            const authInstitution = authUser.institutionId || authUser.institution;
-                            setFilteredUsers(users.filter(user =>
-                                (user.institutionId || user.institution) === authInstitution ||
-                                user.uuid === authUser.uuid
-                            ));
-                        } else {
-                            setFilteredUsers(users.filter(user => user.uuid === authUser.uuid));
-                        }
-                        break;
-
-                    default:
-                        setFilteredUsers(users);
-                        break;
+                    });
                 }
-            } catch (error) {
-                console.error('Error fetching initial data:', error);
-            } finally {
-                setLoading(false);
+            } else if (node.type === 'municipality') {
+                const provinceColor = getProvinceColor(node.data?.provinceName || '');
+                const municipalityColor = getMunicipalityColor(municipalityColorIndex++);
+
+                chartNodes.push({
+                    id: nodeId,
+                    type: 'municipality',
+                    position: { x: 0, y: 0 },
+                    data: {
+                        label: node.name,
+                        type: 'municipality',
+                        provinceName: node.data?.provinceName,
+                        provinceColor,
+                        municipalityColor,
+                        childrenCount: node.children.length + (node.users?.length || 0),
+                        expanded: isExpanded,
+                        onToggle: () => toggleExpansion(nodeId)
+                    }
+                });
+
+                // Agregar usuarios de municipio (especialistas) - MISMO NIVEL QUE INSTITUCIONES
+                if (node.users && isExpanded) {
+                    node.users.forEach((user, index) => {
+                        const userNodeId = `${nodeId}-user-${user.uuid || index}`;
+                        const avatarUrl = user.avatar?.id
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}file-storage/${user.avatar.id}`
+                            : null;
+
+                        chartNodes.push({
+                            id: userNodeId,
+                            type: 'user',
+                            position: { x: 0, y: 0 },
+                            data: {
+                                label: `${user.name} ${user.lastName}`,
+                                type: 'user',
+                                role: user.roles,
+                                provinceName: node.data?.provinceName,
+                                provinceColor,
+                                municipalityColor,
+                                avatarUrl,
+                                email: user.email,
+                                phone: user.mobile,
+                                institutionName: (user.institution as InstitutionResponse)?.name
+                            }
+                        });
+
+                        const edgeId = `${nodeId}-to-${userNodeId}`;
+                        if (!edgeIdSet.has(edgeId)) {
+                            chartEdges.push({
+                                id: edgeId,
+                                source: nodeId,
+                                target: userNodeId,
+                                type: 'straight',
+                                style: { stroke: municipalityColor, strokeWidth: 3 }
+                            });
+                            edgeIdSet.add(edgeId);
+                        }
+                    });
+                }
+            } else if (node.type === 'institution') {
+                const provinceColor = getProvinceColor(node.data?.provinceName || '');
+                const institutionColor = getInstitutionColor(institutionColorIndex++);
+
+                chartNodes.push({
+                    id: nodeId,
+                    type: 'institution',
+                    position: { x: 0, y: 0 },
+                    data: {
+                        label: node.name,
+                        type: 'institution',
+                        provinceName: node.data?.provinceName,
+                        provinceColor,
+                        institutionColor,
+                        childrenCount: node.users?.length || 0,
+                        expanded: isExpanded,
+                        onToggle: () => toggleExpansion(nodeId)
+                    }
+                });
+
+                // Agregar usuarios de institución (técnicos y empleados)
+                if (node.users && isExpanded) {
+                    node.users.forEach((user, index) => {
+                        const userNodeId = `${nodeId}-user-${user.uuid || index}`;
+                        const avatarUrl = user.avatar?.id
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}file-storage/${user.avatar.id}`
+                            : null;
+
+                        chartNodes.push({
+                            id: userNodeId,
+                            type: 'user',
+                            position: { x: 0, y: 0 },
+                            data: {
+                                label: `${user.name} ${user.lastName}`,
+                                type: 'user',
+                                role: user.roles,
+                                provinceName: node.data?.provinceName,
+                                provinceColor,
+                                institutionColor,
+                                avatarUrl,
+                                email: user.email,
+                                phone: user.mobile,
+                                institutionName: node.name
+                            }
+                        });
+
+                        const edgeId = `${nodeId}-to-${userNodeId}`;
+                        if (!edgeIdSet.has(edgeId)) {
+                            chartEdges.push({
+                                id: edgeId,
+                                source: nodeId,
+                                target: userNodeId,
+                                type: 'straight',
+                                style: { stroke: institutionColor, strokeWidth: 3 }
+                            });
+                            edgeIdSet.add(edgeId);
+                        }
+                    });
+                }
+            }
+
+            // Crear edge con el padre
+            if (parentId) {
+                const edgeId = `${parentId}-to-${nodeId}`;
+                if (!edgeIdSet.has(edgeId)) {
+                    const currentNode = chartNodes.find(n => n.id === nodeId);
+                    let edgeColor = '#3498db';
+
+                    if (currentNode?.data?.provinceColor) {
+                        edgeColor = currentNode.data.provinceColor;
+                    } else if (currentNode?.data?.municipalityColor) {
+                        edgeColor = currentNode.data.municipalityColor;
+                    } else if (currentNode?.data?.institutionColor) {
+                        edgeColor = currentNode.data.institutionColor;
+                    }
+
+                    chartEdges.push({
+                        id: edgeId,
+                        source: parentId,
+                        target: nodeId,
+                        type: 'straight',
+                        style: { stroke: edgeColor, strokeWidth: 4 }
+                    });
+                    edgeIdSet.add(edgeId);
+                }
+            }
+
+            // Procesar hijos si el nodo está expandido
+            if (isExpanded && node.children) {
+                node.children.forEach(child => processNode(child, nodeId));
             }
         };
 
-        fetchInitialData();
-    }, [authUser, users]);
+        // Procesar el árbol completo empezando desde el país
+        tree.children.forEach(child => processNode(child));
+
+        // Aplicar layout
+        const { nodes: layoutNodes, edges: layoutEdges } = calculateLayout(chartNodes, chartEdges);
+
+        setNodes(layoutNodes);
+        setEdges(layoutEdges);
+    }, [filteredUsers, expandedNodes, toggleExpansion, setNodes, setEdges]);
+
+    // Funciones de control
+    const handleReset = useCallback(() => {
+        setSearchText('');
+        setSelectedProvince(null);
+        setSelectedMunicipality(null);
+        setSelectedRole(null);
+        setShowOnlyActive(true);
+        setExpandedNodes(new Set(['country-Cuba']));
+    }, []);
+
+    const handleFitView = useCallback(() => {
+        fitView({ padding: 0.1, duration: 800 });
+    }, [fitView]);
+
+    const exportToPDF = useCallback(async () => {
+        const element = document.querySelector('.react-flow') as HTMLElement;
+        if (element) {
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF.jsPDF('landscape', 'mm', 'a3');
+            const imgWidth = 420;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save('organigrama.pdf');
+        }
+    }, []);
+
+    // Efecto para reconstruir el gráfico cuando cambien los filtros
+    useEffect(() => {
+        buildChart();
+    }, [buildChart]);
 
     return (
-        <div style={{ width: '100%', height: '80vh' }}>
-            {loading ? (
-                <div className="flex align-items-center justify-content-center h-full">
-                    <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
-                    <span className="ml-2">Cargando organigrama...</span>
-                </div>
-            ) : (
-                <ReactFlowProvider>
-                    <OrganizationalChartFlow
-                        users={users}
-                        institutions={institutions}
-                        countries={countries}
-                        provinces={provinces}
-                        municipalities={municipalities}
-                        filteredUsers={filteredUsers}
-                        loading={loading}
+        <div style={{ width: '100%', height: '70vh', position: 'relative' }}>
+            {/* Panel de filtros compacto */}
+            <Panel position="top-left" style={{ margin: '10px' }}>
+                <Card className="p-2" style={{ minWidth: '300px', backgroundColor: 'rgba(255,255,255,0.95)', fontSize: '12px' }}>
+                    <h6 className="m-0 mb-2">🔍 Filtros</h6>
+
+                    <div className="p-fluid grid">
+                        <div className="field col-12 mb-2">
+                            <InputText
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                placeholder="Buscar..."
+                                className="w-full p-inputtext-sm"
+                            />
+                        </div>
+
+                        <div className="field col-6 mb-2">
+                            <Dropdown
+                                value={selectedProvince}
+                                options={[{ label: 'Todas', value: null }, ...provinceOptions]}
+                                onChange={(e) => setSelectedProvince(e.value)}
+                                placeholder="Provincia"
+                                className="w-full p-dropdown-sm"
+                            />
+                        </div>
+                        <div className="field col-6 mb-2">
+                            <Dropdown
+                                value={selectedRole}
+                                options={[{ label: 'Todos', value: null }, ...roleOptions]}
+                                onChange={(e) => setSelectedRole(e.value)}
+                                placeholder="Rol"
+                                className="w-full p-dropdown-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-content-between align-items-center gap-1">
+                        <Button
+                            label={showOnlyActive ? "Activos" : "Todos"}
+                            onClick={() => setShowOnlyActive(!showOnlyActive)}
+                            className={showOnlyActive ? "p-button-success" : "p-button-secondary"}
+                            size="small"
+                            style={{ fontSize: '11px', padding: '4px 8px' }}
+                        />
+
+                        <div className="flex gap-1">
+                            <Button
+                                icon="pi pi-refresh"
+                                onClick={handleReset}
+                                className="p-button-warning"
+                                size="small"
+                                style={{ padding: '4px 8px' }}
+                            />
+                            <Button
+                                icon="pi pi-search-plus"
+                                onClick={handleFitView}
+                                className="p-button-info"
+                                size="small"
+                                style={{ padding: '4px 8px' }}
+                            />
+                        </div>
+                    </div>
+                </Card>
+            </Panel>
+
+            {/* Panel de estadísticas compacto */}
+            <Panel position="top-right" style={{ margin: '10px' }}>
+                <Card className="p-2" style={{ backgroundColor: 'rgba(255,255,255,0.95)' }}>
+                    <div className="text-sm">
+                        <Badge value={filteredUsers.length} className="mr-2" />
+                        <span style={{ fontSize: '11px' }}>de {users.length}</span>
+                    </div>
+                </Card>
+            </Panel>
+
+            {/* Panel de controles */}
+            <Panel position="bottom-right" style={{ margin: '10px' }}>
+                <div className="flex gap-2">
+                    <Button
+                        icon="pi pi-download"
+                        onClick={exportToPDF}
+                        className="p-button-help"
+                        size="small"
+                        tooltip="Exportar PDF"
                     />
-                </ReactFlowProvider>
-            )}
+                    <Button
+                        icon="pi pi-plus"
+                        onClick={() => zoomIn({ duration: 300 })}
+                        className="p-button-secondary"
+                        size="small"
+                        tooltip="Zoom +"
+                    />
+                    <Button
+                        icon="pi pi-minus"
+                        onClick={() => zoomOut({ duration: 300 })}
+                        className="p-button-secondary"
+                        size="small"
+                        tooltip="Zoom -"
+                    />
+                </div>
+            </Panel>
+
+            {/* ReactFlow */}
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                nodeTypes={nodeTypes}
+                fitView
+                attributionPosition="bottom-left"
+                proOptions={{ hideAttribution: true }}
+                style={{ backgroundColor: '#f8fafc' }}
+            >
+                <Controls showInteractive={false} />
+                <Background color="#e5e7eb" gap={20} size={1} />
+                <MiniMap
+                    nodeColor={(node: Node) => {
+                        if (node.type === 'country') return '#34495e';
+                        return node.data?.provinceColor || node.data?.municipalityColor || node.data?.institutionColor || '#3498db';
+                    }}
+                    maskColor="rgba(240, 240, 240, 0.8)"
+                    style={{
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '8px'
+                    }}
+                />
+            </ReactFlow>
         </div>
     );
 };
+
+// Componente wrapper con ReactFlowProvider
+const OrganizationalChart = ({ users }: { users: UsersDatum[] }) => {
+    return (
+        <ReactFlowProvider>
+            <OrganizationalChartFlow users={users} />
+        </ReactFlowProvider>
+    );
+};
+
+export default OrganizationalChart;
