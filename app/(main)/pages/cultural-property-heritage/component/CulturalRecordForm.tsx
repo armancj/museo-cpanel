@@ -45,6 +45,7 @@ export const CulturalRecordForm = ({
     // State for selected status for each panel
     const [basicInfoStatus, setBasicInfoStatus] = useState<Status | null>(null);
     const [datesAndDimensionsStatus, setDatesAndDimensionsStatus] = useState<Status | null>(null);
+    const [volumesQuantitiesStatus, setVolumesQuantitiesStatus] = useState<Status | null>(null);
     const [descriptorsStatus, setDescriptorsStatus] = useState<Status | null>(null);
     const [physicalCharacteristicsStatus, setPhysicalCharacteristicsStatus] = useState<Status | null>(null);
     const [additionalTitlesStatus, setAdditionalTitlesStatus] = useState<Status | null>(null);
@@ -197,6 +198,26 @@ export const CulturalRecordForm = ({
                 },
                 valuation: {
                     ...data.culturalRecord.valuation,
+                    status
+                },
+                dimensions: {
+                    ...data.culturalRecord.dimensions,
+                    status
+                }
+            }
+        });
+    };
+
+    // Update all fields in the volumes and quantities panel
+    const updateVolumesQuantitiesFields = (status: Status) => {
+        if (!status) return;
+
+        setData({
+            ...data,
+            culturalRecord: {
+                ...data.culturalRecord,
+                volumesQuantities: {
+                    ...data.culturalRecord.volumesQuantities,
                     status
                 }
             }
@@ -496,6 +517,160 @@ export const CulturalRecordForm = ({
                                 onStatusChange={(status) => updateFieldStatus('valuation', status)}
                                 onCommentChange={(comment) => updateFieldComment('valuation', comment)}
                                 canEdit={canEditField(data.culturalRecord.valuation.status)}
+                                canViewHistory={canViewHistory()}
+                                canChangeStatus={canChangeStatus()}
+                                openHistoryDialog={openHistoryDialog}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid">
+                        <div className="col-12">
+                            <FieldWithHistory
+                                label="Dimensiones"
+                                field={data.culturalRecord.dimensions}
+                                type="objectLocation"
+                                onSubfieldChange={(subfield, value) => {
+                                    const currentValue = data.culturalRecord.dimensions.value || {};
+
+                                    // Create an updated value with the changed field
+                                    const updatedValue = {
+                                        ...currentValue,
+                                        [subfield]: value
+                                    };
+
+                                    // Calculate cubic meters and square meters
+                                    if (subfield === 'heightCms' || subfield === 'widthCms' || subfield === 'lengthCms') {
+                                        // Convert to numbers, default to 0 if not a number
+                                        const height = parseFloat(updatedValue.heightCms) || 0;
+                                        const width = parseFloat(updatedValue.widthCms) || 0;
+                                        const length = parseFloat(updatedValue.lengthCms) || 0;
+
+                                        // Calculate cubic meters (height * width * length) / 1,000,000 (cm³ to m³)
+                                        if (height > 0 && width > 0 && length > 0) {
+                                            updatedValue.cubicMeters = (height * width * length) / 1000000;
+                                        }
+
+                                        // Calculate square meters (height * width) / 10,000 (cm² to m²)
+                                        if (height > 0 && width > 0) {
+                                            updatedValue.squareMeters = (height * width) / 10000;
+                                        }
+                                    }
+
+                                    updateField('dimensions', updatedValue);
+                                }}
+                                subfieldLabels={{
+                                    heightCms: 'Alto (cm)',
+                                    widthCms: 'Ancho (cm)',
+                                    lengthCms: 'Largo (cm)',
+                                    weightKg: 'Peso (kg)',
+                                    cubicMeters: 'Metros cúbicos',
+                                    squareMeters: 'Metros cuadrados'
+                                }}
+                                subfieldPlaceholders={{
+                                    heightCms: 'Altura en centímetros',
+                                    widthCms: 'Ancho en centímetros',
+                                    lengthCms: 'Largo en centímetros',
+                                    weightKg: 'Peso en kilogramos',
+                                    cubicMeters: 'Volumen en metros cúbicos',
+                                    squareMeters: 'Área en metros cuadrados'
+                                }}
+                                onChange={(value) => updateField('dimensions', value)}
+                                onStatusChange={(status) => updateFieldStatus('dimensions', status)}
+                                onCommentChange={(comment) => updateFieldComment('dimensions', comment)}
+                                canEdit={canEditField(data.culturalRecord.dimensions.status as Status)}
+                                canViewHistory={canViewHistory()}
+                                canChangeStatus={canChangeStatus()}
+                                openHistoryDialog={openHistoryDialog}
+                                readOnlySubfields={['cubicMeters', 'squareMeters']}
+                            />
+                        </div>
+                    </div>
+                </Panel>
+            </div>
+
+            <div className="col-12">
+                <Panel
+                    header="Volúmenes y Cantidades"
+                    toggleable
+                    headerTemplate={(options) => {
+                        return (
+                            <div className="flex align-items-center justify-content-between w-full">
+                                <div className="flex align-items-center">
+                                    <button
+                                        className={options.togglerClassName}
+                                        onClick={options.onTogglerClick}
+                                    >
+                                        <span className={options.togglerIconClassName}></span>
+                                    </button>
+                                    <span className="font-bold">Volúmenes y Cantidades</span>
+                                </div>
+                                {canChangeStatus() && (
+                                    <div className="flex align-items-center gap-2">
+                                        <Dropdown
+                                            value={volumesQuantitiesStatus}
+                                            options={statusOptions}
+                                            onChange={(e) => setVolumesQuantitiesStatus(e.value)}
+                                            placeholder="Seleccionar estado"
+                                            className="p-inputtext-sm"
+                                        />
+                                        <Button
+                                            label="Aplicar a todos"
+                                            icon="pi pi-check"
+                                            className="p-button-sm"
+                                            onClick={() => {
+                                                if (volumesQuantitiesStatus) {
+                                                    updateVolumesQuantitiesFields(volumesQuantitiesStatus);
+                                                    setVolumesQuantitiesStatus(null);
+                                                }
+                                            }}
+                                            disabled={!volumesQuantitiesStatus}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
+                >
+                    <div className="grid">
+                        <div className="col-12">
+                            <FieldWithHistory
+                                label="Volúmenes y Cantidades"
+                                field={data.culturalRecord.volumesQuantities}
+                                type="objectLocation"
+                                onSubfieldChange={(subfield, value) => {
+                                    const currentValue = data.culturalRecord.volumesQuantities.value || {};
+                                    updateField('volumesQuantities', {
+                                        ...currentValue,
+                                        [subfield]: value
+                                    });
+                                }}
+                                subfieldLabels={{
+                                    file: 'Expedientes',
+                                    pages: 'Páginas',
+                                    books: 'Libros',
+                                    objects: 'Objetos',
+                                    photos: 'Fotografías',
+                                    engravings: 'Grabados',
+                                    slides: 'Diapositivas',
+                                    negatives: 'Negativos',
+                                    mapsPlansSketches: 'Mapas/Planos/Croquis'
+                                }}
+                                subfieldPlaceholders={{
+                                    file: 'Número de expedientes',
+                                    pages: 'Número de páginas',
+                                    books: 'Número de libros',
+                                    objects: 'Número de objetos',
+                                    photos: 'Número de fotografías',
+                                    engravings: 'Número de grabados',
+                                    slides: 'Número de diapositivas',
+                                    negatives: 'Número de negativos',
+                                    mapsPlansSketches: 'Número de mapas/planos/croquis'
+                                }}
+                                onChange={(value) => updateField('volumesQuantities', value)}
+                                onStatusChange={(status) => updateFieldStatus('volumesQuantities', status)}
+                                onCommentChange={(comment) => updateFieldComment('volumesQuantities', comment)}
+                                canEdit={canEditField(data.culturalRecord.volumesQuantities.status as Status)}
                                 canViewHistory={canViewHistory()}
                                 canChangeStatus={canChangeStatus()}
                                 openHistoryDialog={openHistoryDialog}

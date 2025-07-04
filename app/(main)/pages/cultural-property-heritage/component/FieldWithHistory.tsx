@@ -30,6 +30,7 @@ interface FieldWithHistoryProps {
     onSubfieldChange?: (subfield: string, value: any) => void;
     subfieldLabels?: Record<string, string>;
     subfieldPlaceholders?: Record<string, string>;
+    readOnlySubfields?: string[]; // New prop to specify which subfields should be read-only
 }
 
 export const FieldWithHistory = ({
@@ -50,7 +51,8 @@ export const FieldWithHistory = ({
     disabled = false,
     onSubfieldChange,
     subfieldLabels,
-    subfieldPlaceholders
+    subfieldPlaceholders,
+    readOnlySubfields = []
 }: FieldWithHistoryProps) => {
     const [showComment, setShowComment] = useState(false);
 
@@ -128,20 +130,40 @@ export const FieldWithHistory = ({
         }
 
         const locationValue = field.value || {};
-        const subfields = ['floor', 'exhibitionRoom', 'storage', 'showcaseShelf', 'shelfDrawer', 'box', 'fileFolder'];
+        // Use the subfield keys from the labels object instead of hardcoded list
+        const subfields = Object.keys(subfieldLabels);
 
         return (
             <div className="grid">
-                {subfields.map((subfieldKey, index) => (
-                    <div key={subfieldKey} className="col-12 md:col-6">
-                        <label className="block mb-1">{subfieldLabels[subfieldKey]}</label>
-                        {canEdit ? (
-                            <InputText value={locationValue[subfieldKey] || ''} onChange={(e) => onSubfieldChange(subfieldKey, e.target.value)} className="w-full" placeholder={subfieldPlaceholders[subfieldKey]} disabled={disabled} />
-                        ) : (
-                            <div className="p-2 border-1 border-gray-300 border-round">{locationValue[subfieldKey] || 'No definido'}</div>
-                        )}
-                    </div>
-                ))}
+                {subfields.map((subfieldKey, index) => {
+                    // Check if this subfield should be read-only
+                    const isReadOnly = readOnlySubfields.includes(subfieldKey);
+
+                    return (
+                        <div key={subfieldKey} className="col-12 md:col-6">
+                            <label className="block mb-1">{subfieldLabels[subfieldKey]}</label>
+                            {canEdit && !isReadOnly ? (
+                                // Editable field
+                                <InputText
+                                    value={locationValue[subfieldKey] || ''}
+                                    onChange={(e) => onSubfieldChange(subfieldKey, e.target.value)}
+                                    className="w-full"
+                                    placeholder={subfieldPlaceholders[subfieldKey]}
+                                    disabled={disabled}
+                                />
+                            ) : (
+                                // Read-only field
+                                <div className="p-2 border-1 border-gray-300 border-round">
+                                    {isReadOnly && locationValue[subfieldKey] !== undefined
+                                        ? (typeof locationValue[subfieldKey] === 'number'
+                                            ? locationValue[subfieldKey].toFixed(4) // Format numbers with 4 decimal places
+                                            : locationValue[subfieldKey])
+                                        : (locationValue[subfieldKey] || 'No definido')}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         );
     };
