@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -165,7 +165,7 @@ export const FieldWithHistory = ({
                 case 'daterange':
                     return (
                         <div className="p-2 border-1 border-gray-300 border-round">
-                            {field.value?.start ? new Date(field.value.start).toLocaleDateString() : 'No definido'} -{field.value?.end ? new Date(field.value.end).toLocaleDateString() : 'No definido'}
+                            {field?.value?.start ? new Date(field.value.start).toLocaleDateString() : 'No definido'} - {field?.value?.end ? new Date(field.value.end).toLocaleDateString() : 'No definido'}
                         </div>
                     );
                 case 'number':
@@ -199,7 +199,7 @@ export const FieldWithHistory = ({
                 return (
                     <Calendar
                         value={field.value ? new Date(field.value) : null}
-                        onChange={(e) => handleDateChange(e.value)}
+                        onChange={(e) => handleDateChange(e.value as  Date | null )}
                         dateFormat="dd/mm/yy"
                         className={`w-full ${className}`}
                         placeholder={placeholder || 'Seleccione una fecha'}
@@ -213,7 +213,7 @@ export const FieldWithHistory = ({
                             <label className="block mb-1">Fecha Inicio</label>
                             <Calendar
                                 value={field?.value?.start ? new Date(field.value.start) : null}
-                                onChange={(e) => handleDateRangeChange('start', e.value)}
+                                onChange={(e) => handleDateRangeChange('start', e.value as  Date | null)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha inicio"
@@ -224,7 +224,7 @@ export const FieldWithHistory = ({
                             <label className="block mb-1">Fecha Fin</label>
                             <Calendar
                                 value={field?.value?.end ? new Date(field.value.end) : null}
-                                onChange={(e) => handleDateRangeChange('end', e.value)}
+                                onChange={(e) => handleDateRangeChange('end', e.value as  Date | null)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha fin"
