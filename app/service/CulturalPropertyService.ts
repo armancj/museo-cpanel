@@ -13,7 +13,9 @@ export interface CulturalPropertySimpleModel {
 
 export const CulturalPropertyService = {
     getCulturalProperties: async () => {
-        return await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
+        const result = await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
+        console.log({ result });
+        return result;
     },
 
     async addCulturalRecordDetails(

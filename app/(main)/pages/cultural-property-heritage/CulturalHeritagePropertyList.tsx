@@ -166,19 +166,18 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onView, onEdi
 
     const statusBodyTemplate = (rowData: CulturalHeritageProperty) => {
         // Check the status of the main fields to determine overall status
-        const objectTitleStatus = rowData.culturalRecord?.objectTitle?.status;
-        const objectDescriptionStatus = rowData.culturalRecord?.objectDescription?.status;
+        const status = rowData?.status;
 
         let statusClass = 'bg-blue-100 text-blue-900'; // Default: Pending
         let statusText = 'Pendiente';
 
-        if (objectTitleStatus === 'Has Issue' || objectDescriptionStatus === 'Has Issue') {
+        if (status === 'Has Issue') {
             statusClass = 'bg-red-100 text-red-900';
             statusText = 'Con Problemas';
-        } else if (objectTitleStatus === 'To Review' || objectDescriptionStatus === 'To Review') {
+        } else if (status === 'To Review') {
             statusClass = 'bg-yellow-100 text-yellow-900';
             statusText = 'Para Revisar';
-        } else if (objectTitleStatus === 'Reviewed' && objectDescriptionStatus === 'Reviewed') {
+        } else if (status === 'Reviewed') {
             statusClass = 'bg-green-100 text-green-900';
             statusText = 'Revisado';
         }
