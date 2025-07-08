@@ -7,7 +7,7 @@ import {
     useHookCulturalHeritageProperty
 } from '@/app/(main)/pages/cultural-property-heritage/useHookCulturalHeritageProperty';
 import { useAllDropdownData } from '@/app/common/hooks/useAllDropdownData';
-import { UserRoles } from '@/app/(main)/pages/cultural-property-heritage/types';
+import { UserRoles, Status } from '@/app/(main)/pages/cultural-property-heritage/types';
 
 const CulturalHeritagePropertyPage = () => {
     const [showWizard, setShowWizard] = useState(false);
@@ -49,6 +49,17 @@ const CulturalHeritagePropertyPage = () => {
                 console.error('Error parsing auth user:', error);
             }
         }
+
+        // Check if there's a preselected heritage type in localStorage
+        // If so, automatically show the wizard for creating a new item
+        const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
+        if (preSelectedHeritageType) {
+            // Call handleAddNew after the component has fully mounted
+            setTimeout(() => {
+                handleAddNew();
+            }, 0);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const mapBackendRoleToUserRole = (backendRole: string): UserRoles => {
@@ -71,6 +82,64 @@ const CulturalHeritagePropertyPage = () => {
     const handleAddNew = () => {
         isEditModeRef.current = false;
         hookData.closeDialog();
+
+        // Verificar si hay un tipo de patrimonio preseleccionado en localStorage
+        const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
+
+        // Si hay un tipo preseleccionado, actualizar los datos con ese tipo
+        if (preSelectedHeritageType) {
+            // Inicializar el objeto si es necesario
+            if (!hookData.data.entryAndLocation) {
+                hookData.setData({
+                    ...hookData.data,
+                    entryAndLocation: {
+                        auxiliaryInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        declarationType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        entryDate: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        entryMethod: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        genericClassification: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        heritageType: { value: preSelectedHeritageType, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        initialDescription: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        institutionType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        inventoryNumber: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        pieceInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        objectName: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                        objectLocation: {
+                            value: {
+                                floor: '',
+                                exhibitionRoom: '',
+                                storage: '',
+                                showcaseShelf: '',
+                                shelfDrawer: '',
+                                box: '',
+                                fileFolder: '',
+                                _id: ''
+                            },
+                            modifiedBy: '',
+                            comment: '',
+                            status: Status.Pending,
+                            history: []
+                        }
+                    }
+                });
+            } else {
+                // Si ya existe entryAndLocation, solo actualizar el tipo de patrimonio
+                hookData.setData({
+                    ...hookData.data,
+                    entryAndLocation: {
+                        ...hookData.data.entryAndLocation,
+                        heritageType: {
+                            ...hookData.data.entryAndLocation.heritageType,
+                            value: preSelectedHeritageType
+                        }
+                    }
+                });
+            }
+
+            // Limpiar el localStorage después de usarlo
+            localStorage.removeItem('preSelectedHeritageType');
+        }
+
         setShowWizard(true);
     };
 

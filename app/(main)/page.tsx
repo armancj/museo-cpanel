@@ -6,6 +6,7 @@ import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ChartData, ChartOptions } from 'chart.js';
 import { ChartDataset } from 'chart.js/dist/types';
 import { DashboardService, HeritageTypeCount, MonthlyEntryData } from '@/app/service/DashboardService';
@@ -14,6 +15,9 @@ import CulturalPropertyTable from '@/app/common/component/CulturalPropertyTable'
 import RecentActivityCard from '@/app/common/component/RecentActivityCard';
 import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 import withAuth from '@/lib/withAuth';
+import { HeritageTypeService } from '@/app/service/HeritageTypeService';
+import { SpeedDial } from 'primereact/speeddial';
+import { Tooltip } from 'primereact/tooltip';
 
 // Datos iniciales para los gráficos (se actualizarán con datos reales)
 const initialLineData: ChartData = {
@@ -40,6 +44,10 @@ const Dashboard = () => {
     const [lineData, setLineData] = useState<ChartData>(initialLineData);
     const [pieData, setPieData] = useState<ChartData>({ labels: [], datasets: [] });
     const [loading, setLoading] = useState<boolean>(true);
+    const [heritageTypes, setHeritageTypes] = useState<{ label: string; value: string }[]>([]);
+
+    // Router para navegación
+    const router = useRouter();
 
 
     // Referencias para los menús
@@ -139,6 +147,14 @@ const Dashboard = () => {
         setPieOptions(pieOptions);
     };
 
+    // Función para navegar a la creación de un nuevo patrimonio cultural con un tipo preseleccionado
+    const navigateToCreateWithType = (heritageType: string) => {
+        // Guardar el tipo de patrimonio seleccionado en localStorage
+        localStorage.setItem('preSelectedHeritageType', heritageType);
+        // Navegar a la página de creación de patrimonio cultural
+        router.push('/pages/cultural-property-heritage');
+    };
+
     // Cargar datos del dashboard
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -152,8 +168,8 @@ const Dashboard = () => {
                 setLatestEntries(stats.latestEntries);
 
                 // Obtener distribución por tipo de patrimonio
-                const heritageTypes = await DashboardService.getHeritageTypeDistribution();
-                setHeritageTypeData(heritageTypes);
+                const heritageTypesDistribution = await DashboardService.getHeritageTypeDistribution();
+                setHeritageTypeData(heritageTypesDistribution);
 
                 const labels = stats.objectsByConservationStatusWithColors.map(item => item.state);
                 const data = stats.objectsByConservationStatusWithColors.map(item => item.count);
@@ -191,6 +207,14 @@ const Dashboard = () => {
                 };
                 setLineData(lineData);
 
+                // Obtener tipos de patrimonio para los botones de acceso rápido
+                const heritageTypesResponse = await HeritageTypeService.getHeritageTypes();
+                const formattedHeritageTypes = heritageTypesResponse.map(type => ({
+                    label: type.name,
+                    value: type.name
+                }));
+                setHeritageTypes(formattedHeritageTypes);
+
                 setLoading(false);
             } catch (error) {
                 console.error('Error al cargar datos del dashboard:', error);
@@ -199,7 +223,7 @@ const Dashboard = () => {
         };
 
         fetchDashboardData();
-    }, []);
+    }, [router]);
 
     // Aplicar tema según configuración
     useEffect(() => {
@@ -225,8 +249,85 @@ const Dashboard = () => {
         return dateObj.toLocaleDateString('es-ES');
     };
  console.log(latestEntries)
+    // Preparar los items para el SpeedDial
+    const getSpeedDialItems = () => {
+        // Obtener los primeros 3 tipos de patrimonio para los botones principales
+        const topThreeTypes = heritageTypes.slice(0, 3);
+
+        // Preparar los items para el menú de "más opciones"
+        const remainingTypes = heritageTypes.slice(3).map(type => ({
+            label: type.label,
+            icon: 'pi pi-plus',
+            command: () => navigateToCreateWithType(type.value)
+        }));
+
+        // Crear el menú de opciones adicionales si hay más de 3 tipos
+        const moreOptionsMenu = remainingTypes.length > 0 ? {
+            label: 'Más tipos',
+            icon: 'pi pi-ellipsis-h',
+            items: remainingTypes
+        } : null;
+
+        return { topThreeTypes, moreOptionsMenu };
+    };
+
+    const { topThreeTypes, moreOptionsMenu } = getSpeedDialItems();
+
     return (
         <div className="grid">
+            {/* Botones horizontales para crear patrimonio cultural */}
+            <div className="col-12 mb-4">
+                <div className="surface-card p-3 shadow-1 border-round">
+                    <div className="flex align-items-center justify-content-between mb-3">
+                        <h5 className="m-0">Crear Patrimonio Cultural</h5>
+                        <Tooltip target=".heritage-type-btn" />
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                        {/* Botones para los 3 tipos principales */}
+                        {topThreeTypes.map((type, index) => (
+                            <Button
+                                key={type.value}
+                                className="heritage-type-btn p-button-outlined p-button-rounded"
+                                icon="pi pi-plus"
+                                label={type.label}
+                                tooltip={`Crear ${type.label}`}
+                                onClick={() => navigateToCreateWithType(type.value)}
+                                style={{
+                                    transition: 'all 0.2s ease',
+                                    color: ['#2196F3', '#FF9800', '#4CAF50'][index % 3],
+                                    borderColor: ['#2196F3', '#FF9800', '#4CAF50'][index % 3]
+                                }}
+                            />
+                        ))}
+
+                        {/* Menú para tipos adicionales */}
+                        {moreOptionsMenu && (
+                            <Button
+                                className="p-button-outlined p-button-rounded"
+                                icon="pi pi-ellipsis-h"
+                                label="Más tipos"
+                                onClick={(e) => menu2.current?.toggle(e)}
+                                aria-controls="more_options_menu"
+                                aria-haspopup
+                                style={{
+                                    transition: 'all 0.2s ease',
+                                    color: '#9c27b0',
+                                    borderColor: '#9c27b0'
+                                }}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                <Menu
+                    ref={menu2}
+                    id="more_options_menu"
+                    popup
+                    model={moreOptionsMenu ? [moreOptionsMenu] : []}
+                />
+            </div>
+
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -440,4 +541,3 @@ const Dashboard = () => {
 };
 
 export default withAuth(Dashboard);
-

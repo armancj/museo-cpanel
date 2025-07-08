@@ -88,6 +88,22 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
         }
     }, [data.uuid]); // Only depend on data.uuid to avoid infinite loops
 
+    // Check if there's a preselected heritage type and navigate to the third step
+    useEffect(() => {
+        // If there's a preselected heritage type in the data, navigate to the third step (index 2)
+        if (data?.entryAndLocation?.heritageType?.value && activeIndex === 0) {
+            // Mark the first two steps as completed
+            const newCompleted = [...isCompleted];
+            newCompleted[0] = true;
+            newCompleted[1] = true;
+            setIsCompleted(newCompleted);
+
+            // Navigate to the third step
+            setActiveIndex(2);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.entryAndLocation?.heritageType?.value, activeIndex]);
+
     if (!dropdownData) {
         return (
             <div className="flex align-items-center justify-content-center" style={{ height: '400px' }}>
