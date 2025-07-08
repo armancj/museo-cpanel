@@ -1030,7 +1030,6 @@ const OrganizationalChartFlow = ({ users }: { users: UsersDatum[] }) => {
     // Estados de filtrado
     const [searchText, setSearchText] = useState('');
     const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
-    const [selectedMunicipality, setSelectedMunicipality] = useState<string | null>(null);
     const [selectedRole, setSelectedRole] = useState<string | null>(null);
     const [showOnlyActive, setShowOnlyActive] = useState(true);
 
@@ -1056,10 +1055,6 @@ const OrganizationalChartFlow = ({ users }: { users: UsersDatum[] }) => {
                 return false;
             }
 
-            if (selectedProvince && user.municipal !== selectedMunicipality) {
-                return false;
-            }
-
             // Filtro de rol
             if (selectedRole && user.roles !== selectedRole) {
                 return false;
@@ -1067,17 +1062,12 @@ const OrganizationalChartFlow = ({ users }: { users: UsersDatum[] }) => {
 
             return !(showOnlyActive && !user.active);
         });
-    }, [users, searchText, selectedProvince, selectedMunicipality, selectedRole, showOnlyActive]);
+    }, [users, searchText, selectedProvince, selectedRole, showOnlyActive]);
 
     // Opciones para dropdowns
     const provinceOptions = useMemo(() => {
         const provinces = Array.from(new Set(users.map(u => u.province).filter(Boolean)));
         return provinces.map(p => ({ label: p, value: p }));
-    }, [users]);
-
-    const municipalityOptions = useMemo(() => {
-        const municipalities = Array.from(new Set(users.map(u => u.municipal).filter(Boolean)));
-        return municipalities.map(municipality => ({ label: municipality, value: municipality }));
     }, [users]);
 
     const roleOptions = useMemo(() => {
@@ -1346,7 +1336,6 @@ const OrganizationalChartFlow = ({ users }: { users: UsersDatum[] }) => {
     const handleReset = useCallback(() => {
         setSearchText('');
         setSelectedProvince(null);
-        setSelectedMunicipality(null);
         setSelectedRole(null);
         setShowOnlyActive(true);
         setExpandedNodes(new Set(['country-Cuba']));
