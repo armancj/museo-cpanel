@@ -130,12 +130,10 @@ export const EntryAndLocationForm = ({
             formValidityUpdatedRef.current = false;
         }
     }, [
-        data.entryAndLocation?.inventoryNumber?.value,
-        data.entryAndLocation?.objectName?.value,
-        currentStep,
-        isFormValid,
-        markStepCompleted
-    ]);
+        data.entryAndLocation.inventoryNumber.value,
+        data.entryAndLocation.objectName.value,
+        data.entryAndLocation.heritageType.value,
+        currentStep, isFormValid, markStepCompleted, data]);
 
     // Update a field in the entry and location
     const updateField = (field: string, value: any) => {
@@ -440,10 +438,18 @@ export const EntryAndLocationForm = ({
 
                     <div className="grid">
                         <div className="col-12 md:col-6">
+                            <div className="mb-2 p-2 bg-yellow-50 border-round text-xs">
+                                <strong>🔍 Heritage Type Debug:</strong><br/>
+                                Value: {JSON.stringify(data.entryAndLocation.heritageType.value)}<br/>
+                                Options Count: {heritageTypeOptions?.length || 0}<br/>
+                                Selected Option: {JSON.stringify(heritageTypeOptions?.find(opt => opt.value === data.entryAndLocation.heritageType.value))}<br/>
+                                From localStorage: {localStorage.getItem('preSelectedHeritageType')}
+                            </div>
                             <FieldWithHistory
                                 label="Tipo de Patrimonio"
                                 field={data.entryAndLocation.heritageType}
                                 type="dropdown"
+                                required={true}
                                 options={heritageTypeOptions}
                                 onChange={(value) => updateField('heritageType', value)}
                                 onStatusChange={(status) => updateFieldStatus('heritageType', status)}
