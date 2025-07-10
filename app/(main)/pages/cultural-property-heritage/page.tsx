@@ -36,6 +36,50 @@ const CulturalHeritagePropertyPage = () => {
 
     const hookData = useHookCulturalHeritageProperty();
 
+    const processPreselectedHeritageType = (preSelectedHeritageType: string) => {
+        const typeExists = heritageTypeOptions.some(option => option.value === preSelectedHeritageType);
+
+        if (!typeExists) {
+             localStorage.removeItem('preSelectedHeritageType');
+            return;
+        }
+
+        const newData = {
+            ...hookData.data,
+            entryAndLocation: {
+                auxiliaryInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                declarationType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                entryDate: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                entryMethod: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                genericClassification: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                heritageType: { value: preSelectedHeritageType, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                initialDescription: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                institutionType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                inventoryNumber: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                pieceInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                objectName: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
+                objectLocation: {
+                    value: {
+                        floor: '',
+                        exhibitionRoom: '',
+                        storage: '',
+                        showcaseShelf: '',
+                        shelfDrawer: '',
+                        box: '',
+                        fileFolder: '',
+                        _id: ''
+                    },
+                    modifiedBy: '',
+                    comment: '',
+                    status: Status.Pending,
+                    history: []
+                }
+            }
+        };
+        hookData.setData(newData);
+        localStorage.removeItem('preSelectedHeritageType');
+    };
+
 
     useEffect(() => {
         const authUser = localStorage.getItem('authUser');
@@ -62,6 +106,16 @@ const CulturalHeritagePropertyPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+
+    useEffect(() => {
+        const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
+
+        if (preSelectedHeritageType && heritageTypeOptions.length > 0 && showWizard) {
+            console.log('🔍 Processing preselected heritage type after options loaded:', preSelectedHeritageType);
+            processPreselectedHeritageType(preSelectedHeritageType);
+        }
+    }, [heritageTypeOptions, processPreselectedHeritageType, showWizard]);
+
     const mapBackendRoleToUserRole = (backendRole: string): UserRoles => {
         switch (backendRole) {
             case 'super Administrador':
@@ -77,83 +131,36 @@ const CulturalHeritagePropertyPage = () => {
         }
     };
 
-
-
     const handleAddNew = () => {
         isEditModeRef.current = false;
         hookData.closeDialog();
 
-        // Verificar si hay un tipo de patrimonio preseleccionado en localStorage
         const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
-
-        // Si hay un tipo preseleccionado, actualizar los datos con ese tipo
-        if (preSelectedHeritageType) {
-            // Inicializar el objeto si es necesario
-            if (!hookData.data.entryAndLocation) {
-                hookData.setData({
-                    ...hookData.data,
-                    entryAndLocation: {
-                        auxiliaryInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        declarationType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        entryDate: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        entryMethod: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        genericClassification: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        heritageType: { value: preSelectedHeritageType, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        initialDescription: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        institutionType: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        inventoryNumber: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        pieceInventory: { value: false, modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        objectName: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] },
-                        objectLocation: {
-                            value: {
-                                floor: '',
-                                exhibitionRoom: '',
-                                storage: '',
-                                showcaseShelf: '',
-                                shelfDrawer: '',
-                                box: '',
-                                fileFolder: '',
-                                _id: ''
-                            },
-                            modifiedBy: '',
-                            comment: '',
-                            status: Status.Pending,
-                            history: []
-                        }
-                    }
-                });
-            } else {
-                // Si ya existe entryAndLocation, solo actualizar el tipo de patrimonio
-                hookData.setData({
-                    ...hookData.data,
-                    entryAndLocation: {
-                        ...hookData.data.entryAndLocation,
-                        heritageType: {
-                            ...hookData.data.entryAndLocation.heritageType,
-                            value: preSelectedHeritageType
-                        }
-                    }
-                });
-            }
-
-            // Limpiar el localStorage después de usarlo
-            localStorage.removeItem('preSelectedHeritageType');
-        }
+        console.log('🔍 Preselected Heritage Type from localStorage:', preSelectedHeritageType);
 
         setShowWizard(true);
+
+        if (preSelectedHeritageType) {
+            console.log('🔍 Heritage type options available:', heritageTypeOptions.length);
+
+            if (heritageTypeOptions.length === 0) {
+                console.log('⏳ Options not loaded yet, will process when available');
+                return;
+            }
+
+            processPreselectedHeritageType(preSelectedHeritageType);
+        }
     };
 
     const handleView = () => {
-        setIsViewMode(true); // Activar modo solo lectura
+        setIsViewMode(true);
         setShowWizard(true);
     };
 
     const handleEdit = () => {
-        setIsViewMode(false); // Activar modo edición
+        setIsViewMode(false);
         setShowWizard(true);
     };
-
-
 
     const handleBackToList = () => {
         isEditModeRef.current = false;
