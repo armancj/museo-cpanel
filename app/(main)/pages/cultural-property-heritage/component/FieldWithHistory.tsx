@@ -216,7 +216,8 @@ export const FieldWithHistory = ({
             case 'textarea':
                 return <InputTextarea value={field.value || ''} onChange={(e) => onChange(e.target.value)} rows={5} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'dropdown':
-                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
+                const selectedValue = field.value || '';
+                return <Dropdown value={selectedValue} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
             case 'date':
                 return (
                     <Calendar
