@@ -86,23 +86,8 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
             setIsEditMode(false);
             completedStepsSetRef.current = false;
         }
-    }, [data.uuid]); // Only depend on data.uuid to avoid infinite loops
+    }, [data, data.uuid, isCompleted]); // Only depend on data.uuid to avoid infinite loops
 
-    // Check if there's a preselected heritage type and navigate to the third step
-    useEffect(() => {
-        // If there's a preselected heritage type in the data, navigate to the third step (index 2)
-        if (data?.entryAndLocation?.heritageType?.value && activeIndex === 0) {
-            // Mark the first two steps as completed
-            const newCompleted = [...isCompleted];
-            newCompleted[0] = true;
-            newCompleted[1] = true;
-            setIsCompleted(newCompleted);
-
-            // Navigate to the third step
-            setActiveIndex(2);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.entryAndLocation?.heritageType?.value, activeIndex]);
 
     if (!dropdownData) {
         return (
@@ -151,21 +136,21 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
         return true;
     };
 
-    // Function to handle next step
+    // Function to handle the next step
     const nextStep = () => {
         if (activeIndex < wizardItems.length - 1) {
             setActiveIndex(activeIndex + 1);
         }
     };
 
-    // Function to handle previous step
+    // Function to handle a previous step
     const prevStep = () => {
         if (activeIndex > 0) {
             setActiveIndex(activeIndex - 1);
         }
     };
 
-    // Function to mark current step as completed
+    // Function to mark the current step as completed
     const markStepCompleted = (index: number, completed: boolean) => {
         if (isViewMode) return;
         const newCompleted = [...isCompleted];
@@ -221,20 +206,20 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
         return true; // Admin, superAdmin, and manager can edit any field
     };
 
-    // Function to check if user can view history
+    // Function to check if the user can view history
     const canViewHistory = () => {
         // All users can view history
         return true;
     };
 
-    // Function to check if user can change status
+    // Function to check if a user can change status
     const canChangeStatus = () => {
         if (isViewMode) return false;
 
         return currentUserRole === UserRoles.administrator || currentUserRole === UserRoles.superAdmin || currentUserRole === UserRoles.manager;
     };
 
-    // Function to open history dialog
+    // Function to open the history dialog
     const openHistoryDialog = (field: any, title: string) => {
         setHistoryField(field);
         setHistoryTitle(title);
