@@ -16,8 +16,7 @@ import RecentActivityCard from '@/app/common/component/RecentActivityCard';
 import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 import withAuth from '@/lib/withAuth';
 import { HeritageTypeService } from '@/app/service/HeritageTypeService';
-import { SpeedDial } from 'primereact/speeddial';
-import { Tooltip } from 'primereact/tooltip';
+import { CreateCulturalObjectComponent } from '@/app/(main)/CreateCulturalObjectComponent';
 
 // Datos iniciales para los gráficos (se actualizarán con datos reales)
 const initialLineData: ChartData = {
@@ -222,7 +221,7 @@ const Dashboard = () => {
             }
         };
 
-        fetchDashboardData();
+        fetchDashboardData().then( () => console.log(' dashboard load'));
     }, [router]);
 
     // Aplicar tema según configuración
@@ -275,57 +274,55 @@ const Dashboard = () => {
     return (
         <div className="grid">
             {/* Botones horizontales para crear patrimonio cultural */}
-            <div className="col-12 mb-4">
-                <div className="surface-card p-3 shadow-1 border-round">
-                    <div className="flex align-items-center justify-content-between mb-3">
-                        <h5 className="m-0">Crear Patrimonio Cultural</h5>
-                        <Tooltip target=".heritage-type-btn" />
-                    </div>
+            <CreateCulturalObjectComponent loading={loading} topThreeTypes={topThreeTypes}
+                                           callbackfn={(type, index) => {
+                                               const colors = [
+                                                   {
+                                                       bg: 'bg-blue-100',
+                                                       text: 'text-blue-600',
+                                                       border: 'border-blue-200',
+                                                       hover: 'hover:bg-blue-200'
+                                                   },
+                                                   {
+                                                       bg: 'bg-orange-100',
+                                                       text: 'text-orange-600',
+                                                       border: 'border-orange-200',
+                                                       hover: 'hover:bg-orange-200'
+                                                   },
+                                                   {
+                                                       bg: 'bg-green-100',
+                                                       text: 'text-green-600',
+                                                       border: 'border-green-200',
+                                                       hover: 'hover:bg-green-200'
+                                                   }
+                                               ];
+                                               const colorScheme = colors[index % 3];
 
-                    <div className="flex flex-wrap gap-2">
-                        {/* Botones para los 3 tipos principales */}
-                        {topThreeTypes.map((type, index) => (
-                            <Button
-                                key={type.value}
-                                className="heritage-type-btn p-button-outlined p-button-rounded"
-                                icon="pi pi-plus"
-                                label={type.label}
-                                tooltip={`Crear ${type.label}`}
-                                onClick={() => navigateToCreateWithType(type.value)}
-                                style={{
-                                    transition: 'all 0.2s ease',
-                                    color: ['#2196F3', '#FF9800', '#4CAF50'][index % 3],
-                                    borderColor: ['#2196F3', '#FF9800', '#4CAF50'][index % 3]
-                                }}
-                            />
-                        ))}
-
-                        {/* Menú para tipos adicionales */}
-                        {moreOptionsMenu && (
-                            <Button
-                                className="p-button-outlined p-button-rounded"
-                                icon="pi pi-ellipsis-h"
-                                label="Más tipos"
-                                onClick={(e) => menu2.current?.toggle(e)}
-                                aria-controls="more_options_menu"
-                                aria-haspopup
-                                style={{
-                                    transition: 'all 0.2s ease',
-                                    color: '#9c27b0',
-                                    borderColor: '#9c27b0'
-                                }}
-                            />
-                        )}
-                    </div>
-                </div>
-
-                <Menu
-                    ref={menu2}
-                    id="more_options_menu"
-                    popup
-                    model={moreOptionsMenu ? [moreOptionsMenu] : []}
-                />
-            </div>
+                                               return (
+                                                   <div key={type.value} className="flex-1 min-w-0">
+                                                       <Button
+                                                           className={`heritage-type-btn w-full p-3 border-2 ${colorScheme.bg} ${colorScheme.border} ${colorScheme.text} ${colorScheme.hover} transition-all transition-duration-200`}
+                                                           style={{
+                                                               minHeight: '80px',
+                                                               backgroundColor: 'transparent',
+                                                               border: `2px solid var(--${['blue', 'orange', 'green'][index % 3]}-200)`,
+                                                               color: `var(--${['blue', 'orange', 'green'][index % 3]}-600)`
+                                                           }}
+                                                           onClick={() => navigateToCreateWithType(type.value)}
+                                                           tooltip={`Crear ${type.label}`}
+                                                           tooltipOptions={{ position: 'top' }}
+                                                       >
+                                                           <div
+                                                               className="flex flex-column align-items-center gap-2 w-full">
+                                                               <i className="pi pi-plus text-2xl"></i>
+                                                               <span
+                                                                   className="font-medium text-sm line-height-3 text-center">{type.label}</span>
+                                                           </div>
+                                                       </Button>
+                                                   </div>
+                                               );
+                                           }} heritageTypes={heritageTypes} onClick={(e) => menu2.current?.toggle(e)}
+                                           ref={menu2} moreOptionsMenu={moreOptionsMenu} />
 
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
@@ -334,7 +331,8 @@ const Dashboard = () => {
                             <span className="block text-500 font-medium mb-3">Total Objetos Museables</span>
                             <div className="text-900 font-medium text-xl">{totalObjects}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round"
+                             style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-box text-blue-500 text-xl" />
                         </div>
                     </div>
@@ -349,7 +347,8 @@ const Dashboard = () => {
                             <span className="block text-500 font-medium mb-3">Ingresos Recientes</span>
                             <div className="text-900 font-medium text-xl">{recentEntries}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-orange-100 border-round"
+                             style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-calendar-plus text-orange-500 text-xl" />
                         </div>
                     </div>
@@ -364,7 +363,8 @@ const Dashboard = () => {
                             <span className="block text-500 font-medium mb-3">Tipos de Patrimonio</span>
                             <div className="text-900 font-medium text-xl">{heritageTypeData.length}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round"
+                             style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-list text-cyan-500 text-xl" />
                         </div>
                     </div>
@@ -379,7 +379,8 @@ const Dashboard = () => {
                             <span className="block text-500 font-medium mb-3">Documentación</span>
                             <div className="text-900 font-medium text-xl">Completa</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-purple-100 border-round"
+                             style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-file text-purple-500 text-xl" />
                         </div>
                     </div>
@@ -395,7 +396,8 @@ const Dashboard = () => {
                     <div className="flex justify-content-between align-items-center mb-5">
                         <h5>Distribución por Tipo de Patrimonio</h5>
                         <div>
-                            <Button type="button" icon="pi pi-ellipsis-v" rounded text className="p-button-plain" onClick={(event) => menu1.current?.toggle(event)} />
+                            <Button type="button" icon="pi pi-ellipsis-v" rounded text className="p-button-plain"
+                                    onClick={(event) => menu1.current?.toggle(event)} />
                             <Menu
                                 ref={menu1}
                                 popup
@@ -418,14 +420,17 @@ const Dashboard = () => {
                                 const percentage = totalObjects > 0 ? Math.round((item.count / totalObjects) * 100) : 0;
 
                                 return (
-                                    <li key={item.name} className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                                    <li key={item.name}
+                                        className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
                                         <div>
                                             <span className="text-900 font-medium mr-2 mb-1 md:mb-0">{item.name}</span>
                                             <div className="mt-1 text-600">Tipo de Patrimonio</div>
                                         </div>
                                         <div className="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
-                                            <div className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem" style={{ height: '8px' }}>
-                                                <div className={`bg-${color}-500 h-full`} style={{ width: `${percentage}%` }} />
+                                            <div className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
+                                                 style={{ height: '8px' }}>
+                                                <div className={`bg-${color}-500 h-full`}
+                                                     style={{ width: `${percentage}%` }} />
                                             </div>
                                             <span className={`text-${color}-500 ml-3 font-medium`}>{percentage}%</span>
                                         </div>
@@ -470,7 +475,8 @@ const Dashboard = () => {
                     <span className="block text-600 font-medium mb-3">ESTADÍSTICAS</span>
                     <ul className="p-0 m-0 list-none">
                         <li className="flex align-items-center py-2 border-bottom-1 surface-border">
-                            <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
+                            <div
+                                className="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
                                 <i className="pi pi-chart-bar text-xl text-orange-500" />
                             </div>
                             <span className="text-900 line-height-3">
@@ -482,12 +488,14 @@ const Dashboard = () => {
                             </span>
                         </li>
                         <li className="flex align-items-center py-2 border-bottom-1 surface-border">
-                            <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-cyan-100 border-circle mr-3 flex-shrink-0">
+                            <div
+                                className="w-3rem h-3rem flex align-items-center justify-content-center bg-cyan-100 border-circle mr-3 flex-shrink-0">
                                 <i className="pi pi-calendar text-xl text-cyan-500" />
                             </div>
                             <span className="text-900 line-height-3">
                                 Ingresos Mensuales
-                                <span className="text-700"> promedio de <span className="text-cyan-500 font-medium">{monthlyEntryData.length > 0 ? Math.round(totalObjects / monthlyEntryData.length) : 0}</span> objetos por mes</span>
+                                <span className="text-700"> promedio de <span
+                                    className="text-cyan-500 font-medium">{monthlyEntryData.length > 0 ? Math.round(totalObjects / monthlyEntryData.length) : 0}</span> objetos por mes</span>
                             </span>
                         </li>
                     </ul>
@@ -504,8 +512,10 @@ const Dashboard = () => {
                             {latestEntries.slice(0, 3).map((entry, index) => (
                                 <div key={entry.uuid} className="col-12 md:col-4">
                                     <div className="p-3 border-1 surface-border border-round">
-                                        <div className="text-900 font-medium mb-2">{entry.entryAndLocation?.objectName?.value || 'Objeto Museable'}</div>
-                                        <div className="text-600 mb-3">Método: {entry.entryAndLocation?.entryMethod?.value || 'No especificado'}</div>
+                                        <div
+                                            className="text-900 font-medium mb-2">{entry.entryAndLocation?.objectName?.value || 'Objeto Museable'}</div>
+                                        <div
+                                            className="text-600 mb-3">Método: {entry.entryAndLocation?.entryMethod?.value || 'No especificado'}</div>
                                         <Tag
                                             severity={index % 3 === 0 ? 'success' : index % 3 === 1 ? 'info' : 'warning'}
                                             value={entry.entryAndLocation?.heritageType?.value || 'Patrimonio Cultural'}
@@ -529,7 +539,8 @@ const Dashboard = () => {
                         <div className="text-white font-medium text-5xl">Museo Digital</div>
                     </div>
                     <div className="mt-4 mr-auto md:mt-0 md:mr-0">
-                        <Link href="/pages/cultural-property-heritage" className="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised">
+                        <Link href="/pages/cultural-property-heritage"
+                              className="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised">
                             Explorar
                         </Link>
                     </div>

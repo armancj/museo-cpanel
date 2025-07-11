@@ -3,7 +3,9 @@ export const WebEnvConst = {
         login: '/auth/login',
         recover: '/auth/recover',
         verifyCode: '/auth/verify-code',
-        changePassword: '/auth/change-password'
+        changePassword: '/auth/change-password',
+        profile: '/auth/profile',
+        editProfile: '/auth/edit_profile'
     },
     user: {
         getAll: '/users/all?page=1&perPage=10000',
