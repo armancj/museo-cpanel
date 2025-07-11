@@ -60,7 +60,6 @@ export const ProducerAuthorForm = ({
     useEffect(() => {
         if (!data || data.producerAuthor || initializedRef.current) return;
 
-        console.log('🔧 Inicializando producerAuthor...');
         initializedRef.current = true;
 
         setData({

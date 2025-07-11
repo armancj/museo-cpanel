@@ -111,7 +111,6 @@ const CulturalHeritagePropertyPage = () => {
         const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
 
         if (preSelectedHeritageType && heritageTypeOptions.length > 0 && showWizard) {
-            console.log('🔍 Processing preselected heritage type after options loaded:', preSelectedHeritageType);
             processPreselectedHeritageType(preSelectedHeritageType);
         }
     }, [heritageTypeOptions, processPreselectedHeritageType, showWizard]);
@@ -136,13 +135,9 @@ const CulturalHeritagePropertyPage = () => {
         hookData.closeDialog();
 
         const preSelectedHeritageType = localStorage.getItem('preSelectedHeritageType');
-        console.log('🔍 Preselected Heritage Type from localStorage:', preSelectedHeritageType);
-
         setShowWizard(true);
 
         if (preSelectedHeritageType) {
-            console.log('🔍 Heritage type options available:', heritageTypeOptions.length);
-
             if (heritageTypeOptions.length === 0) {
                 console.log('⏳ Options not loaded yet, will process when available');
                 return;

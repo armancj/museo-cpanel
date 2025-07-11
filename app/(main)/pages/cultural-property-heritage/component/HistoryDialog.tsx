@@ -38,7 +38,6 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
 
     useEffect(() => {
         if (visible && field?.history?.length > 0) {
-            console.log('📋 Loading users for history with length:', field.history.length);
             loadUsers();
         }
     }, [visible, field]);
@@ -52,8 +51,6 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
                     .map((item: any) => item.modifiedBy)
                     .filter((uuid: string) => uuid && typeof uuid === 'string' && uuid.trim() !== '')
             )];
-
-            console.log('👥 Loading users for UUIDs:', userUuids);
 
             if (userUuids.length > 0) {
                 const usersMap = await UserService.getUsersByUuids(userUuids);
@@ -148,7 +145,6 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
         const user = users.get(userUuid);
 
         if (user) {
-            console.log('sssssssssssssssssssssssssssss', user.avatar)
             return (
                 <div className="flex align-items-center">
                     <div className="user-avatar mr-2">

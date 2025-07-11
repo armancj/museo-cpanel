@@ -96,7 +96,6 @@ export const CulturalRecordForm = ({
         const currentField = data.culturalRecord[field as keyof typeof data.culturalRecord];
 
         if (!currentField) {
-            console.warn(`Field ${field} not found in cultural record, creating default structure`);
             setData({
                 ...data,
                 culturalRecord: {

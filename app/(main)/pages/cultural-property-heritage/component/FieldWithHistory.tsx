@@ -57,15 +57,11 @@ export const FieldWithHistory = ({
     const [showComment, setShowComment] = useState(false);
 
     const handleDateChange = (dateValue: Date | null) => {
-        console.log('🔍 Date field change:', { label, dateValue });
-
-        // Process the date value - convert to ISO string if it's a valid date, otherwise use empty string
         let processedValue = '';
         if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
             processedValue = dateValue.toISOString();
         }
 
-        console.log('🔍 Processed date value:', processedValue);
         onChange(processedValue);
     };
 

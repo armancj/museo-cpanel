@@ -186,8 +186,6 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
 
             const saveResult = (await save('cultural-property')) as unknown as boolean;
 
-            console.log('saveResult:', saveResult);
-
             if (saveResult && onBackToList) onBackToList();
 
         } catch (error) {
