@@ -54,6 +54,18 @@ export interface AddressResponse {
     name?:      string;
 }
 
+export interface EditProfileRequest {
+    email?: string;
+    mobile?: string;
+    password?: string;
+    address?: string;
+    lastName?: string;
+    name?: string;
+    nationality?: string;
+    province?: string;
+    municipal?: string;
+    roles?: string;
+}
 
 class UserCache {
     private cache = new Map<string, UsersDatum>();
@@ -217,6 +229,7 @@ export const UserService  =   {
         return result;
     },
 
-
-
+    updateProfile: async (profileData: EditProfileRequest): Promise<void> => {
+        return await patch<void>(WebEnvConst.auth.editProfile, profileData);
+    }
 };
