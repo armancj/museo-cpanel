@@ -41,7 +41,6 @@ export const UserList = () => {
     const dt = useRef<DataTable<UsersDatum[]>>(null);
 
     const openNew = () => {
-        console.log('🆕 === CREANDO NUEVO USUARIO ===');
         setUser(emptyUser);
         setSubmitted(false);
         setUserDialog(true);
@@ -49,7 +48,6 @@ export const UserList = () => {
 
 
     const hideDialog = () => {
-        console.log('🚪 === CERRANDO DIÁLOGO ===');
         setSubmitted(false);
         setUserDialog(false);
     };
@@ -69,14 +67,10 @@ export const UserList = () => {
 
     const handleImageUpload = (file: File) => {
         setSelectedAvatar(file);
-        console.log("selected file:", file);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         const { value } = e.target;
-
-        // 🔍 DEBUG TEMPORAL
-        console.log('🔥 Input change:', field, '=', value);
 
         setUser(prevUser => ({
             ...prevUser,

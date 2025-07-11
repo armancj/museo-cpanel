@@ -85,11 +85,8 @@ export const CulturalPropertyService = {
 
             const validation = validateCleanedData(cleanedData);
             if (!validation.isValid) {
-                console.warn('Advertencias de validación:', validation.errors);
                 throw new Error(`Errores de validación: ${validation.errors.join(', ')}`);
             }
-
-            console.log('Cleaned data:', cleanedData);
 
             return await CulturalPropertyService.addCulturalRecordDetails(endpoints, cleanedData, culturalPropertySimple);
 
@@ -113,7 +110,6 @@ export const CulturalPropertyService = {
 
     deleteCulturalProperty: async (uuid: string) => {
         const url = WebEnvConst.culturalProperty.getOne(uuid);
-        console.log({ url });
         return await del<void>(url);
     },
 

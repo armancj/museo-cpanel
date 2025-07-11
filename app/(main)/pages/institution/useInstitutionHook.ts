@@ -56,9 +56,6 @@ export const useInstitutionHook = () => {
             return !isValid;
         });
 
-        console.log('🔍 Campos inválidos:', invalidFields);
-        console.log('📋 Datos actuales:', data);
-
         if (invalidFields.length === 0) {
             // ✅ Todos los campos válidos, proceder a guardar
             let _data = [...selects];
@@ -133,7 +130,6 @@ export const useInstitutionHook = () => {
         }
         toast.current?.show(show);
         setDialog(true);
-        console.log(error);
     };
 
     const deleteData = async (uuid: string) => {

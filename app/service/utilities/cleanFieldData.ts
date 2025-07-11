@@ -237,8 +237,6 @@ export const validateCleanedData = (cleanedData: any): { isValid: boolean; error
 export const debugDateFields = (cleanedData: any): void => {
     const dateFields = ['entryDate', 'descriptionDateTime', 'reviewDateTime'];
 
-    console.log('=== DEBUG: Campos de fecha ===');
-
     dateFields.forEach(field => {
         if (cleanedData[field]) {
             console.log(`${field}:`, {

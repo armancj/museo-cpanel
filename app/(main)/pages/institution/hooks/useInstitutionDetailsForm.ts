@@ -96,12 +96,6 @@ export const useInstitutionDetailsForm = ({ data, onInputChange }: UseInstitutio
 
     // 🔧 NUEVA LÓGICA: Reset cuando cambia la data (nuevo registro vs edición)
     useEffect(() => {
-        console.log('🔄 Data cambió:', {
-            uuid: data?.uuid,
-            country: data?.country,
-            province: data?.province,
-            municipality: data?.municipality
-        });
 
         if (!data?.uuid) {
             // Es un nuevo registro, resetear todo
@@ -123,13 +117,10 @@ export const useInstitutionDetailsForm = ({ data, onInputChange }: UseInstitutio
             }
 
             setIsInitializing(true);
-            console.log('🚀 Iniciando inicialización de campos de dirección...');
-
             try {
                 // 1. Inicializar país
                 const foundCountry = countries.find(c => c.name === data.country);
                 if (!foundCountry) {
-                    console.log('❌ País no encontrado:', data.country);
                     setIsInitializing(false);
                     return;
                 }

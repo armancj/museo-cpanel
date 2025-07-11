@@ -89,10 +89,6 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
-        console.log('🔍 === DEBUGGING CREATE USER ===');
-        console.log('📋 user.institution:', user.institution);
-        console.log('🆔 user.institutionId:', user.institutionId);
-        console.log('🆔 user', user);
 
         const {uuid: string, active, deleted, avatar, institution, ...rest} = user;
 
@@ -107,8 +103,6 @@ export const UserService  =   {
     updateUser: async (uuid: string, user: Partial<UsersDatum>) => {
         const url = WebEnvConst.user.getOne(uuid);
         const { institution, ...userPayload } = user;
-
-        console.log('🔧 Enviando al backend (updateUser):', userPayload);
 
         return await patch<UsersDatum>(url, userPayload);
     },
@@ -131,7 +125,7 @@ export const UserService  =   {
                 } as any,
 
             );
-            console.log("Avatar uploaded:", response);
+
             return response;
         } catch (error) {
             console.error("Error uploaded avatar:", error);

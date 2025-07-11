@@ -248,8 +248,7 @@ const Dashboard = () => {
         const dateObj = new Date(date);
         return dateObj.toLocaleDateString('es-ES');
     };
- console.log(latestEntries)
-    // Preparar los items para el SpeedDial
+
     const getSpeedDialItems = () => {
         // Obtener los primeros 3 tipos de patrimonio para los botones principales
         const topThreeTypes = heritageTypes.slice(0, 3);
