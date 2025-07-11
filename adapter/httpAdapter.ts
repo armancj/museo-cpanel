@@ -14,16 +14,9 @@ let isRedirecting = false;
 
 httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
-        console.log('✅ === RESPONSE SUCCESS ===');
-        console.log('✅ Status:', response.status);
-        console.log('✅ URL:', response.config.url);
         return response;
     },
     (error: AxiosError) => {
-        console.log('🚨 === RESPONSE ERROR ===');
-        console.log('🚨 Status:', error.response?.status);
-        console.log('🚨 URL:', error.config?.url);
-        console.log('🚨 Data:', error.response?.data);
 
         const status = error.response?.status;
         const isAuthError = status === 401 || status === 403;
@@ -48,20 +41,14 @@ httpAdapter.interceptors.response.use(
 
 httpAdapter.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        console.log('📤 === REQUEST INTERCEPTOR ===');
-        console.log('📤 URL:', config.url);
-        console.log('📤 Method:', config.method);
 
         if (typeof window !== 'undefined') {
             try {
                 const authUser = localStorage.getItem('authUser');
-                console.log('📤 AuthUser existe:', !!authUser);
 
                 if (authUser) {
                     const parsedAuthUser: AuthResponse = JSON.parse(authUser);
                     const token = parsedAuthUser.access_token;
-                    console.log('📤 Token existe:', !!token);
-                    console.log('📤 Token preview:', token ? `${token.substring(0, 20)}...` : 'null');
 
                     if (token) {
                         config.headers.Authorization = `Bearer ${token}`;
@@ -173,11 +160,6 @@ const handleApiError = (error: any): ApiError => {
         const status = error.response?.status || 500;
         const originalMessage = error.response?.data?.message || error.message || 'Error desconocido';
 
-        console.log('=== API ERROR ===');
-        console.log('Status:', status);
-        console.log('Original message:', originalMessage);
-        console.log('================');
-
         switch (status) {
             case 400:
                 return new ApiError(status, originalMessage, 'Los datos enviados no son válidos. Por favor, revisa la información.');
@@ -223,7 +205,6 @@ const handleApiError = (error: any): ApiError => {
                     }
 
                 } catch (parseError) {
-                    console.error('Error al parsear conflicto:', parseError);
                     return new ApiError(status, originalMessage,
                         'Ya existe un registro con los mismos datos. Por favor, verifica la información.',
                         'warn');
