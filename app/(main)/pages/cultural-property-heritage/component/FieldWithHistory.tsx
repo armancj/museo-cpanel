@@ -57,15 +57,11 @@ export const FieldWithHistory = ({
     const [showComment, setShowComment] = useState(false);
 
     const handleDateChange = (dateValue: Date | null) => {
-        console.log('🔍 Date field change:', { label, dateValue });
-
-        // Process the date value - convert to ISO string if it's a valid date, otherwise use empty string
         let processedValue = '';
         if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
             processedValue = dateValue.toISOString();
         }
 
-        console.log('🔍 Processed date value:', processedValue);
         onChange(processedValue);
     };
 
@@ -216,7 +212,8 @@ export const FieldWithHistory = ({
             case 'textarea':
                 return <InputTextarea value={field.value || ''} onChange={(e) => onChange(e.target.value)} rows={5} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'dropdown':
-                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
+                const selectedValue = field.value || '';
+                return <Dropdown value={selectedValue} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
             case 'date':
                 return (
                     <Calendar

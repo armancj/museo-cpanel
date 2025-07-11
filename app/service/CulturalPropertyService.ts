@@ -1,4 +1,4 @@
-import { get, post, put, patch, del } from '@/adapter/httpAdapter';
+import { del, get, post, put } from '@/adapter/httpAdapter';
 
 import { WebEnvConst } from '@/app/webEnvConst';
 import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
@@ -13,9 +13,7 @@ export interface CulturalPropertySimpleModel {
 
 export const CulturalPropertyService = {
     getCulturalProperties: async () => {
-        const result = await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
-        console.log({ result });
-        return result;
+        return await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
     },
 
     async addCulturalRecordDetails(
@@ -87,11 +85,8 @@ export const CulturalPropertyService = {
 
             const validation = validateCleanedData(cleanedData);
             if (!validation.isValid) {
-                console.warn('Advertencias de validación:', validation.errors);
                 throw new Error(`Errores de validación: ${validation.errors.join(', ')}`);
             }
-
-            console.log('Cleaned data:', cleanedData);
 
             return await CulturalPropertyService.addCulturalRecordDetails(endpoints, cleanedData, culturalPropertySimple);
 
@@ -115,7 +110,6 @@ export const CulturalPropertyService = {
 
     deleteCulturalProperty: async (uuid: string) => {
         const url = WebEnvConst.culturalProperty.getOne(uuid);
-        console.log({ url });
         return await del<void>(url);
     },
 

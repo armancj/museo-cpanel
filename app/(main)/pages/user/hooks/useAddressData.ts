@@ -85,9 +85,8 @@ export const useAddressData = () => {
 
                             // Debug para verificar si encontramos la institución
                             if (institutionId) {
-                                const foundInstitution = filteredInstitutions.find(inst => inst.uuid === institutionId);
-                                console.log('🎯 Institución para edición:', foundInstitution?.name || 'No encontrada');
-                            }
+                                 filteredInstitutions.find(inst => inst.uuid === institutionId);
+                                }
                         }
                     }
                 }

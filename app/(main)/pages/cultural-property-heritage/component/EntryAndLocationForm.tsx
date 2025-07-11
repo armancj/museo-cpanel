@@ -119,8 +119,6 @@ export const EntryAndLocationForm = ({
 
         const isValid = requiredFields.every(field => field !== null && field !== undefined && field !== '');
 
-        // Only update the state and call markStepCompleted if the validity has changed
-        // and we haven't already updated it for this set of values
         if (isValid !== isFormValid && !formValidityUpdatedRef.current) {
             formValidityUpdatedRef.current = true;
             setIsFormValid(isValid);
@@ -129,13 +127,7 @@ export const EntryAndLocationForm = ({
             // Reset the ref if the validity hasn't changed
             formValidityUpdatedRef.current = false;
         }
-    }, [
-        data.entryAndLocation?.inventoryNumber?.value,
-        data.entryAndLocation?.objectName?.value,
-        currentStep,
-        isFormValid,
-        markStepCompleted
-    ]);
+    }, [currentStep, isFormValid, markStepCompleted, data]);
 
     // Update a field in the entry and location
     const updateField = (field: string, value: any) => {
@@ -440,10 +432,18 @@ export const EntryAndLocationForm = ({
 
                     <div className="grid">
                         <div className="col-12 md:col-6">
+                            <div className="mb-2 p-2 bg-yellow-50 border-round text-xs">
+                                <strong>🔍 Heritage Type Debug:</strong><br/>
+                                Value: {JSON.stringify(data.entryAndLocation.heritageType.value)}<br/>
+                                Options Count: {heritageTypeOptions?.length || 0}<br/>
+                                Selected Option: {JSON.stringify(heritageTypeOptions?.find(opt => opt.value === data?.entryAndLocation?.heritageType?.value))}<br/>
+                                From localStorage: {localStorage.getItem('preSelectedHeritageType')}
+                            </div>
                             <FieldWithHistory
                                 label="Tipo de Patrimonio"
                                 field={data.entryAndLocation.heritageType}
                                 type="dropdown"
+                                required={true}
                                 options={heritageTypeOptions}
                                 onChange={(value) => updateField('heritageType', value)}
                                 onStatusChange={(status) => updateFieldStatus('heritageType', status)}

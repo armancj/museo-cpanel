@@ -177,23 +177,6 @@ export const AccessAndUseConditionsForm = ({
         });
     };
 
-    // Access conditions and reproduction conditions options are now passed as props
-
-
-    // 🔍 DEBUGGING: Log the access conditions field data and options
-    useEffect(() => {
-        if (data.accessAndUseConditions?.accessConditions) {
-            console.log('🔍 ACCESS FORM - accessConditions field:', data.accessAndUseConditions.accessConditions);
-            console.log('🔍 ACCESS FORM - accessConditions history:', data.accessAndUseConditions.accessConditions.history);
-            console.log('🔍 ACCESS FORM - history length:', data.accessAndUseConditions.accessConditions.history?.length);
-        }
-    }, [data.accessAndUseConditions?.accessConditions]);
-
-    // 🔍 DEBUGGING: Log the fetched options
-    useEffect(() => {
-        console.log('🔍 ACCESS FORM - accessConditionsOptions:', accessConditionsOptions);
-        console.log('🔍 ACCESS FORM - reproductionConditionsOptions:', reproductionConditionsOptions);
-    }, [accessConditionsOptions, reproductionConditionsOptions]);
 
 
     // If accessAndUseConditions is not initialized yet, show loading

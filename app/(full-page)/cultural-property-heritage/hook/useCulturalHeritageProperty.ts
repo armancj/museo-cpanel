@@ -163,8 +163,6 @@ export function useCulturalHeritageProperty() {
                 }, 2000);
             }
         } catch (error) {
-            console.log('Error sharing:', error);
-            // Fallback en caso de error
             try {
                 await navigator.clipboard.writeText(window.location.href);
                 setShareButtonState({

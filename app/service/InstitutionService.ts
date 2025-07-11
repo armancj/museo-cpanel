@@ -68,7 +68,6 @@ export const InstitutionService = {
     },
     async create(data: InstitutionResponse) {
         const {name, country, street, number, referenceCode, betweenStreet1, betweenStreet2, district, locality, province, municipality, phone1, phone2, email, website, institutionType, classification, typology, category} = data;
-        console.log(data);
         return await post<InstitutionResponse>(WebEnvConst.institution.post, {name, country, street, number, referenceCode, betweenStreet1, betweenStreet2, district, locality, province, municipality, phone1, phone2, email, website, institutionType, classification, typology, category});
     },
     async deleteInstitution(uuid: string) {
