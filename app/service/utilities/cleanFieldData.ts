@@ -52,6 +52,17 @@ const ensureValidDate = (dateValue: any): Date => {
     return new Date();
 };
 
+const ensureValidStatus = (status: any): string => {
+    const validStatuses = ['To Review', 'Reviewed', 'Has Issue'];
+
+    if (typeof status === 'string' && validStatuses.includes(status)) {
+        return status;
+    }
+
+    // Status por defecto
+    return 'To Review';
+};
+
 // Función para validar y limpiar comentarios
 const ensureValidComment = (comment: any, fieldKey?: string): string => {
     if (typeof comment === 'string' && comment.trim().length > 0) {
@@ -90,6 +101,7 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
             if ('modifiedBy' in value || 'history' in value || 'status' in value || 'comment' in value) {
                 let cleanedValue = value.value;
                 let cleanedComment = value.comment;
+                let cleanedStatus = value.status;
 
                 // Limpiar propiedades no deseadas del value
                 cleanedValue = removeUnwantedProperties(cleanedValue);
@@ -118,19 +130,13 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
                     cleanedComment = ensureValidComment(cleanedComment, key);
                 }
 
-                // Crear el objeto limpio SIN history ni modifiedBy
-                const cleanedField: any = {
+                cleanedStatus = ensureValidStatus(cleanedStatus);
+
+                cleaned[key] = {
                     value: cleanedValue,
-                    comment: cleanedComment
+                    comment: cleanedComment,
+                    status: cleanedStatus
                 };
-
-                // Solo agregar status si existe
-                if (value.status !== undefined) {
-                    cleanedField.status = value.status;
-                }
-
-                // NUNCA agregar history ni modifiedBy
-                cleaned[key] = cleanedField;
 
             } else {
                 // Limpiar recursivamente objetos que no tienen la estructura campo
@@ -148,6 +154,7 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
 // Función adicional para validar el objeto completo antes del envío
 export const validateCleanedData = (cleanedData: any): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
+    const validStatuses = ['To Review', 'Reviewed', 'Has Issue'];
 
     // Función recursiva para validar
     const validateObject = (obj: CulturalHeritageProperty, path: string = ''): void => {
@@ -164,6 +171,10 @@ export const validateCleanedData = (cleanedData: any): { isValid: boolean; error
 
                 if ('modifiedBy' in value) {
                     errors.push(`${currentPath}.property modifiedBy should not exist`);
+                }
+
+                if (!value.status || !validStatuses.includes(value.status)) {
+                    errors.push(`${currentPath}.status must be one of: ${validStatuses.join(', ')}`);
                 }
 
                 if (key === 'entryDate' || key === 'descriptionDateTime' || key === 'reviewDateTime') {
