@@ -25,6 +25,7 @@ export type LayoutState = {
     overlayMenuActive: boolean;
     profileSidebarVisible: boolean;
     configSidebarVisible: boolean;
+    chatSidebarVisible: boolean;
     staticMenuMobileActive: boolean;
     menuHoverActive: boolean;
 };
