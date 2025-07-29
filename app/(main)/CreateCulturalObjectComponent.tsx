@@ -64,8 +64,7 @@ export function CreateCulturalObjectComponent(props: {
                                         <i className="pi pi-ellipsis-h text-2xl"></i>
                                         <span className="font-medium text-sm line-height-3 text-center">
                                             Más tipos
-                                            <br />
-                                            <small className="text-xs opacity-70">({props.heritageTypes.length - 3} más)</small>
+                                            &nbsp;<small className="text-xs opacity-70">({props.heritageTypes.length - 3} más)</small>
                                         </span>
                                     </div>
                                 </Button>
