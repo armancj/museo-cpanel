@@ -8,6 +8,7 @@ import AppFooter from './AppFooter';
 import AppSidebar from './AppSidebar';
 import AppTopbar from './AppTopbar';
 import AppConfig from './AppConfig';
+import FloatingChatWidget from './FloatingChatWidget';
 import { LayoutContext } from './context/layoutcontext';
 import { PrimeReactContext } from 'primereact/api';
 import { ChildContainerProps, LayoutState, AppTopbarRef } from '@/types';
@@ -145,7 +146,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                     <div className="layout-main">{children}</div>
                     <AppFooter />
                 </div>
-                <AppConfig />
+                <FloatingChatWidget />
                 <div className="layout-mask"></div>
             </div>
         </React.Fragment>
