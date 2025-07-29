@@ -12,7 +12,7 @@ interface UserPasswordProps {
 
 const UserPassword = ({ user, onInputChange, submitted, editingUser }: UserPasswordProps) => (
     <div className="field col-12">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">Contraseña</label>
         <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
                 <i className="pi pi-user"></i>

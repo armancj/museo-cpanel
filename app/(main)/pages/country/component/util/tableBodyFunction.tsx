@@ -81,7 +81,7 @@ export function TableBodyFunction({
           {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
         </span>
                 ) : (
-                    'Invalid Date'
+                    'Fecha Inválida'
                 )}
             </>
         );

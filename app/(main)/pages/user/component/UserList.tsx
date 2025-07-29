@@ -131,7 +131,7 @@ export const UserList = () => {
 
                     <Dialog
                         visible={deleteUserDialog}
-                        header="Confirm"
+                        header="Confirmar"
                         modal
                         footer={userDialogFooter}
                         onHide={() => setDeleteUserDialog(false)}

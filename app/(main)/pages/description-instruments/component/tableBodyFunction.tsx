@@ -56,7 +56,7 @@ export function TableBodyFunction({
     const nameBodyTemplate = (rowData: DescriptionInstrumentsResponse) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
+                <span className="p-column-title">Nombre</span>
         {rowData.name}
         </>
     );
@@ -97,7 +97,7 @@ export function TableBodyFunction({
                 {format(date, 'dd/MM/yyyy hh:mm:ss a', { locale: es })}
             </span>
         ) : (
-            'Invalid Date'
+            'Fecha Inválida'
         )}
         </>
     );

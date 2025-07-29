@@ -37,8 +37,8 @@ export const UserToolbar = ({
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="success" className="mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" className="mr-2" onClick={handleDelete} disabled={!selectedUsers || !selectedUsers.length} />
+                    <Button label="Nuevo" icon="pi pi-plus" severity="success" className="mr-2" onClick={openNew} />
+                    <Button label="Eliminar" icon="pi pi-trash" severity="danger" className="mr-2" onClick={handleDelete} disabled={!selectedUsers || !selectedUsers.length} />
                     <Button
                         label={viewMode === 'table' ? "Ver Organigrama" : "Ver Tabla"}
                         icon={viewMode === 'table' ? "pi pi-sitemap" : "pi pi-table"}
@@ -53,8 +53,8 @@ export const UserToolbar = ({
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} chooseLabel="Import" className="mr-2 inline-block" />
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportExcel} />
+                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} chooseLabel="Importar" className="mr-2 inline-block" />
+                <Button label="Exportar" icon="pi pi-upload" severity="help" onClick={exportExcel} />
             </React.Fragment>
         );
     };
