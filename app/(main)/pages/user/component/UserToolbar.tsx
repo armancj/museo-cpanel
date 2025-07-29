@@ -16,7 +16,6 @@ interface UserToolbarProps {
 
 export const UserToolbar = ({
     selectedUsers,
-    setUserDialog,
     confirmDeleteSelected,
     exportExcel,
     openNew,

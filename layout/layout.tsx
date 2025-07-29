@@ -17,8 +17,7 @@ import { useAppContext } from '@/app/context/AppContext';
 
 const Layout = ({ children }: ChildContainerProps) => {
     const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
-    const { setRipple } = useContext(PrimeReactContext);
-    const { isAuthenticated, isLoading } = useAppContext();
+    const { isLoading } = useAppContext();
 
     const topbarRef = useRef<AppTopbarRef>(null);
     const sidebarRef = useRef<HTMLDivElement>(null);

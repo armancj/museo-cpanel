@@ -11,7 +11,7 @@ interface ToolbarCustomProps {
     openNew: () => void
 }
 
-export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, exportExcel, openNew }: ToolbarCustomProps) {
+export function ToolbarCustom({ selects, confirmDeleteSelected, exportExcel, openNew }: ToolbarCustomProps) {
 
     const handleDelete = () => {
         if (selects.length) {
