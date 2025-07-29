@@ -51,37 +51,68 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    useEffect(() => {
-        const checkAuth = () => {
-            try {
-                const authUser = localStorage.getItem('authUser');
+    const checkAuth = () => {
+        try {
+            const authUser = localStorage.getItem('authUser');
 
-                if (!authUser) {
-                    setIsLoading(false);
-                    return;
-                }
-
-                const parsedAuthUser: AuthResponse = JSON.parse(authUser);
-                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(parsedAuthUser.access_token);
-
-                if (decodedToken.exp < Date.now() / 1000) {
-                    logout();
-                } else {
-                    setUser(decodedToken);
-                    setIsAuthenticated(true);
-                }
-            } catch (error) {
-                console.error('Error al verificar autenticación:', error);
-                logout();
-            } finally {
+            if (!authUser) {
                 setIsLoading(false);
+                return;
             }
-        };
 
+            const parsedAuthUser: AuthResponse = JSON.parse(authUser);
+            const decodedToken: JwtPayload = jwtDecode<JwtPayload>(parsedAuthUser.access_token);
+
+            if (decodedToken.exp < Date.now() / 1000) {
+                logout();
+            } else {
+                setUser(decodedToken);
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
+            console.error('Error al verificar autenticación:', error);
+            logout();
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Check authentication on initial load
+    useEffect(() => {
         if (typeof window !== 'undefined') {
             checkAuth();
         } else {
             setIsLoading(false);
+        }
+    }, []);
+
+    // Re-check authentication when the user returns to the application
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                console.log('Visibility changed to visible, re-checking authentication');
+                checkAuth();
+            }
+        };
+
+        const handleFocus = () => {
+            console.log('Window focused, re-checking authentication');
+            checkAuth();
+        };
+
+        if (typeof window !== 'undefined') {
+            // Add event listeners
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('focus', handleFocus);
+
+            console.log('Added visibility and focus event listeners');
+
+            // Clean up event listeners on unmount
+            return () => {
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('focus', handleFocus);
+                console.log('Removed visibility and focus event listeners');
+            };
         }
     }, []);
 
