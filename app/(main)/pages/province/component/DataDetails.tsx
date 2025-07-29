@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { ProvinceResponse } from '@/app/service/ProvinceService';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
+import { useAddressData } from '@/app/(main)/pages/user/hooks/useAddressData';
 
 interface DataDetailsProps {
     data: ProvinceResponse,

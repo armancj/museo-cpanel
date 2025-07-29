@@ -17,8 +17,6 @@ const NomenclatureAccessConditionsForm: React.FC<NomenclatureAccessConditionsFor
                                                                    onInputChange,
                                                                }) => {
 
-
-    console.log({data})
     return (
         <div className="grid">
             <div className="col-12">

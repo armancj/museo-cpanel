@@ -1,5 +1,6 @@
 import { post, patch, del, get } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
+import { InstitutionResponse } from '@/app/service/InstitutionService';
 
 export interface UsersResponse {
     usersData:    UsersDatum[];
@@ -30,11 +31,12 @@ export interface UsersDatum {
     nationality: string;
     password:    string;
     province:    string;
-    institution: string;
     avatar?:     Avatar;
     roles:       string;
     active:      boolean;
     deleted:     boolean;
+    institution: string | InstitutionResponse;
+    institutionId?: string;
 }
 
 export interface Avatar {
@@ -52,6 +54,18 @@ export interface AddressResponse {
     name?:      string;
 }
 
+export interface EditProfileRequest {
+    email?: string;
+    mobile?: string;
+    password?: string;
+    address?: string;
+    lastName?: string;
+    name?: string;
+    nationality?: string;
+    province?: string;
+    municipal?: string;
+    roles?: string;
+}
 
 class UserCache {
     private cache = new Map<string, UsersDatum>();
@@ -87,26 +101,22 @@ export const UserService  =   {
     },
 
     createUser: async (user: UsersDatum) => {
-        const {uuid: string, active, deleted, avatar, province:provinceData, municipal:municipalData, nationality: nationalityData, institution, ...rest} = user;
 
-        const province = (provinceData as unknown as AddressResponse)?.name ?? 'Las Tunas'
-        const nationality = (nationalityData as unknown as AddressResponse)?.name ?? 'Cuba'
-        const municipal = (municipalData as unknown as AddressResponse)?.name ?? ''
-        // institution is now the UUID directly, no need to extract it
+        const {uuid: string, active, deleted, avatar, institution, ...rest} = user;
 
-        return await post<UsersDatum>(WebEnvConst.user.post, { nationality, municipal, province, institutionId: institution, ...rest });
+        const payload = {
+            institutionId: user.institutionId, // ✅ Usar institutionId
+            ...rest
+        };
+
+        return await post<UsersDatum>(WebEnvConst.user.post, payload);
     },
 
     updateUser: async (uuid: string, user: Partial<UsersDatum>) => {
         const url = WebEnvConst.user.getOne(uuid);
+        const { institution, ...userPayload } = user;
 
-        // If institution is being updated, rename it to institutionId
-        if (user.institution !== undefined) {
-            const { institution, ...rest } = user;
-            return await patch<UsersDatum>(url, { ...rest, institutionId: institution });
-        }
-
-        return await patch<UsersDatum>(url, user);
+        return await patch<UsersDatum>(url, userPayload);
     },
 
     deleteUser: async (uuid: string) =>  {
@@ -127,7 +137,7 @@ export const UserService  =   {
                 } as any,
 
             );
-            console.log("Avatar uploaded:", response);
+
             return response;
         } catch (error) {
             console.error("Error uploaded avatar:", error);
@@ -219,6 +229,7 @@ export const UserService  =   {
         return result;
     },
 
-
-
+    updateProfile: async (profileData: EditProfileRequest): Promise<void> => {
+        return await patch<void>(WebEnvConst.auth.editProfile, profileData);
+    }
 };

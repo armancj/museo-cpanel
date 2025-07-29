@@ -1,18 +1,29 @@
-import React, { useMemo } from 'react';
+import React from 'react';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import { useAddressData } from '@/app/(main)/pages/user/useAddressData';
-import DropdownField from '@/app/(main)/pages/user/component/DropdownField';
+import { NameField } from '@/app/common/component/NameFieldProps';
+import { useUserDetailsForm } from '@/app/(main)/pages/user/hooks/useUserDetailsForm';
+import { ROLES_REQUIRING_INSTITUTION, USER_ROLES } from '@/app/(main)/pages/user/util/user-roles.const';
+import { EmailField } from '@/app/common/component/EmailField';
+import { PhoneField } from '@/app/common/component/PhoneField';
+import { findOptionByValue } from '@/app/(main)/pages/user/util/validation';
 import { UsersDatum } from '@/app/service/UserService';
-import { InputMask } from 'primereact/inputmask';
 
-interface UserDetailsProps {
+
+interface UserDetailsFormProps {
+    user: any;
+    onInputChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
     submitted: boolean;
-    onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => void;
-    user: UsersDatum;
+    editingUser?: UsersDatum | null | undefined;
 }
 
-export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDetailsProps>) {
+const UserDetailsForm: React.FC<UserDetailsFormProps> = ({
+                                                             user,
+                                                             onInputChange,
+                                                             submitted,
+                                                             editingUser
+                                                         }) => {
     const {
         countries,
         provinces,
@@ -24,123 +35,56 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
         handleCountryChange,
         handleProvinceChange,
         handleMunicipalityChange,
-    } = useAddressData();
+        handleInstitutionChange,
+    } = useUserDetailsForm({ editingUser, onInputChange });
 
-    const roles = useMemo(
-        () => [
-            { name: 'Super Administrador', value: 'super Administrador' },
-            { name: 'Administrador', value: 'Administrador' },
-            { name: 'Especialista', value: 'Especialista' },
-            { name: 'Técnico', value: 'Técnico' },
-        ],
-        [],
-    );
-
-    const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const validateMobile = (mobile: string): boolean => {
-        return mobile.trim().length > 0;
-    };
-    const handleDropdownChange = async (field: string, value: any) => {
-        if (field === 'nationality') {
-            await handleCountryChange(value);
-        } else if (field === 'province') {
-            await handleProvinceChange(value);
-        } else if (field === 'municipal') {
-            await handleMunicipalityChange(value);
-        }
-        onInputChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>, field);
-    };
+    const showInstitutionField = ROLES_REQUIRING_INSTITUTION.includes(user.roles as any);
 
     return (
         <div className="grid">
-            {/* Nombre */}
-            <div className="col-12 md:col-5">
-                <label htmlFor="name">Nombre*</label>
-                <div className="p-inputgroup">
-                    <span className="p-inputgroup-addon">
-                    <i className="pi pi pi-user"></i>
-                </span>
-                    <InputText
-                        id="name"
-                        value={user.name}
-                        onChange={(e) => onInputChange(e, 'name')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !user.name })}
-                    />
-                </div>
-                {submitted && !user.name && <small className="p-error">Nombre es requerido.</small>}
-            </div>
+            <NameField
+                value={user.name}
+                onChange={(e) => onInputChange(e, 'name')}
+                submitted={submitted}
+                required
+            />
 
             {/* Apellidos */}
             <div className="col-12 md:col-7">
                 <label htmlFor="lastName">Apellidos</label>
                 <div className="p-inputgroup">
-
-                <span className="p-inputgroup-addon">
-                    <i className="pi pi-id-card"></i>
-                </span>
+                    <span className="p-inputgroup-addon">
+                        <i className="pi pi-id-card"></i>
+                    </span>
                     <InputText
                         id="lastName"
-                        value={user.lastName}
+                        value={user.lastName || user.surname || ''}
                         onChange={(e) => onInputChange(e, 'lastName')}
                     />
                 </div>
             </div>
 
-            {/* Email */}
-            <div className="col-12 md:col-7 mt-2">
-                <label htmlFor="email">Correo*</label>
-                <div className="p-inputgroup">
-                     <span className="p-inputgroup-addon">
-                        <i className="pi pi-envelope"></i>
-                     </span>
-                    <InputText
-                        id="email"
-                        value={user.email}
-                        onChange={(e) => onInputChange(e, 'email')}
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateEmail(user.email) })}
-                    />
-                </div>
-                {submitted && !validateEmail(user.email) && (
-                    <small className="p-error">Correo no válido.</small>
-                )}
-            </div>
+            <EmailField
+                value={user.email}
+                onChange={(e) => onInputChange(e, 'email')}
+                submitted={submitted}
+            />
 
-            {/* Teléfono */}
-            <div className="col-12 md:col-5 mt-2">
-                <label htmlFor="mobile">Teléfono*</label>
-                <div className="p-inputgroup">
-                     <span className="p-inputgroup-addon">
-                        <i className="pi pi-phone"></i>
-                     </span>
-                    <InputMask
-                        id="mobile"
-                        value={user.mobile}
-                        onChange={(e) => onInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>, 'mobile')}
-                        mask="(+53) 99-99-99-99" placeholder="(+53) 99-99-99-99"
-                        required
-                        className={classNames({ 'p-invalid': submitted && !validateMobile(user.mobile) })}
-                    />
-                </div>
-                {submitted && !validateMobile(user.mobile) && (
-                    <small className="p-error">Teléfono no válido.</small>
-                )}
-            </div>
+            <PhoneField
+                value={user.mobile || user.phone}
+                onChange={(e) => onInputChange(e as React.ChangeEvent<HTMLInputElement>, 'mobile')}
+                submitted={submitted}
+            />
 
-            {/* Roles */}
+            {/* Rol */}
             <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="roles">Rol*</label>
-                <DropdownField
+                <Dropdown
                     id="roles"
-                    name="roles"
                     value={user.roles}
-                    options={roles}
-                    optionLabel="name"
-                    placeholder="Seleccionar un Rol"
-                    onChange={(e) => handleDropdownChange('roles', e.value)}
-                    required
-                    submitted={submitted}
+                    options={USER_ROLES}
+                    onChange={(e) => onInputChange({ target: { value: e.value } } as any, 'roles')}
+                    placeholder="Seleccionar Rol"
                     className={classNames({ 'p-invalid': submitted && !user.roles })}
                 />
                 {submitted && !user.roles && (
@@ -151,17 +95,15 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             {/* País */}
             <div className="field col-12 md:col-3 mt-2">
                 <label htmlFor="nationality">País*</label>
-                <DropdownField
+                <Dropdown
                     id="nationality"
-                    name="nationality"
-                    value={user.nationality}
+                    value={findOptionByValue(countries, user.nationality)}
                     options={countries}
                     optionLabel="name"
+                    onChange={(e) => handleCountryChange(e.value)}
                     placeholder="Seleccionar País"
-                    required
-                    submitted={submitted}
-                    onChange={(e) => handleDropdownChange('nationality', e.value)}
                     className={classNames({ 'p-invalid': submitted && !user.nationality })}
+                    filter
                 />
                 {submitted && !user.nationality && (
                     <small className="p-error">País es requerido.</small>
@@ -171,19 +113,16 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             {/* Provincia */}
             <div className="field col-12 md:col-4 mt-2">
                 <label htmlFor="province">Provincia*</label>
-                <DropdownField
+                <Dropdown
                     id="province"
-                    name="province"
-                    value={user.province}
+                    value={findOptionByValue(provinces, user.province)}
                     options={provinces}
                     optionLabel="name"
+                    onChange={(e) => handleProvinceChange(e.value)}
                     placeholder="Seleccionar Provincia"
                     disabled={isProvinceDisabled}
-                    required
-                    submitted={submitted}
                     className={classNames({ 'p-invalid': submitted && !user.province })}
-                    onChange={(e) => handleDropdownChange('province', e.value)}
-                    filter={true}
+                    filter
                 />
                 {submitted && !user.province && (
                     <small className="p-error">Provincia es requerida.</small>
@@ -193,50 +132,49 @@ export function UserDetails({ user, onInputChange, submitted }: Readonly<UserDet
             {/* Municipio */}
             <div className="field col-12 md:col-4">
                 <label htmlFor="municipal">Municipio*</label>
-                <DropdownField
+                <Dropdown
                     id="municipal"
-                    name="municipal"
-                    value={user.municipal}
+                    value={findOptionByValue(municipalities, user.municipal)}
                     options={municipalities}
                     optionLabel="name"
+                    onChange={(e) => handleMunicipalityChange(e.value)}
                     placeholder="Seleccionar Municipio"
                     disabled={isMunicipalityDisabled}
-                    required
-                    submitted={submitted}
-                    onChange={(e) => handleDropdownChange('municipal', e.value)}
                     className={classNames({ 'p-invalid': submitted && !user.municipal })}
-                    filter={true}
+                    filter
                 />
                 {submitted && !user.municipal && (
                     <small className="p-error">Municipio es requerido.</small>
                 )}
             </div>
 
-            {/* Institución - solo para Especialista y Técnico */}
-            {(user.roles === 'Especialista' || user.roles === 'Técnico') && (
+            {/* Institución */}
+            {showInstitutionField && (
                 <div className="field col-12 md:col-4">
-                    <label htmlFor="institution">Institución*</label>
-                    <DropdownField
-                        id="institution"
-                        name="institution"
-                        value={user.institution}
+                    <label htmlFor="institutionId">Institución*</label>
+                    <Dropdown
+                        id="institutionId"
+                        value={(() => {
+                            const institutionId = user.institutionId || user.institution?.uuid;
+                            return institutions.find(inst => inst.uuid === institutionId) || null;
+                        })()}
                         options={institutions}
                         optionLabel="name"
-                        optionValue="uuid"
+                        onChange={(e) => handleInstitutionChange(e.value)}
                         placeholder="Seleccionar Institución"
                         disabled={isInstitutionDisabled}
-                        required
-                        submitted={submitted}
-                        onChange={(e) => handleDropdownChange('institution', e.value)}
-                        className={classNames({ 'p-invalid': submitted && !user.institution })}
-                        filter={true}
+                        className={classNames({
+                            'p-invalid': submitted && !user.institutionId
+                        })}
+                        filter
                     />
-                    {submitted && !user.institution && (
+                    {submitted && !user.institutionId && (
                         <small className="p-error">Institución es requerida.</small>
                     )}
                 </div>
             )}
-
         </div>
     );
-}
+};
+
+export default UserDetailsForm;

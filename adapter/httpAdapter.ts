@@ -12,60 +12,57 @@ const httpAdapter = axios.create({
 let isRedirecting = false;
 
 
+httpAdapter.interceptors.response.use(
+    (response: AxiosResponse) => {
+        return response;
+    },
+    (error: AxiosError) => {
+
+        const status = error.response?.status;
+        const isAuthError = status === 401 || status === 403;
+        const isValidationError = status === 400 || status === 422;
+
+        if (isAuthError) {
+            localStorage.removeItem('authUser');
+            localStorage.removeItem('token');
+
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+                window.location.href = '/auth/login';
+            }
+        } else if (isValidationError) {
+            console.log('⚠️ Error de validación - NO redirigir');
+        } else {
+            console.log('❌ Otro tipo de error:', status);
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 httpAdapter.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+
         if (typeof window !== 'undefined') {
             try {
                 const authUser = localStorage.getItem('authUser');
+
                 if (authUser) {
                     const parsedAuthUser: AuthResponse = JSON.parse(authUser);
                     const token = parsedAuthUser.access_token;
+
                     if (token) {
                         config.headers.Authorization = `Bearer ${token}`;
                     }
                 }
             } catch (error) {
-                console.error('Error al parsear token desde localStorage:', error);
+                console.error('❌ Error al parsear token desde localStorage:', error);
                 localStorage.removeItem('authUser');
             }
         }
         return config;
     },
     (error: AxiosError) => {
-        return Promise.reject(error);
-    }
-);
-
-// Interceptor de response
-httpAdapter.interceptors.response.use(
-    (response: AxiosResponse) => {
-        return response;
-    },
-    (error: AxiosError) => {
-        if (error.response?.status === 401 && !isRedirecting) {
-            isRedirecting = true;
-
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('authUser');
-
-                if (!window.location.pathname.includes('/auth/login')) {
-                    window.location.href = '/auth/login';
-                }
-            }
-
-            setTimeout(() => {
-                isRedirecting = false;
-            }, 1000);
-        }
-
-        if (error.response?.status && error.response.status >= 500) {
-            console.error('Error del servidor:', error.response?.data);
-        }
-
-        if (!error.response) {
-            console.error('Error de red:', error.message);
-        }
-
+        console.error('❌ Request interceptor error:', error);
         return Promise.reject(error);
     }
 );
@@ -163,11 +160,6 @@ const handleApiError = (error: any): ApiError => {
         const status = error.response?.status || 500;
         const originalMessage = error.response?.data?.message || error.message || 'Error desconocido';
 
-        console.log('=== API ERROR ===');
-        console.log('Status:', status);
-        console.log('Original message:', originalMessage);
-        console.log('================');
-
         switch (status) {
             case 400:
                 return new ApiError(status, originalMessage, 'Los datos enviados no son válidos. Por favor, revisa la información.');
@@ -213,7 +205,6 @@ const handleApiError = (error: any): ApiError => {
                     }
 
                 } catch (parseError) {
-                    console.error('Error al parsear conflicto:', parseError);
                     return new ApiError(status, originalMessage,
                         'Ya existe un registro con los mismos datos. Por favor, verifica la información.',
                         'warn');

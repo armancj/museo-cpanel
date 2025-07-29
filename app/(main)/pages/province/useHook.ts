@@ -76,7 +76,6 @@ export const useHook = () => {
         }
         toast.current?.show(show);
         setDialog(true);
-        console.log(error);
     };
 
 

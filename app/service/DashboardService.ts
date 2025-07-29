@@ -1,6 +1,7 @@
 import { get } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
-import { CulturalPropertyModel } from '@/app/(main)/pages/cultural-property-heritage/culturalProperty.model';
+import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
+
 
 // Interfaces for dashboard statistics
 export interface DashboardStats {
@@ -11,7 +12,7 @@ export interface DashboardStats {
     objectsByConservationStatus: Record<string, number>;
     objectsByConservationStatusWithColors: { state: string; count: number; color: string }[];
     entriesByMonth: Record<string, number>;
-    latestEntries: CulturalPropertyModel[];
+    latestEntries: CulturalHeritageProperty[];
 }
 
 export interface HeritageTypeCount {
@@ -37,7 +38,7 @@ function generateRandomColor(existingColors: Set<string>): string {
 export const DashboardService = {
     // Get all statistics for the dashboard
     getDashboardStats: async (): Promise<DashboardStats> => {
-        const culturalProperties = await get<CulturalPropertyModel[]>(WebEnvConst.culturalProperty.getAll);
+        const culturalProperties = await get<CulturalHeritageProperty[]>(WebEnvConst.culturalProperty.getAll);
 
         // Calculate total objects
         const totalObjects = culturalProperties.length;
@@ -93,20 +94,29 @@ export const DashboardService = {
 
         const objectsByConservationStatusWithColors = Object.entries(objectsByConservationStatus).map(
             ([state, count]) => {
-                let color = '#6c757d';
-                const uniqueColors = new Set<string>();
+                let color = '#6c757d'; // gris neutro por defecto
 
-                if (state.includes('Bueno')) {
-                    color = '#22c55e'; // Verde
+                if (state.includes('Excelente')) {
+                    color = '#10b981'; // verde esmeralda (teal green)
+                } else if (state.includes('Bueno')) {
+                    color = '#22c55e'; // verde lima
+                } else if (state.includes('Restaurado')) {
+                    color = '#3b82f6'; // azul brillante
+                } else if (state.includes('preventiva')) {
+                    color = '#e11d48'; // rosa rojizo fuerte (indicativo)
+                } else if (state.includes('Sin')) {
+                    color = '#b91c1c'; // rojo fuerte (alarma)
+                } else if (state.includes('Requiere')) {
+                    color = '#facc15'; // amarillo (advertencia)
                 } else if (state.includes('Regular')) {
-                    color = '#f97316'; //
+                    color = '#f97316'; // naranja (medio)
                 } else if (state.includes('Malo')) {
-                    color = '#dc2626';
+                    color = '#dc2626'; // marrón rojizo oscuro
                 } else {
-                    //color = generateRandomColor(uniqueColors);
-                    color = '#0ea5e9'
+                    color = '#0ea5e9'; // azul cielo (default)
                 }
-                return { state, count, color };
+
+                return { state, count, color } as { state: string; count: number; color: string };
             }
         );
 
@@ -168,7 +178,7 @@ export const DashboardService = {
     },
 
     // Get latest entries for the dashboard
-    getLatestEntries: async (): Promise<CulturalPropertyModel[]> => {
+    getLatestEntries: async (): Promise<CulturalHeritageProperty[]> => {
         const stats = await DashboardService.getDashboardStats();
         return stats.latestEntries;
     }

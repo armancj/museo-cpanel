@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -9,11 +9,12 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { Status } from '../types';
+import { hasHistory } from '@/app/(main)/pages/cultural-property-heritage/utils/statusUtils';
 
 interface FieldWithHistoryProps {
     label: string;
     field: any;
-    type: 'text' | 'textarea' | 'dropdown' | 'date' | 'number' | 'multiselect' | 'checkbox' | 'daterange';
+    type: 'text' | 'objectLocation' | 'textarea' | 'dropdown' | 'date' | 'number' | 'multiselect' | 'checkbox' | 'daterange';
     options?: any[];
     onChange: (value: any) => void;
     onStatusChange?: (status: Status) => void;
@@ -26,6 +27,10 @@ interface FieldWithHistoryProps {
     className?: string;
     placeholder?: string;
     disabled?: boolean;
+    onSubfieldChange?: (subfield: string, value: any) => void;
+    subfieldLabels?: Record<string, string>;
+    subfieldPlaceholders?: Record<string, string>;
+    readOnlySubfields?: string[]; // New prop to specify which subfields should be read-only
 }
 
 export const FieldWithHistory = ({
@@ -44,19 +49,36 @@ export const FieldWithHistory = ({
     className = '',
     placeholder = '',
     disabled = false,
+    onSubfieldChange,
+    subfieldLabels,
+    subfieldPlaceholders,
+    readOnlySubfields = []
 }: FieldWithHistoryProps) => {
     const [showComment, setShowComment] = useState(false);
 
-    // 🔍 DEBUGGING: Log field data when it changes
-    useEffect(() => {
-        if (label === 'Condiciones de Acceso') {
-            console.log('🔍 FIELD WITH HISTORY - Field data for "Condiciones de Acceso":', field);
-            console.log('🔍 FIELD WITH HISTORY - Field keys:', field ? Object.keys(field) : 'null');
-            console.log('🔍 FIELD WITH HISTORY - History exists?', !!field?.history);
-            console.log('🔍 FIELD WITH HISTORY - History length:', field?.history?.length);
-            console.log('🔍 FIELD WITH HISTORY - Full history array:', field?.history);
+    const handleDateChange = (dateValue: Date | null) => {
+        let processedValue = '';
+        if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+            processedValue = dateValue.toISOString();
         }
-    }, [field, label]);
+
+        onChange(processedValue);
+    };
+
+    // Function to handle daterange changes
+    const handleDateRangeChange = (dateField: 'start' | 'end', dateValue: Date | null) => {
+        let processedValue = '';
+        if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
+            processedValue = dateValue.toISOString();
+        }
+
+        const currentRange = (field && field.value) ? field.value : {};
+
+        onChange({
+            ...currentRange,
+            [dateField]: processedValue
+        });
+    };
 
     // Status options for dropdown
     const statusOptions = [
@@ -98,13 +120,48 @@ export const FieldWithHistory = ({
         }
     };
 
-    const handleHistoryClick = () => {
-        console.log('🔍 FIELD WITH HISTORY - History button clicked');
-        console.log('🔍 FIELD WITH HISTORY - About to call openHistoryDialog with:', field);
-        console.log('🔍 FIELD WITH HISTORY - Label:', label);
-        console.log('🔍 FIELD WITH HISTORY - Field history before calling:', field?.history);
+    const renderObjectLocation = () => {
+        if (!onSubfieldChange || !subfieldLabels || !subfieldPlaceholders) {
+            return <div>Error: Configuración incompleta para objectLocation</div>;
+        }
 
-        openHistoryDialog(field, label);
+        const locationValue = field.value || {};
+        // Use the subfield keys from the labels object instead of hardcoded list
+        const subfields = Object.keys(subfieldLabels);
+
+        return (
+            <div className="grid">
+                {subfields.map((subfieldKey, index) => {
+                    // Check if this subfield should be read-only
+                    const isReadOnly = readOnlySubfields.includes(subfieldKey);
+
+                    return (
+                        <div key={subfieldKey} className="col-12 md:col-6">
+                            <label className="block mb-1">{subfieldLabels[subfieldKey]}</label>
+                            {canEdit && !isReadOnly ? (
+                                // Editable field
+                                <InputText
+                                    value={locationValue[subfieldKey] || ''}
+                                    onChange={(e) => onSubfieldChange(subfieldKey, e.target.value)}
+                                    className="w-full"
+                                    placeholder={subfieldPlaceholders[subfieldKey]}
+                                    disabled={disabled}
+                                />
+                            ) : (
+                                // Read-only field
+                                <div className="p-2 border-1 border-gray-300 border-round">
+                                    {isReadOnly && locationValue[subfieldKey] !== undefined
+                                        ? (typeof locationValue[subfieldKey] === 'number'
+                                            ? locationValue[subfieldKey].toFixed(4) // Format numbers with 4 decimal places
+                                            : locationValue[subfieldKey])
+                                        : (locationValue[subfieldKey] || 'No definido')}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
     };
 
     // Render the appropriate input based on type
@@ -112,7 +169,10 @@ export const FieldWithHistory = ({
         if (!canEdit) {
             // Read-only view
             switch (type) {
+                case 'objectLocation':
+                    return <div className="p-2 border-1 border-gray-300 border-round">{renderObjectLocation()}</div>;
                 case 'text':
+                    return <div className="p-2 border-1 border-gray-300 border-round">{field.value || 'No definido'}</div>;
                 case 'textarea':
                     return <div className="p-2 border-1 border-gray-300 border-round">{field.value || 'No definido'}</div>;
                 case 'dropdown':
@@ -123,7 +183,7 @@ export const FieldWithHistory = ({
                 case 'daterange':
                     return (
                         <div className="p-2 border-1 border-gray-300 border-round">
-                            {field.value?.start ? new Date(field.value.start).toLocaleDateString() : 'No definido'} -{field.value?.end ? new Date(field.value.end).toLocaleDateString() : 'No definido'}
+                            {field?.value?.start ? new Date(field.value.start).toLocaleDateString() : 'No definido'} - {field?.value?.end ? new Date(field.value.end).toLocaleDateString() : 'No definido'}
                         </div>
                     );
                 case 'number':
@@ -145,15 +205,25 @@ export const FieldWithHistory = ({
 
         // Editable inputs
         switch (type) {
+            case 'objectLocation':
+                return renderObjectLocation();
             case 'text':
                 return <InputText value={field.value || ''} onChange={(e) => onChange(e.target.value)} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'textarea':
                 return <InputTextarea value={field.value || ''} onChange={(e) => onChange(e.target.value)} rows={5} className={`w-full ${className}`} placeholder={placeholder} required={required} />;
             case 'dropdown':
-                return <Dropdown value={field.value} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter/>;
+                const selectedValue = field.value || '';
+                return <Dropdown value={selectedValue} options={options} onChange={(e) => onChange(e.value)} className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una opción'} required={required} disabled={disabled} filter />;
             case 'date':
                 return (
-                    <Calendar value={field.value ? new Date(field.value) : null} onChange={(e) => onChange(e.value)} dateFormat="dd/mm/yy" className={`w-full ${className}`} placeholder={placeholder || 'Seleccione una fecha'} required={required} />
+                    <Calendar
+                        value={field.value ? new Date(field.value) : null}
+                        onChange={(e) => handleDateChange(e.value as  Date | null )}
+                        dateFormat="dd/mm/yy"
+                        className={`w-full ${className}`}
+                        placeholder={placeholder || 'Seleccione una fecha'}
+                        required={required}
+                    />
                 );
             case 'daterange':
                 return (
@@ -161,8 +231,8 @@ export const FieldWithHistory = ({
                         <div className="col-6">
                             <label className="block mb-1">Fecha Inicio</label>
                             <Calendar
-                                value={field.value?.start ? new Date(field.value.start) : null}
-                                onChange={(e) => onChange({ ...field.value, start: e.value })}
+                                value={field?.value?.start ? new Date(field.value.start) : null}
+                                onChange={(e) => handleDateRangeChange('start', e.value as  Date | null)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha inicio"
@@ -172,8 +242,8 @@ export const FieldWithHistory = ({
                         <div className="col-6">
                             <label className="block mb-1">Fecha Fin</label>
                             <Calendar
-                                value={field.value?.end ? new Date(field.value.end) : null}
-                                onChange={(e) => onChange({ ...field.value, end: e.value })}
+                                value={field?.value?.end ? new Date(field.value.end) : null}
+                                onChange={(e) => handleDateRangeChange('end', e.value as  Date | null)}
                                 dateFormat="dd/mm/yy"
                                 className={`w-full ${className}`}
                                 placeholder="Fecha fin"
@@ -203,7 +273,7 @@ export const FieldWithHistory = ({
             <div className="flex justify-content-between align-items-center mb-2">
                 <label className={required ? 'required' : ''}>{label}</label>
                 <div className="flex gap-2">
-                    {canViewHistory && field.history && field.history.length > 0 && <Button icon="pi pi-history" className="p-button-rounded p-button-text p-button-sm" tooltip="Ver historial" onClick={() => openHistoryDialog(field, label)} />}
+                    {canViewHistory && hasHistory(field) && field.history && field.history.length > 0 && <Button icon="pi pi-history" className="p-button-rounded p-button-text p-button-sm" tooltip="Ver historial" onClick={() => openHistoryDialog(field, label)} />}
                     {canChangeStatus && <Button icon="pi pi-comment" className="p-button-rounded p-button-text p-button-sm" tooltip="Agregar comentario" onClick={() => setShowComment(!showComment)} />}
                 </div>
             </div>
@@ -212,9 +282,16 @@ export const FieldWithHistory = ({
 
             {/* Status indicator */}
             <div className="flex justify-content-between align-items-center">
-                <div className={`text-sm px-2 py-1 border-round ${getStatusClass(field.status)}`}>{getStatusLabel(field.status)}</div>
+                <div className={`text-sm px-2 py-1 border-round ${getStatusClass(field?.status || Status.Pending
+                )}`}>{getStatusLabel(field?.status || Status.Pending)}</div>
 
-                {canChangeStatus && <Dropdown value={field.status} options={statusOptions} onChange={(e) => onStatusChange && onStatusChange(e.value)} className="p-inputtext-sm" disabled={disabled} />}
+                {canChangeStatus &&
+                    <Dropdown
+                        value={field?.status || Status.Pending}
+                        options={statusOptions}
+                        onChange={(e) => onStatusChange && onStatusChange(e.value)}
+                        className="p-inputtext-sm"
+                        disabled={disabled} />}
             </div>
 
             {/* Comment section */}

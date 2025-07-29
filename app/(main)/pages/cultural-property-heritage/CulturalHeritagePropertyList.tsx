@@ -14,18 +14,18 @@ import { es } from 'date-fns/locale';
 import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { HeritageTypeResponse } from '@/app/service/HeritageTypeService';
 import { QRCodeDialog } from '@/app/common/component/QRCodeDialog';
 
 interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
-    onEditOrView?: () => void;
+    onView?: () => void;
+    onEdit?: () => void;
     hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
     heritageTypeOptions: { label: string; value: string }[];
 }
 
 
-export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
+export function CulturalHeritagePropertyList({ onAddNew, hookData, onView, onEdit, heritageTypeOptions }: CulturalHeritagePropertyListProps) {
     const [selects, setSelects] = useState<CulturalHeritageProperty[]>([]);
     const [qrDialogVisible, setQrDialogVisible] = useState<boolean>(false);
     const [selectedProperty, setSelectedProperty] = useState<CulturalHeritageProperty | null>(null);
@@ -166,19 +166,18 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
 
     const statusBodyTemplate = (rowData: CulturalHeritageProperty) => {
         // Check the status of the main fields to determine overall status
-        const objectTitleStatus = rowData.culturalRecord?.objectTitle?.status;
-        const objectDescriptionStatus = rowData.culturalRecord?.objectDescription?.status;
+        const status = rowData?.status;
 
         let statusClass = 'bg-blue-100 text-blue-900'; // Default: Pending
         let statusText = 'Pendiente';
 
-        if (objectTitleStatus === 'Has Issue' || objectDescriptionStatus === 'Has Issue') {
+        if (status === 'Has Issue') {
             statusClass = 'bg-red-100 text-red-900';
             statusText = 'Con Problemas';
-        } else if (objectTitleStatus === 'To Review' || objectDescriptionStatus === 'To Review') {
+        } else if (status === 'To Review') {
             statusClass = 'bg-yellow-100 text-yellow-900';
             statusText = 'Para Revisar';
-        } else if (objectTitleStatus === 'Reviewed' && objectDescriptionStatus === 'Reviewed') {
+        } else if (status === 'Reviewed') {
             statusClass = 'bg-green-100 text-green-900';
             statusText = 'Revisado';
         }
@@ -203,9 +202,10 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         setData(rowData);
-                        if (onEditOrView) {
-                            onEditOrView();
-                        } else {
+                        if (onView) {
+                            onView();
+                        }
+                        else {
                             onAddNew(); // Fallback para compatibilidad
                         }
                     }}
@@ -217,8 +217,8 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onEditOrView,
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
                         editData(rowData);
-                        if (onEditOrView) {
-                            onEditOrView();
+                        if (onEdit) {
+                            onEdit();
                         } else {
                             onAddNew(); // Fallback para compatibilidad
                         }

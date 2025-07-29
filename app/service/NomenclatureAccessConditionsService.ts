@@ -42,7 +42,6 @@ export const NomenclatureAccessConditionsService  =   {
     },
 
     create: async (data: NomenclatureAccessConditionsModel) =>{
-        console.log({data})
         return await post<NomenclatureAccessConditionsResponse>(WebEnvConst.accessConditions.post, validateRegisterBookSummaryData(data))
     },
 

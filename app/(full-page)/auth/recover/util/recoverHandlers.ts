@@ -1,8 +1,8 @@
 import { Toast } from 'primereact/toast';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import React from 'react';
 import { post } from '@/adapter/httpAdapter';
 import { WebEnvConst } from '@/app/webEnvConst';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 type Severity = 'success' | 'info' | 'warn' | 'error' | undefined;
 
 export const handleRecover = async (
@@ -34,7 +34,6 @@ export const handleRecover = async (
 
     try {
         const response = await post(WebEnvConst.auth.recover, { email });
-        console.log('Recovery email sent:', response);
         showToast('success', 'Correo enviado', 'Se ha enviado un correo con el código de recuperación', toast);
         setStep(2);
     } catch (error) {
@@ -61,7 +60,6 @@ export const handleVerifyCode = async (
 
     try {
         const response = await post(WebEnvConst.auth.verifyCode, { email, code });
-        console.log('Code verified:', response);
         showToast('success', 'Código verificado', 'El código de recuperación es correcto', toast);
         setStep(3);
     } catch (error) {
@@ -99,7 +97,6 @@ export const handleChangePassword = async (
 
     try {
         const response = await post(WebEnvConst.auth.changePassword, { email, code, newPassword });
-        console.log('Password changed:', response);
         showToast('success', 'Contraseña cambiada', 'Su contraseña ha sido cambiada exitosamente', toast);
         resetForm();
         router.push('/auth/login');

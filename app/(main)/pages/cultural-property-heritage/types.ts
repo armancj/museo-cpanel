@@ -17,6 +17,7 @@ export interface CulturalHeritageProperty {
     notes?: Notes;
     entryAndLocation?: EntryAndLocation;
     descriptionControl?: DescriptionControl;
+    status?: string;
 }
 
 export interface AccessAndUseConditions {

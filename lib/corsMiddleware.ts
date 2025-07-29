@@ -1,13 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextCors from 'nextjs-cors';
 
 const corsMiddleware = async (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
-    await NextCors(req, res, {
-        origin: '*',
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-        preflightContinue: false,
-        optionsSuccessStatus: 204,
-    });
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, PUT, PATCH, POST, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.status(204).end();
+        return;
+    }
+
     next();
 };
 

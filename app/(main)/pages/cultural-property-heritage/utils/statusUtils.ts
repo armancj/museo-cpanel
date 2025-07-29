@@ -64,3 +64,12 @@ export const getUpdatedStatus = (value: any, currentStatus: Status): Status => {
 
   return isFilled ? Status.ToReview : Status.Pending;
 };
+
+export const getFieldStatus = (field: any): Status => {
+    return field?.status || Status.Pending;
+};
+
+export const hasHistory = (field: any): boolean => {
+    return field && field.history && Array.isArray(field.history) && field.history.length > 0;
+};
+

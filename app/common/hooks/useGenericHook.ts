@@ -123,6 +123,7 @@ export const useGenericHook = <ResponseType>({
 
                     toast.current?.show({ severity: 'success', summary: messages.updateSuccess, life: 5000 });
                     setDialog(false);
+                    return true;
                 } catch (error) {
                     handleError(error, messages.errorDefault);
                 }
@@ -136,6 +137,7 @@ export const useGenericHook = <ResponseType>({
                     setDialog(false);
                     setData(service.emptyItem);
                     setCurrentEditingUuid(null);
+                    return true;
                 } catch (error) {
                     handleError(error, messages.errorDefault);
                 }

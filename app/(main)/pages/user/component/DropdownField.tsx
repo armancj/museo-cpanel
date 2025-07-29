@@ -33,9 +33,10 @@ const DropdownField: React.FC<DropdownFieldProps> = ({
                                                          filter = false,
                                                          className,
                                                      }) => {
-    const isInvalid = submitted && required && !value;
-    const combinedClassNames = classNames(className, { 'p-invalid': isInvalid });
 
+    // Validación mejorada - verifica que el valor exista y sea válido
+    const isInvalid = submitted && required && (!value || (optionValue && !value[optionValue]) || (!optionValue && !value[optionLabel]));
+    const combinedClassNames = classNames(className, { 'p-invalid': isInvalid });
 
     return (
         <div className="field">

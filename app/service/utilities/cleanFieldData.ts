@@ -15,7 +15,7 @@ const removeUnwantedProperties = (obj: any): any => {
 
     for (const [key, value] of Object.entries(obj)) {
         // Eliminar propiedades específicas no deseadas
-        if (key === '_id' || key === 'squareMeters' || key === 'cubicMeters') {
+        if (key === '_id' || key === 'squareMeters' || key === 'cubicMeters' || key === 'history' || key === 'modifiedBy') {
             continue; // Saltar estas propiedades
         }
 
@@ -52,12 +52,36 @@ const ensureValidDate = (dateValue: any): Date => {
     return new Date();
 };
 
+const ensureValidStatus = (status: any): string => {
+    const validStatuses = ['To Review', 'Reviewed', 'Has Issue'];
+
+    if (typeof status === 'string' && validStatuses.includes(status)) {
+        return status;
+    }
+
+    // Status por defecto
+    return 'To Review';
+};
+
 // Función para validar y limpiar comentarios
-const ensureValidComment = (comment: any): string => {
+const ensureValidComment = (comment: any, fieldKey?: string): string => {
     if (typeof comment === 'string' && comment.trim().length > 0) {
         return comment.trim();
     }
-    return 'Sin comentarios'; // Valor por defecto para comentarios vacíos
+
+    // Comentarios por defecto específicos por campo
+    switch (fieldKey) {
+        case 'extremeDates':
+            return 'Fechas extremas que delimitan el periodo temporal del objeto cultural';
+        case 'objectLocation':
+            return 'Ubicación física del objeto en el archivo o museo';
+        case 'volumesQuantities':
+            return 'Información sobre volúmenes y cantidades del objeto';
+        case 'dimensions':
+            return 'Dimensiones físicas del objeto cultural';
+        default:
+            return 'Sin comentarios adicionales';
+    }
 };
 
 export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
@@ -73,10 +97,11 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
 
     for (const [key, value] of Object.entries(obj)) {
         if (value && typeof value === 'object' && 'value' in value) {
-            // Si el objeto tiene estructura de campo con value, modifiedBy, history
-            if ('modifiedBy' in value && 'history' in value) {
+            // Si el objeto tiene estructura de campo - detectar por cualquiera de estas propiedades
+            if ('modifiedBy' in value || 'history' in value || 'status' in value || 'comment' in value) {
                 let cleanedValue = value.value;
                 let cleanedComment = value.comment;
+                let cleanedStatus = value.status;
 
                 // Limpiar propiedades no deseadas del value
                 cleanedValue = removeUnwantedProperties(cleanedValue);
@@ -102,14 +127,17 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
                 // Validar comentarios requeridos para campos específicos
                 if (key === 'objectLocation' || key === 'extremeDates' ||
                     key === 'volumesQuantities' || key === 'dimensions') {
-                    cleanedComment = ensureValidComment(cleanedComment);
+                    cleanedComment = ensureValidComment(cleanedComment, key);
                 }
+
+                cleanedStatus = ensureValidStatus(cleanedStatus);
 
                 cleaned[key] = {
                     value: cleanedValue,
                     comment: cleanedComment,
-                    ...(value.status !== undefined && { status: value.status })
+                    status: cleanedStatus
                 };
+
             } else {
                 // Limpiar recursivamente objetos que no tienen la estructura campo
                 cleaned[key] = cleanFieldData(value);
@@ -126,6 +154,7 @@ export const cleanFieldData = (obj: CulturalHeritageProperty): any => {
 // Función adicional para validar el objeto completo antes del envío
 export const validateCleanedData = (cleanedData: any): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
+    const validStatuses = ['To Review', 'Reviewed', 'Has Issue'];
 
     // Función recursiva para validar
     const validateObject = (obj: CulturalHeritageProperty, path: string = ''): void => {
@@ -135,41 +164,56 @@ export const validateCleanedData = (cleanedData: any): { isValid: boolean; error
             const currentPath = path ? `${path}.${key}` : key;
 
             if (value && typeof value === 'object' && 'value' in value) {
+
+                if ('history' in value) {
+                    errors.push(`${currentPath}.property history should not exist`);
+                }
+
+                if ('modifiedBy' in value) {
+                    errors.push(`${currentPath}.property modifiedBy should not exist`);
+                }
+
+                if (!value.status || !validStatuses.includes(value.status)) {
+                    errors.push(`${currentPath}.status must be one of: ${validStatuses.join(', ')}`);
+                }
+
                 if (key === 'entryDate' || key === 'descriptionDateTime' || key === 'reviewDateTime') {
                     if (!value.value) {
-                        errors.push(`${currentPath}.value: no debe estar vacío`);
+                        errors.push(`${currentPath}.value should not be empty`);
                     } else if (!(value.value instanceof Date) || isNaN(value.value.getTime())) {
-                        errors.push(`${currentPath}.value: debe ser una instancia Date válida`);
+                        errors.push(`${currentPath}.value should be a valid Date instance`);
                     }
                 }
 
                 // Validar extremeDates
                 if (key === 'extremeDates' && value.value) {
                     if (!value.value.start) {
-                        errors.push(`${currentPath}.value.start: no debe estar vacío`);
+                        errors.push(`${currentPath}.value.start should not be empty`);
                     } else if (!(value.value.start instanceof Date) || isNaN(value.value.start.getTime())) {
-                        errors.push(`${currentPath}.value.start: debe ser una instancia Date válida`);
+                        errors.push(`${currentPath}.value.start should be a valid Date instance`);
                     }
 
                     if (!value.value.end) {
-                        errors.push(`${currentPath}.value.end: no debe estar vacío`);
+                        errors.push(`${currentPath}.value.end should not be empty`);
                     } else if (!(value.value.end instanceof Date) || isNaN(value.value.end.getTime())) {
-                        errors.push(`${currentPath}.value.end: debe ser una instancia Date válida`);
+                        errors.push(`${currentPath}.value.end should be a valid Date instance`);
                     }
                 }
 
                 if ((key === 'objectLocation' || key === 'extremeDates' ||
                         key === 'volumesQuantities' || key === 'dimensions') &&
                     (!value.comment || value.comment.trim() === '')) {
-                    errors.push(`${currentPath}.comment: no debe estar vacío`);
+                    errors.push(`${currentPath}.comment should not be empty`);
                 }
 
                 if (value.value && typeof value.value === 'object') {
                     const checkForbiddenProps = (obj: any, objPath: string): void => {
                         if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
-                            if ('_id' in obj) errors.push(`${objPath}: _id no debe existir`);
-                            if ('squareMeters' in obj) errors.push(`${objPath}: squareMeters no debe existir`);
-                            if ('cubicMeters' in obj) errors.push(`${objPath}: cubicMeters no debe existir`);
+                            if ('_id' in obj) errors.push(`${objPath}: _id should not exist`);
+                            if ('squareMeters' in obj) errors.push(`${objPath}: squareMeters should not exist`);
+                            if ('cubicMeters' in obj) errors.push(`${objPath}: cubicMeters should not exist`);
+                            if ('history' in obj) errors.push(`${objPath}: history should not exist`);
+                            if ('modifiedBy' in obj) errors.push(`${objPath}: modifiedBy should not exist`);
                         }
                     };
 
@@ -192,8 +236,6 @@ export const validateCleanedData = (cleanedData: any): { isValid: boolean; error
 // Función para debuggear y mostrar las fechas que se están enviando
 export const debugDateFields = (cleanedData: any): void => {
     const dateFields = ['entryDate', 'descriptionDateTime', 'reviewDateTime'];
-
-    console.log('=== DEBUG: Campos de fecha ===');
 
     dateFields.forEach(field => {
         if (cleanedData[field]) {
