@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AddressOption, useGeographicData } from './useGeographicData';
 
 interface UseEditInitializationProps {
@@ -18,27 +18,20 @@ export const useEditInitialization = ({
                                           loadInstitutions,
                                           resetDependentStates,
                                       }: UseEditInitializationProps) => {
-    useEffect(() => {
-        if (editingUser && countries.length > 0) {
-            initializeForEdit();
-        } else if (!editingUser) {
-            resetDependentStates();
-        }
-    }, [editingUser, countries]);
 
-    const initializeForEdit = async () => {
+    const initializeForEdit = useCallback(async () => {
         try {
-            const country = countries.find(c => c.name === editingUser.nationality);
+            const country = countries.find(c => c.name === editingUser?.nationality);
             if (!country) return;
 
             const provincesData = await loadProvinces(country);
 
-            if (editingUser.province) {
+            if (editingUser?.province) {
                 const province = provincesData.find(p => p.name === editingUser.province);
                 if (province) {
                     const municipalitiesData = await loadMunicipalities(province);
 
-                    if (editingUser.municipal) {
+                    if (editingUser?.municipal) {
                         const municipality = municipalitiesData.find(m => m.name === editingUser.municipal);
                         if (municipality) {
                             await loadInstitutions(municipality);
@@ -49,5 +42,20 @@ export const useEditInitialization = ({
         } catch (error) {
             console.error('Error initializing edit data:', error);
         }
-    };
+    }, [
+        countries,
+        editingUser,
+        loadProvinces,
+        loadMunicipalities,
+        loadInstitutions
+    ]);
+
+    useEffect(() => {
+        if (editingUser && countries.length > 0) {
+            initializeForEdit();
+        } else if (!editingUser) {
+            resetDependentStates();
+        }
+    }, [editingUser, countries, initializeForEdit, resetDependentStates]);
+
 };

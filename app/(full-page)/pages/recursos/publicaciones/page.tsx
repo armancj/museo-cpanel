@@ -6,6 +6,7 @@ import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
 import { Tag } from 'primereact/tag';
 import { LogoLanding } from '@/app/common/component/LogoLanding';
+import { toTagSeverity } from '@/app/(full-page)/pages/util/toTagSeverity';
 
 const PublicacionesPage = () => {
     const router = useRouter();
@@ -78,7 +79,7 @@ const PublicacionesPage = () => {
         }
     ];
 
-    const getTagSeverity = (tag) => {
+    const getTagSeverity = (tag: string | number | boolean | React.ReactPortal | React.PromiseLikeOfReactNode | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined) => {
         switch (tag) {
             case 'Conservación':
             case 'Restauración':
@@ -119,7 +120,7 @@ const PublicacionesPage = () => {
     const header = (publication: { id?: number; titulo: any; descripcion?: string; imagen: any; fecha?: string; autor?: string; tipo: any; tags?: string[] }) => (
         <div className="relative">
             <img src={publication.imagen} alt={publication.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
-            <Tag value={publication.tipo} severity={getTipoSeverity(publication.tipo)} className="absolute" style={{ top: '10px', right: '10px' }} />
+            <Tag value={publication.tipo} severity={toTagSeverity(getTipoSeverity(publication.tipo))} className="absolute" style={{ top: '10px', right: '10px' }} />
         </div>
     );
 
@@ -131,7 +132,7 @@ const PublicacionesPage = () => {
                         tag: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined,
                         index: React.Key | null | undefined
                     ) => (
-                        <Tag key={index} value={tag} severity={getTagSeverity(tag)} />
+                        <Tag key={index} value={tag} severity={toTagSeverity(getTagSeverity(tag))} />
                     )
                 )}
             </div>

@@ -78,7 +78,7 @@ export const useGenericHook = <ResponseType>({
 
     useEffect(() => {
         service.fetchAll().then((data) => setSelects(data));
-    }, []);
+    }, [service]);
 
     const refreshAllData = async () => {
         try {

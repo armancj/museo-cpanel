@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 import { jwtDecode } from 'jwt-decode';
 
@@ -51,7 +51,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    const checkAuth = () => {
+    const checkAuth = useCallback(() => {
         try {
             const authUser = localStorage.getItem('authUser');
 
@@ -75,16 +75,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    // Check authentication on initial load
+    // Check authentication on an initial load
     useEffect(() => {
         if (typeof window !== 'undefined') {
             checkAuth();
         } else {
             setIsLoading(false);
         }
-    }, []);
+    }, [checkAuth]);
 
     // Re-check authentication when the user returns to the application
     useEffect(() => {
@@ -114,7 +114,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
                 console.log('Removed visibility and focus event listeners');
             };
         }
-    }, []);
+    }, [checkAuth]);
 
     return (
         <AppContext.Provider value={{

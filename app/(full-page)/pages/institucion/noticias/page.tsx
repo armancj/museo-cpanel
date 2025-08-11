@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
 import { LogoLanding } from '@/app/common/component/LogoLanding';
+import { toTagSeverity } from '@/app/(full-page)/pages/util/toTagSeverity';
 
 const NoticiasPage = () => {
     const router = useRouter();
@@ -95,7 +95,7 @@ const NoticiasPage = () => {
         imagen: string
     }) => (
         <div className="flex flex-wrap justify-content-between align-items-center mt-3">
-            <Tag value={noticia.categoria} severity={getCategoryColor(noticia.categoria)}></Tag>
+            <Tag value={noticia.categoria} severity={toTagSeverity(getCategoryColor(noticia.categoria))}></Tag>
             <Button label="Leer más" icon="pi pi-arrow-right" className="p-button-text" style={{ color: '#926941' }} />
         </div>
     );

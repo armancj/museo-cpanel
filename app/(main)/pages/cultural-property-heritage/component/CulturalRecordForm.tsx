@@ -81,6 +81,7 @@ export const CulturalRecordForm = ({
             formValidityUpdatedRef.current = false;
         }
     }, [
+        data,
         data.culturalRecord?.objectTitle?.value,
         data.culturalRecord?.objectDescription?.value,
         data.culturalRecord?.extremeDates?.value?.start,
@@ -541,9 +542,9 @@ export const CulturalRecordForm = ({
                                     // Calculate cubic meters and square meters
                                     if (subfield === 'heightCms' || subfield === 'widthCms' || subfield === 'lengthCms') {
                                         // Convert to numbers, default to 0 if not a number
-                                        const height = parseFloat(updatedValue.heightCms) || 0;
-                                        const width = parseFloat(updatedValue.widthCms) || 0;
-                                        const length = parseFloat(updatedValue.lengthCms) || 0;
+                                        const height = parseFloat(updatedValue.heightCms as unknown as string) || 0;
+                                        const width = parseFloat(updatedValue.widthCms as unknown as string) || 0;
+                                        const length = parseFloat(updatedValue.lengthCms as unknown as string) || 0;
 
                                         // Calculate cubic meters (height * width * length) / 1,000,000 (cm³ to m³)
                                         if (height > 0 && width > 0 && length > 0) {

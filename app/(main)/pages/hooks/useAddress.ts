@@ -10,9 +10,9 @@ export function useAddress(countries: AddressResponse[], data: InstitutionRespon
     const initialProvinceLoaded = useRef(false);
     const initialMunicipalityLoaded = useRef(false);
 
-    const stableHandleCountryChange = useCallback(handleCountryChange, []);
-    const stableOnInputChange = useCallback(onInputChange, []);
-    const stableHandleProvinceChange = useCallback(handleProvinceChange, []);
+    const stableHandleCountryChange = useCallback(handleCountryChange, [handleCountryChange]);
+    const stableOnInputChange = useCallback(onInputChange, [onInputChange]);
+    const stableHandleProvinceChange = useCallback(handleProvinceChange, [handleProvinceChange]);
 
 
     useEffect(() => {

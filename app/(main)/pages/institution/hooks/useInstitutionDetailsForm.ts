@@ -107,7 +107,7 @@ export const useInstitutionDetailsForm = ({ data, onInputChange }: UseInstitutio
             // Es edición y no se ha inicializado
             setHasInitialized(false);
         }
-    }, [data?.uuid]);
+    }, [data?.uuid, hasInitialized]);
 
     // 🔧 NUEVA LÓGICA: Inicialización paso a paso con async/await
     useEffect(() => {
@@ -141,7 +141,7 @@ export const useInstitutionDetailsForm = ({ data, onInputChange }: UseInstitutio
         };
 
         initializeAddressFields();
-    }, [data?.uuid, data?.country, countries, isInitializing, hasInitialized]);
+    }, [data?.uuid, data.country, countries, isInitializing, hasInitialized, handleCountryChange]);
 
     // 🔧 NUEVA LÓGICA: Inicializar provincia cuando se cargan las provincias
     useEffect(() => {
@@ -171,7 +171,7 @@ export const useInstitutionDetailsForm = ({ data, onInputChange }: UseInstitutio
         };
 
         initializeProvince();
-    }, [provinces, data?.province, hasInitialized, selectedProvince]);
+    }, [provinces, data.province, hasInitialized, selectedProvince, handleProvinceChange]);
 
     // 🔧 NUEVA LÓGICA: Inicializar municipio cuando se cargan los municipios
     useEffect(() => {

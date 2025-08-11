@@ -112,7 +112,7 @@ const MultipleFileUpload = ({
         };
 
         fetchAndSetFiles();
-    }, [fileURLs]);
+    }, [fileURLs, handleFilesUpload]);
 
     const headerTemplate = (options: FileUploadHeaderTemplateOptions) => {
         const { className, chooseButton, uploadButton, cancelButton } = options;

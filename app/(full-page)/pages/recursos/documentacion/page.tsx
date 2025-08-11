@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -10,6 +9,7 @@ import { InputText } from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
 import { useState } from 'react';
 import { LogoLanding } from '@/app/common/component/LogoLanding';
+import { toTagSeverity } from '@/app/(full-page)/pages/util/toTagSeverity';
 
 const DocumentacionPage = () => {
     const router = useRouter();
@@ -156,7 +156,7 @@ const DocumentacionPage = () => {
     const header = renderHeader();
 
     const formatoBodyTemplate = (rowData: { formato: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.PromiseLikeOfReactNode | null | undefined }) => {
-        return <Tag value={rowData.formato} severity={rowData.formato === 'PDF' ? 'danger' : rowData.formato === 'DOCX' ? 'info' : rowData.formato === 'XLSX' ? 'success' : rowData.formato === 'PPTX' ? 'warning' : 'primary'} />;
+        return <Tag value={rowData.formato} severity={toTagSeverity(rowData.formato === 'PDF' ? 'danger' : rowData.formato === 'DOCX' ? 'info' : rowData.formato === 'XLSX' ? 'success' : rowData.formato === 'PPTX' ? 'warning' : 'primary')} />;
     };
 
     const iconoBodyTemplate = (rowData: { icono: string | undefined }) => {

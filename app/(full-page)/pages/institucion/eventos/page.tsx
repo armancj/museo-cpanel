@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Timeline } from 'primereact/timeline';
 import { Card } from 'primereact/card';
 import { Badge } from 'primereact/badge';
 import { LogoLanding } from '@/app/common/component/LogoLanding';
+import { toTagSeverity } from '@/app/(full-page)/pages/util/toTagSeverity';
 
 const EventosPage = () => {
     const router = useRouter();
@@ -107,7 +107,7 @@ const EventosPage = () => {
                     <h3 className="m-0" style={{ color: '#926941' }}>
                         {item.titulo}
                     </h3>
-                    <Badge value={item.estado} severity={getStatusColor(item.estado)}></Badge>
+                    <Badge value={item.estado} severity={toTagSeverity(getStatusColor(item.estado))}></Badge>
                 </div>
                 <p className="text-700 text-sm m-0 mb-2">
                     {item.fecha} | {item.lugar}

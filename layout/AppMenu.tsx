@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-
+import { Suspense } from 'react';
 import React, { useContext, useEffect, useState } from 'react';
 import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
@@ -68,9 +68,11 @@ const AppMenu = () => {
     return (
         <MenuProvider>
             <div className={isCollapsed ? styles.layoutMenuCollapsed : styles.layoutMenu}>
+                            <Suspense fallback={<div>Cargando...</div>}>
                 <ul className="layout-menu">
                     {filteredModel.map((item, i) => {
-                        return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> :
+                        return !item?.seperator ?
+                            <AppMenuitem item={item} root={true} index={i} key={item.label} /> :
                             <li className="menu-separator"></li>;
                     })}
 
@@ -80,6 +82,7 @@ const AppMenu = () => {
                                  src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
                         </Link>}
                 </ul>
+                            </Suspense>
             </div>
         </MenuProvider>
 );

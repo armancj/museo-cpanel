@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { InputText } from 'primereact/inputtext';
@@ -163,7 +162,7 @@ const PreguntasFrecuentesPage = () => {
                                                     <i className={`${categoria.icono} text-2xl mr-2`} style={{ color: '#926941' }}></i>
                                                     <h3 className="m-0" style={{ color: '#926941' }}>{categoria.nombre}</h3>
                                                 </div>
-                                                <Accordion multiple activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
+                                                <Accordion multiple activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index as any)}>
                                                     {categoria.preguntas.map((pregunta, idx) => (
                                                         <AccordionTab key={idx} header={pregunta.pregunta}>
                                                             <p className="line-height-3 text-700">{pregunta.respuesta}</p>

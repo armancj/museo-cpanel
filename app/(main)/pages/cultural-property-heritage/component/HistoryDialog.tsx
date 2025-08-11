@@ -38,30 +38,31 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
 
     useEffect(() => {
         if (visible && field?.history?.length > 0) {
+            const loadUsers = async () => {
+                setLoading(true);
+                try {
+                    // @ts-ignore
+                    const userUuids = [...new Set(
+                        field.history
+                            .map((item: any) => item.modifiedBy)
+                            .filter((uuid: string) => uuid && typeof uuid === 'string' && uuid.trim() !== '')
+                    )];
+
+                    if (userUuids.length > 0) {
+                        const usersMap = await UserService.getUsersByUuids(userUuids);
+                        setUsers(usersMap);
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
             loadUsers();
         }
     }, [visible, field]);
 
-    const loadUsers = async () => {
-        setLoading(true);
-        try {
-            // @ts-ignore
-            const userUuids = [...new Set(
-                field.history
-                    .map((item: any) => item.modifiedBy)
-                    .filter((uuid: string) => uuid && typeof uuid === 'string' && uuid.trim() !== '')
-            )];
-
-            if (userUuids.length > 0) {
-                const usersMap = await UserService.getUsersByUuids(userUuids);
-                setUsers(usersMap);
-            }
-        } catch (error) {
-            console.error('Error loading users:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Verificar si no hay historial o datos
     if (!field) {
@@ -95,7 +96,7 @@ export const HistoryDialog = ({ visible, onHide, field, title }: HistoryDialogPr
             >
                 <div className="p-4 text-center">
                     <i className="pi pi-info-circle" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block' }}></i>
-                    <p>📝 El campo no tiene propiedad 'history'</p>
+                    <p>📝 El campo no tiene propiedad history</p>
                     <details className="mt-3">
                         <summary className="cursor-pointer text-primary">🔍 Ver estructura del campo</summary>
                         <pre className="text-left mt-2 text-xs border p-2 border-round bg-gray-50 overflow-auto">

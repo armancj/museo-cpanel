@@ -89,12 +89,7 @@ export const AssociatedDocumentationForm = ({
             // Reset the ref if the validity hasn't changed
             formValidityUpdatedRef.current = false;
         }
-    }, [
-        data.associatedDocumentation,
-        currentStep,
-        isFormValid,
-        markStepCompleted
-    ]);
+    }, [data.associatedDocumentation, currentStep, isFormValid, markStepCompleted, data]);
 
     // Update a field in the associated documentation
     const updateField = (field: string, value: any) => {
