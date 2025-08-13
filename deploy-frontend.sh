@@ -3,7 +3,7 @@ set -e
 
 # Variables que debes ajustar
 APP_DIR="/var/www/museo-cpanel"       # Ruta donde está tu repo frontend (y donde está este script)
-API_BASE_URL="http://10.0.0.5:5000"   # URL backend API
+API_BASE_URL="http://10.0.0.5:5000/api"   # URL backend API
 DOMAIN_OR_IP="10.0.0.4"                # IP o dominio para Nginx
 
 echo "---- Actualizando sistema ----"
@@ -59,10 +59,6 @@ sudo tee $NGINX_CONF > /dev/null <<EOL
 server {
     listen 80;
     server_name $DOMAIN_OR_IP;
-
-    location = / {
-        return 302 /landing;
-    }
 
     location / {
         proxy_pass http://localhost:3000;
