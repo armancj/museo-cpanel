@@ -50,7 +50,8 @@ pnpm run build
 echo "---- Configuring PM2 ----"
 if pm2 list | grep -q frontend-next; then
     echo "Process frontend-next already exists, restarting..."
-    pm2 restart frontend-next
+    pm2 delete frontend-next
+    pm2 start npm --name frontend-next -- start
 else
     echo "Starting new process frontend-next..."
     pm2 start npm --name frontend-next -- start
