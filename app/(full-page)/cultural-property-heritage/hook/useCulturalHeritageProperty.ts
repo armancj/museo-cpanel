@@ -1,12 +1,10 @@
-import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { CulturalHeritageProperty } from '@/app/(main)/pages/cultural-property-heritage/types';
 import { CulturalPropertyService } from '@/app/service/CulturalPropertyService';
 import { formatDate, primaryColor } from '@/app/(full-page)/cultural-property-heritage/util/culture-function';
 
 
-export function useCulturalHeritageProperty() {
-    const { uuid } = useParams();
+export function useCulturalHeritageProperty(uuid: string) {
     const [property, setProperty] = useState<CulturalHeritageProperty | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
