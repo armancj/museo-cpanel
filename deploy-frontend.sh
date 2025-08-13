@@ -9,21 +9,38 @@ DOMAIN_OR_IP="10.0.0.4"                # IP o dominio para Nginx
 echo "---- Actualizando sistema ----"
 sudo apt update && sudo apt upgrade -y
 
-echo "---- Instalando Node.js (v18) y PM2 ----"
-# Instalar Node.js 18
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# Verificar si Node.js está instalado
+if command -v node >/dev/null 2>&1; then
+  echo "Node.js ya está instalado, versión: $(node -v)"
+else
+  echo "Node.js no está instalado, instalando Node.js 20.x..."
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+fi
 
-# Instalar pm2 globalmente
-sudo npm install -g pm2
+# Verificar si pnpm está instalado
+if command -v pnpm >/dev/null 2>&1; then
+  echo "pnpm ya está instalado, versión: $(pnpm -v)"
+else
+  echo "pnpm no está instalado, instalando pnpm globalmente..."
+  sudo npm install -g pnpm
+fi
+
+# Instalar pm2 si no está
+if command -v pm2 >/dev/null 2>&1; then
+  echo "pm2 ya está instalado, versión: $(pm2 -v)"
+else
+  echo "pm2 no está instalado, instalando pm2 globalmente..."
+  sudo npm install -g pm2
+fi
 
 echo "---- Actualizando código ----"
 cd "$APP_DIR"
 git pull
 
-echo "---- Instalando dependencias y haciendo build ----"
-npm install
-npm run build
+echo "---- Instalando dependencias y haciendo build con pnpm ----"
+pnpm install
+pnpm run build
 
 echo "---- Creando archivo .env.production ----"
 cat > .env.production <<EOF
