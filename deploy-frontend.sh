@@ -48,7 +48,14 @@ pnpm install
 pnpm run build
 
 echo "---- Configurando PM2 ----"
-pm2 start npm --name frontend-next -- start
+if pm2 list | grep -q frontend-next; then
+    echo "Proceso frontend-next ya existe, reiniciando..."
+    pm2 restart frontend-next
+else
+    echo "Iniciando nuevo proceso frontend-next..."
+    pm2 start npm --name frontend-next -- start
+fi
+
 pm2 save
 pm2 startup systemd -u $(whoami) --hp $(eval echo ~$USER)
 
