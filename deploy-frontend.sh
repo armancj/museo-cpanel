@@ -38,14 +38,14 @@ echo "---- Actualizando código ----"
 cd "$APP_DIR"
 git pull
 
+echo "---- Creando archivo .env.production ----"
+cat > .env <<EOF
+NEXT_PUBLIC_API_BASE_URL=$API_BASE_URL
+EOF
+
 echo "---- Instalando dependencias y haciendo build con pnpm ----"
 pnpm install
 pnpm run build
-
-echo "---- Creando archivo .env.production ----"
-cat > .env.production <<EOF
-NEXT_PUBLIC_API_BASE_URL=$API_BASE_URL
-EOF
 
 echo "---- Configurando PM2 ----"
 pm2 start npm --name frontend-next -- start
