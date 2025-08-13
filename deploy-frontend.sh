@@ -2,7 +2,7 @@
 set -e
 
 # Variables que debes ajustar
-APP_DIR="/home/ubuntu/frontend"       # Ruta donde está tu repo frontend (y donde está este script)
+APP_DIR="/var/www/museo-cpanel"       # Ruta donde está tu repo frontend (y donde está este script)
 API_BASE_URL="http://10.0.0.5:5000"   # URL backend API
 DOMAIN_OR_IP="10.0.0.4"                # IP o dominio para Nginx
 
@@ -11,7 +11,7 @@ sudo apt update && sudo apt upgrade -y
 
 echo "---- Instalando Node.js (v18) y PM2 ----"
 # Instalar Node.js 18
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Instalar pm2 globalmente
@@ -19,7 +19,7 @@ sudo npm install -g pm2
 
 echo "---- Actualizando código ----"
 cd "$APP_DIR"
-git pull origin main
+git pull
 
 echo "---- Instalando dependencias y haciendo build ----"
 npm install
