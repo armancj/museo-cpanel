@@ -1,0 +1,8 @@
+{
+  "statusCode": 409,
+  "message": "Conflict: {\"name\":\"string\"}",
+  "error": "Conflict",
+  "timestamp": "2025-03-18T13:48:00.095Z",
+  "path": "/typology",
+  "method": "POST"
+}

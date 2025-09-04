@@ -1,0 +1,68 @@
+Index: layout/AppSubMenu.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import type { Breadcrumb, BreadcrumbItem, MenuModel, MenuProps } from \"@/types\";\r\nimport { Tooltip } from \"primereact/tooltip\";\r\nimport { useContext, useEffect, useRef } from \"react\";\r\nimport AppMenuitem from \"./AppMenuitem\";\r\nimport { LayoutContext } from \"./context/layoutcontext\";\r\nimport { MenuProvider } from \"./context/menucontext\";\r\n\r\nconst AppSubMenu = (props: MenuProps) => {\r\n    const { layoutState, setBreadcrumbs } = useContext(LayoutContext);\r\n    const tooltipRef = useRef<Tooltip | null>(null);\r\n\r\n    useEffect(() => {\r\n        if (tooltipRef.current) {\r\n            tooltipRef.current.hide();\r\n            (tooltipRef.current as any).updateTargetEvents();\r\n        }\r\n    }, [layoutState.overlaySubmenuActive]);\r\n\r\n    useEffect(() => {\r\n        generateBreadcrumbs(props.model);\r\n    }, []);\r\n\r\n    const generateBreadcrumbs = (model: MenuModel[]) => {\r\n        let breadcrumbs: Breadcrumb[] = [];\r\n\r\n        const getBreadcrumb = (item: BreadcrumbItem, labels: string[] = []) => {\r\n            const { label, to, items } = item;\r\n\r\n            label && labels.push(label);\r\n            items &&\r\n                items.forEach((_item) => {\r\n                    getBreadcrumb(_item, labels.slice());\r\n                });\r\n            to && breadcrumbs.push({ labels, to });\r\n        };\r\n\r\n        model.forEach((item) => {\r\n            getBreadcrumb(item);\r\n        });\r\n        setBreadcrumbs(breadcrumbs);\r\n    };\r\n\r\n    return (\r\n        <MenuProvider>\r\n            <ul className=\"layout-menu\">\r\n                {props.model.map((item, i) => {\r\n                    return !item.seperator ? (\r\n                        <AppMenuitem\r\n                            item={item}\r\n                            root={true}\r\n                            index={i}\r\n                            key={item.label}\r\n                        />\r\n                    ) : (\r\n                        <li className=\"menu-separator\"></li>\r\n                    );\r\n                })}\r\n            </ul>\r\n            <Tooltip\r\n                ref={tooltipRef}\r\n                target=\"li:not(.active-menuitem)>.tooltip-target\"\r\n            />\r\n        </MenuProvider>\r\n    );\r\n};\r\n\r\nexport default AppSubMenu;\r\n
+===================================================================
+diff --git a/layout/AppSubMenu.tsx b/layout/AppSubMenu.tsx
+--- a/layout/AppSubMenu.tsx	(revision f86b5bec5fd993ed68ed227729cdd83c0273afdb)
++++ b/layout/AppSubMenu.tsx	(date 1734739702483)
+@@ -4,6 +4,7 @@
+ import AppMenuitem from "./AppMenuitem";
+ import { LayoutContext } from "./context/layoutcontext";
+ import { MenuProvider } from "./context/menucontext";
++import { PanelMenu } from 'primereact/panelmenu';
+ 
+ const AppSubMenu = (props: MenuProps) => {
+     const { layoutState, setBreadcrumbs } = useContext(LayoutContext);
+@@ -28,9 +29,9 @@
+ 
+             label && labels.push(label);
+             items &&
+-                items.forEach((_item) => {
+-                    getBreadcrumb(_item, labels.slice());
+-                });
++            items.forEach((_item) => {
++                getBreadcrumb(_item, labels.slice());
++            });
+             to && breadcrumbs.push({ labels, to });
+         };
+ 
+@@ -40,25 +41,25 @@
+         setBreadcrumbs(breadcrumbs);
+     };
+ 
++
+     return (
+         <MenuProvider>
+             <ul className="layout-menu">
+-                {props.model.map((item, i) => {
+-                    return !item.seperator ? (
+-                        <AppMenuitem
+-                            item={item}
+-                            root={true}
+-                            index={i}
+-                            key={item.label}
+-                        />
+-                    ) : (
+-                        <li className="menu-separator"></li>
+-                    );
+-                })}
++                <PanelMenu
++                    model={props.model}
++                    panelMenuItemTemplate={(item, options) => {
++                        return (
++                            <div className="p-panelmenu-icon-only" data-pr-tooltip={item.label}>
++                                <i className={`pi ${item.icon} p-menuitem-icon`}></i>
++                            </div>
++                        );
++                    }}
++                />
+             </ul>
+             <Tooltip
+                 ref={tooltipRef}
+-                target="li:not(.active-menuitem)>.tooltip-target"
++                target=".p-panelmenu-icon-only"
++                showDelay={500}
+             />
+         </MenuProvider>
+     );

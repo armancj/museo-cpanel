@@ -1,0 +1,8 @@
+{
+  "statusCode": 400,
+  "message": "Unexpected token 'D', ...\"  \"name\": Dynamic Ac\"... is not valid JSON",
+  "error": "Bad Request",
+  "timestamp": "2025-03-18T13:52:31.762Z",
+  "path": "/typology",
+  "method": "POST"
+}

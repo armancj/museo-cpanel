@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "67d971dcbe32c97c125b4203",
+    "deleted": false,
+    "name": "Guía",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.479Z",
+    "updatedAt": "2025-03-18T13:15:08.479Z",
+    "uuid": "398f3117-e8e0-4b84-ae73-00d41ffd00c0",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4206",
+    "deleted": false,
+    "name": "Índice",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.481Z",
+    "updatedAt": "2025-03-18T13:15:08.481Z",
+    "uuid": "7a234ea8-9157-44bd-a93b-df436a41ae46",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4207",
+    "deleted": false,
+    "name": "Web",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.481Z",
+    "updatedAt": "2025-03-18T13:15:08.481Z",
+    "uuid": "8d394b77-6152-4464-97a5-c33282702e1e",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4205",
+    "deleted": false,
+    "name": "Catálogo",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.481Z",
+    "updatedAt": "2025-03-18T13:15:08.481Z",
+    "uuid": "7f26aced-a375-4687-ae28-cb3da14672dd",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4204",
+    "deleted": false,
+    "name": "Inventario",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.480Z",
+    "updatedAt": "2025-03-18T13:15:08.480Z",
+    "uuid": "d627305f-a100-418c-8b0b-6c406716a2ba",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4209",
+    "deleted": false,
+    "name": "Multimedia",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.482Z",
+    "updatedAt": "2025-03-18T13:15:08.482Z",
+    "uuid": "edad7521-0155-4a63-8466-8a4d1ac4d051",
+    "__v": 0
+  },
+  {
+    "_id": "67d971dcbe32c97c125b4208",
+    "deleted": false,
+    "name": "Aplicación móvil",
+    "active": true,
+    "createdAt": "2025-03-18T13:15:08.482Z",
+    "updatedAt": "2025-03-18T13:15:08.482Z",
+    "uuid": "55f9babe-55d0-494a-a974-fc4601963171",
+    "__v": 0
+  }
+]

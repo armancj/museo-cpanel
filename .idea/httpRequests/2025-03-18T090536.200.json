@@ -1,0 +1,14 @@
+{
+  "uuid": "86865ad6-af5b-4d99-af79-8080372fc297",
+  "mobile": "9999999",
+  "email": "root@gmail.com",
+  "address": "SuperAdmin Address",
+  "lastName": "Root",
+  "name": "Root",
+  "avatar": {
+    "id": "67a38ca08833f164a6ba43bc",
+    "nameFile": "1738771616173-MSI_MPG.jpg.webp"
+  },
+  "roles": "super Administrador",
+  "active": true
+}

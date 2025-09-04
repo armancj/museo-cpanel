@@ -1,0 +1,26 @@
+Index: ../museo-api/src/cultural-heritage-property/field-review-status/schema/apply-common-hooks.schema.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Schema } from 'mongoose';\r\nimport {\r\n  FieldMetadata,\r\n  HistoryItem,\r\n  StatusObject,\r\n} from '../models/field-review-status.model';\r\nimport { CulturalPropertyModel } from '../../cultural-heritage-property/models/cultural-property.model';\r\n\r\ninterface UpdateDto {\r\n  $set: Partial<CulturalPropertyModel>;\r\n}\r\n\r\nfunction updateFieldWithHistory(\r\n  currentField: FieldMetadata<any>,\r\n  newField: FieldMetadata<any>,\r\n): FieldMetadata<any> {\r\n  console.log('\\n>>> updateFieldWithHistory: Inicio de la función');\r\n  console.log('>>> currentField recibido:', currentField);\r\n  console.log('>>> newField recibido:', newField);\r\n\r\n  const history = currentField.history || [];\r\n  console.log('>>> Historial actual del campo (antes de actualizar):', history);\r\n\r\n  const historyEntry: HistoryItem<any> = {\r\n    previousValue: newField.value,\r\n    modifiedBy: newField.modifiedBy || '',\r\n    modifiedAt: new Date(),\r\n    comment: newField.comment || '',\r\n    status: newField.status as StatusObject,\r\n  };\r\n\r\n  console.log('>>> Nueva entrada añadida al historial:', historyEntry);\r\n\r\n  history.push(historyEntry);\r\n\r\n  const updatedField = {\r\n    ...newField,\r\n    history, // Aseguramos que el historial acumulado esté presente en el nuevo campo\r\n  };\r\n\r\n  console.log('>>> Campo actualizado con historial:', updatedField); // Log 12\r\n  console.log('\\n>>> updateFieldWithHistory: Fin de la función\\n');\r\n\r\n  return updatedField;\r\n}\r\n\r\nexport function applyCommonHooksSchema(schema: Schema): Schema {\r\n  schema.pre('findOneAndUpdate', async function (next) {\r\n    const update = (this.getUpdate() as UpdateDto)?.$set;\r\n    if (!update) return next();\r\n    console.log('>>> Update recibido:', update);\r\n\r\n    const doc = await this.model.findOne(this.getFilter()).lean().exec();\r\n    if (!doc) return next();\r\n    console.log('>>> Documento encontrado en la base de datos:', doc);\r\n\r\n    for (const key of Object.keys(doc)) {\r\n      if (update[key] && typeof doc[key] === 'object') {\r\n        const currentEmbedded = doc[key];\r\n        const updatedEmbedded = update[key];\r\n        console.log(`>>> Campo actual: ${key}`, {\r\n          currentEmbedded,\r\n          updatedEmbedded,\r\n        });\r\n\r\n        Object.keys(currentEmbedded).forEach((fieldKey) => {\r\n          console.log(`\\n>>> Procesando campo embebido: ${fieldKey}`);\r\n          console.log('>>> Valor actual del campo:', currentEmbedded[fieldKey]); // Log 4\r\n          console.log('>>> Nuevo valor del campo:', updatedEmbedded[fieldKey]);\r\n\r\n          if (updatedEmbedded[fieldKey]) {\r\n            updatedEmbedded[fieldKey] = updateFieldWithHistory(\r\n              currentEmbedded[fieldKey],\r\n              updatedEmbedded[fieldKey],\r\n            );\r\n            console.log(\r\n              '>>> Resultado de updateFieldWithHistory:',\r\n              updatedEmbedded[fieldKey],\r\n            );\r\n          }\r\n        });\r\n\r\n        this.setUpdate({\r\n          $set: {\r\n            ...update,\r\n            [key]: updatedEmbedded,\r\n          },\r\n        });\r\n        console.log(\r\n          '>>> Objeto setUpdate después de manipulación:',\r\n          this.getUpdate(),\r\n        );\r\n      }\r\n    }\r\n\r\n    next();\r\n  });\r\n\r\n  return schema;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../museo-api/src/cultural-heritage-property/field-review-status/schema/apply-common-hooks.schema.ts b/../museo-api/src/cultural-heritage-property/field-review-status/schema/apply-common-hooks.schema.ts
+--- a/../museo-api/src/cultural-heritage-property/field-review-status/schema/apply-common-hooks.schema.ts	(revision 62720acf5d7a7f9e80d52fe111249a912f8c2783)
++++ b/../museo-api/src/cultural-heritage-property/field-review-status/schema/apply-common-hooks.schema.ts	(date 1743001360037)
+@@ -11,7 +11,14 @@
+ }
+ 
+ function updateFieldWithHistory(
+-  currentField: FieldMetadata<any>,
++  currentField: FieldMetadata<any> = {
++    value: null,
++    history: [],
++    status: { status: 'Pending' },
++    modifiedBy: '',
++    comment: '',
++  },
++
+   newField: FieldMetadata<any>,
+ ): FieldMetadata<any> {
+   console.log('\n>>> updateFieldWithHistory: Inicio de la función');

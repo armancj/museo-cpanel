@@ -1,0 +1,48 @@
+Index: ../museo-api/src/nomenclator/access-conditions/schema/access-condition.schema.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\r\nimport { HydratedDocument, Model } from 'mongoose';\r\nimport { AccessConditionModel } from '../model/access-condition.model';\r\nimport { BaseSchema, BaseSchemaFactory } from '../../../common/schema/base.schema';\r\nimport { AccessCondition } from '../../common/enums/access-condition.enum';\r\n\r\nexport type AccessConditionDocument = HydratedDocument<AccessConditionSchema>;\r\n\r\n@Schema({\r\n  collection: 'access-conditions',\r\n  timestamps: true,\r\n  toJSON: {\r\n    transform: (doc, ret) => {\r\n      delete ret._id;\r\n      delete ret.__v;\r\n      return ret;\r\n    },\r\n  },\r\n})\r\nexport class AccessConditionSchema extends BaseSchema implements AccessConditionModel {\r\n  @Prop({ required: true, enum: AccessCondition })\r\n  type: AccessCondition;\r\n\r\n  @Prop()\r\n  description?: string;\r\n}\r\n\r\nexport const AccessConditionSchemaFactory = SchemaFactory.createForClass(AccessConditionSchema);\r\nAccessConditionSchemaFactory.add(BaseSchemaFactory);\r\n\r\nexport const AccessConditionNameEntity = 'access_conditions';\r\nexport type AccessConditionMongoModel = Model<AccessConditionDocument>; 
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../museo-api/src/nomenclator/access-conditions/schema/access-condition.schema.ts b/../museo-api/src/nomenclator/access-conditions/schema/access-condition.schema.ts
+--- a/../museo-api/src/nomenclator/access-conditions/schema/access-condition.schema.ts	(revision 2f88bf3e0faf5ad5268c9b2d86b109d5324c781a)
++++ b/../museo-api/src/nomenclator/access-conditions/schema/access-condition.schema.ts	(date 1742239531430)
+@@ -1,7 +1,10 @@
+ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+ import { HydratedDocument, Model } from 'mongoose';
+ import { AccessConditionModel } from '../model/access-condition.model';
+-import { BaseSchema, BaseSchemaFactory } from '../../../common/schema/base.schema';
++import {
++  BaseSchema,
++  BaseSchemaFactory,
++} from '../../../common/schema/base.schema';
+ import { AccessCondition } from '../../common/enums/access-condition.enum';
+ 
+ export type AccessConditionDocument = HydratedDocument<AccessConditionSchema>;
+@@ -17,7 +20,10 @@
+     },
+   },
+ })
+-export class AccessConditionSchema extends BaseSchema implements AccessConditionModel {
++export class AccessConditionSchema
++  extends BaseSchema
++  implements AccessConditionModel
++{
+   @Prop({ required: true, enum: AccessCondition })
+   type: AccessCondition;
+ 
+@@ -25,8 +31,10 @@
+   description?: string;
+ }
+ 
+-export const AccessConditionSchemaFactory = SchemaFactory.createForClass(AccessConditionSchema);
++export const AccessConditionSchemaFactory = SchemaFactory.createForClass(
++  AccessConditionSchema,
++);
+ AccessConditionSchemaFactory.add(BaseSchemaFactory);
+ 
+ export const AccessConditionNameEntity = 'access_conditions';
+-export type AccessConditionMongoModel = Model<AccessConditionDocument>; 
+\ No newline at end of file
++export type AccessConditionMongoModel = Model<AccessConditionDocument>;

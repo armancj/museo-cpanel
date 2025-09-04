@@ -1,0 +1,67 @@
+{
+  "value": [
+    {
+      "name": "Índice",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.481Z",
+      "updatedAt": "2025-03-18T13:15:08.481Z",
+      "uuid": "7a234ea8-9157-44bd-a93b-df436a41ae46"
+    },
+    {
+      "name": "Web",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.481Z",
+      "updatedAt": "2025-03-18T13:15:08.481Z",
+      "uuid": "8d394b77-6152-4464-97a5-c33282702e1e"
+    },
+    {
+      "name": "Catálogo",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.481Z",
+      "updatedAt": "2025-03-18T13:15:08.481Z",
+      "uuid": "7f26aced-a375-4687-ae28-cb3da14672dd"
+    },
+    {
+      "name": "Inventario",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.480Z",
+      "updatedAt": "2025-03-18T13:15:08.480Z",
+      "uuid": "d627305f-a100-418c-8b0b-6c406716a2ba"
+    },
+    {
+      "name": "Multimedia",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.482Z",
+      "updatedAt": "2025-03-18T13:15:08.482Z",
+      "uuid": "edad7521-0155-4a63-8466-8a4d1ac4d051"
+    },
+    {
+      "name": "Aplicación móvil",
+      "active": true,
+      "createdAt": "2025-03-18T13:15:08.482Z",
+      "updatedAt": "2025-03-18T13:15:08.482Z",
+      "uuid": "55f9babe-55d0-494a-a974-fc4601963171"
+    },
+    {
+      "name": "Guitar",
+      "active": true,
+      "createdAt": "2025-03-18T13:39:15.208Z",
+      "updatedAt": "2025-03-18T13:39:15.208Z",
+      "uuid": "fcfcf88e-7610-4174-b606-fed95d1367c9"
+    },
+    {
+      "name": "Guitar1",
+      "active": true,
+      "createdAt": "2025-03-18T13:40:02.236Z",
+      "updatedAt": "2025-03-18T13:40:02.236Z",
+      "uuid": "5e1414b1-43a6-4832-93e8-dbcb022fb16b"
+    },
+    {
+      "name": "Guitar2",
+      "active": true,
+      "createdAt": "2025-03-18T13:42:14.393Z",
+      "updatedAt": "2025-03-18T13:42:14.393Z",
+      "uuid": "66333325-52e6-49e7-9f22-183a28aa6873"
+    }
+  ]
+}

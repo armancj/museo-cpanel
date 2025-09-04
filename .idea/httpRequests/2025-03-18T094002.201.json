@@ -1,0 +1,11 @@
+{
+  "deleted": false,
+  "name": "Guitar1",
+  "description": "A string instrument",
+  "active": true,
+  "_id": "67d977b266628bfad7df72a8",
+  "createdAt": "2025-03-18T13:40:02.236Z",
+  "updatedAt": "2025-03-18T13:40:02.236Z",
+  "uuid": "5e1414b1-43a6-4832-93e8-dbcb022fb16b",
+  "__v": 0
+}

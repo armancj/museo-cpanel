@@ -1,0 +1,185 @@
+POST http://localhost:5001/typology
+accept: application/json
+Content-Type: application/json
+Content-Length: 96
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "Dynamic Assurance Engineer",
+  "active": true,
+  "description": "The A-Bomb Claw"
+}
+
+<> 2025-03-18T095333.201.json
+
+###
+
+POST http://localhost:5001/typology
+accept: application/json
+Content-Type: application/json
+Content-Length: 93
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "National Applications Supervisor",
+  "active": true,
+  "description": "string"
+}
+
+<> 2025-03-18T095241.201.json
+
+###
+
+POST http://localhost:5001/typology
+accept: application/json
+Content-Type: application/json
+Content-Length: 89
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": Dynamic Accountability Officer,
+  "active": true,
+  "description": "string"
+}
+
+<> 2025-03-18T095231.400.json
+
+###
+
+POST http://localhost:5001/typology
+accept: application/json
+Content-Type: application/json
+Content-Length: 75
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": {{$random.name}},
+  "active": true,
+  "description": "string"
+}
+
+<> 2025-03-18T094951.400.json
+
+###
+
+POST http://localhost:5001/typology
+accept: application/json
+Content-Type: application/json
+Content-Length: 67
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "string",
+  "active": true,
+  "description": "string"
+}
+
+<> 2025-03-18T094800.409.json
+
+###
+
+GET http://localhost:5001/description-instruments
+accept: application/json
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-03-18T094321.200.json
+
+###
+
+POST http://localhost:5001/description-instruments
+accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6InN1cGVyIEFkbWluaXN0cmFkb3IiLCJ1dWlkIjoiODY4NjVhZDYtYWY1Yi00ZDk5LWFmNzktODA4MDM3MmZjMjk3IiwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsIm5hbWUiOiJSb290IiwibGFzdE5hbWUiOiJSb290IiwiaWF0IjoxNzQyMzAzMDYwLCJleHAiOjE3NjgyMjMwNjB9.KrBGIpNN5QdibXjph00Yaa_x4wrjJsSP7MkU7OrxoLU
+Content-Type: application/json
+Content-Length: 81
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "Guitar2",
+  "description": "A string instrument",
+  "active": true
+}
+
+<> 2025-03-18T094214.201.json
+
+###
+
+POST http://localhost:5001/description-instruments
+accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6InN1cGVyIEFkbWluaXN0cmFkb3IiLCJ1dWlkIjoiODY4NjVhZDYtYWY1Yi00ZDk5LWFmNzktODA4MDM3MmZjMjk3IiwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsIm5hbWUiOiJSb290IiwibGFzdE5hbWUiOiJSb290IiwiaWF0IjoxNzQyMzAzMDYwLCJleHAiOjE3NjgyMjMwNjB9.KrBGIpNN5QdibXjph00Yaa_x4wrjJsSP7MkU7OrxoLU
+Content-Type: application/json
+Content-Length: 81
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "Guitar1",
+  "description": "A string instrument",
+  "active": true
+}
+
+<> 2025-03-18T094002.201.json
+
+###
+
+POST http://localhost:5001/description-instruments
+accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6InN1cGVyIEFkbWluaXN0cmFkb3IiLCJ1dWlkIjoiODY4NjVhZDYtYWY1Yi00ZDk5LWFmNzktODA4MDM3MmZjMjk3IiwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsIm5hbWUiOiJSb290IiwibGFzdE5hbWUiOiJSb290IiwiaWF0IjoxNzQyMzAzMDYwLCJleHAiOjE3NjgyMjMwNjB9.KrBGIpNN5QdibXjph00Yaa_x4wrjJsSP7MkU7OrxoLU
+Content-Type: application/json
+Content-Length: 80
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "name": "Guitar",
+  "description": "A string instrument",
+  "active": true
+}
+
+<> 2025-03-18T093953.409.json
+
+###
+
+GET http://localhost:5001/description-instruments/398f3117-e8e0-4b84-ae73-00d41ffd00c0
+accept: application/json
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-03-18T093411.200.json
+
+###
+
+GET http://localhost:5001/description-instruments/398f3117-e8e0-4b84-ae73-00d41ffd00c0
+accept: application/json
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-03-18T092021.200.json
+
+###
+
+GET http://localhost:5001/description-instruments
+accept: application/json
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-03-18T091515.200.json
+
+###
+
+GET http://localhost:5001/auth/profile
+accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6InN1cGVyIEFkbWluaXN0cmFkb3IiLCJ1dWlkIjoiODY4NjVhZDYtYWY1Yi00ZDk5LWFmNzktODA4MDM3MmZjMjk3IiwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsIm5hbWUiOiJSb290IiwibGFzdE5hbWUiOiJSb290IiwiaWF0IjoxNzQyMzAzMDYwLCJleHAiOjE3NjgyMjMwNjB9.KrBGIpNN5QdibXjph00Yaa_x4wrjJsSP7MkU7OrxoLU
+User-Agent: IntelliJ HTTP Client/WebStorm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-03-18T090536.200.json
+
+###
+

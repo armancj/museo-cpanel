@@ -1,0 +1,8 @@
+{
+  "statusCode": 400,
+  "message": "Expected property name or '}' in JSON at position 13 (line 2 column 12)",
+  "error": "Bad Request",
+  "timestamp": "2025-03-18T13:49:51.777Z",
+  "path": "/typology",
+  "method": "POST"
+}

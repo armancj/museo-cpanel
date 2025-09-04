@@ -1,0 +1,8 @@
+{
+  "statusCode": 409,
+  "message": "Conflict: {\"name\":\"Guitar\"}",
+  "error": "Conflict",
+  "timestamp": "2025-03-18T13:39:53.062Z",
+  "path": "/description-instruments",
+  "method": "POST"
+}
