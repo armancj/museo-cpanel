@@ -15,18 +15,13 @@ const httpAdapter = axios.create(baseConfig);
 // 401/403 redirect, which would log the user out on an anonymous call.
 const httpAdapterWithoutAuth = axios.create(baseConfig);
 
-let isRedirecting = false;
-
-
 httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
         return response;
     },
     (error: AxiosError) => {
-
         const status = error.response?.status;
         const isAuthError = status === 401 || status === 403;
-        const isValidationError = status === 400 || status === 422;
 
         if (isAuthError) {
             localStorage.removeItem('authUser');
@@ -35,10 +30,6 @@ httpAdapter.interceptors.response.use(
             if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
                 window.location.href = '/auth/login';
             }
-        } else if (isValidationError) {
-            console.log('⚠️ Error de validación - NO redirigir');
-        } else {
-            console.log('❌ Otro tipo de error:', status);
         }
 
         return Promise.reject(error);
@@ -60,16 +51,12 @@ httpAdapter.interceptors.request.use(
                         config.headers.Authorization = `Bearer ${token}`;
                     }
                 }
-            } catch (error) {
-                console.error('❌ Error al parsear token desde localStorage:', error);
+            } catch {
+                // A corrupted authUser entry is dropped so the next login rewrites it.
                 localStorage.removeItem('authUser');
             }
         }
         return config;
-    },
-    (error: AxiosError) => {
-        console.error('❌ Request interceptor error:', error);
-        return Promise.reject(error);
     }
 );
 
@@ -181,7 +168,6 @@ const handleApiError = (error: any): ApiError => {
 
                     if (originalMessage.startsWith('Conflict: ')) {
                         const jsonPart = originalMessage.substring('Conflict: '.length);
-                        console.log('JSON extraído:', jsonPart);
                         conflictData = JSON.parse(jsonPart);
                     } else if (originalMessage.includes('{') && originalMessage.includes('}')) {
                         const startIndex = originalMessage.indexOf('{');
