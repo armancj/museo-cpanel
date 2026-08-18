@@ -84,12 +84,7 @@ export const DescriptionControlForm = ({
             // Reset the ref if the validity hasn't changed
             formValidityUpdatedRef.current = false;
         }
-    }, [
-        data.descriptionControl,
-        currentStep,
-        isFormValid,
-        markStepCompleted
-    ]);
+    }, [data.descriptionControl, currentStep, isFormValid, markStepCompleted, data]);
 
     // Update a field in the description control
     const updateField = (field: string, value: any) => {

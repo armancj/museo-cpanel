@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
 import { Timeline } from 'primereact/timeline';
 import { LogoLanding } from '@/app/common/component/LogoLanding';
+import { toTagSeverity } from '@/app/(full-page)/pages/util/toTagSeverity';
 
 const ConferenciasPage = () => {
     const router = useRouter();
@@ -171,7 +171,7 @@ const ConferenciasPage = () => {
         <div className="relative">
             <img src={conference.imagen} alt={conference.titulo} className="w-full" style={{ height: '200px', objectFit: 'cover' }} />
             <div className="absolute flex gap-2" style={{ top: '10px', right: '10px' }}>
-                <Tag value={conference.modalidad} severity={getModalidadSeverity(conference.modalidad)} />
+                <Tag value={conference.modalidad} severity={toTagSeverity(getModalidadSeverity(conference.modalidad))} />
                 <Tag value={conference.estado} severity={getEstadoSeverity(conference.estado)} />
             </div>
         </div>
@@ -195,7 +195,7 @@ const ConferenciasPage = () => {
         </div>
     );
 
-    const customizedMarker = (item) => {
+    const customizedMarker = () => {
         return (
             <span className="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1" style={{ backgroundColor: '#926941' }}>
                 <i className="pi pi-calendar text-xl"></i>
@@ -215,7 +215,7 @@ const ConferenciasPage = () => {
                         <div key={index} className="p-3 border-1 surface-border surface-card border-round mb-3">
                             <div className="flex justify-content-between align-items-center mb-2">
                                 <h6 className="m-0">{evento.titulo}</h6>
-                                <Tag value={evento.modalidad} severity={getModalidadSeverity(evento.modalidad)} />
+                                <Tag value={evento.modalidad} severity={toTagSeverity(getModalidadSeverity(evento.modalidad))}  />
                             </div>
                             <p className="text-700 m-0 mb-2">Ponente: {evento.ponente}</p>
                             <div className="flex justify-content-between align-items-center">

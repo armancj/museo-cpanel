@@ -12,7 +12,7 @@ export function TableBodyFunction({ toggleUserActivation, editUser, deleteUser }
     const nameBodyTemplate = (rowData: UsersDatum) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
+                <span className="p-column-title">Nombre</span>
                 {rowData.name}
             </>
         );
@@ -57,7 +57,7 @@ export function TableBodyFunction({ toggleUserActivation, editUser, deleteUser }
         const statusCss = rowData.active ? 'status-instock' : 'status-outofstock';
         return (
             <>
-                <span className="p-column-title">Status</span>
+                <span className="p-column-title">Estado</span>
                 <span className={`product-badge ${statusCss}`}>{status}</span>
             </>
         );

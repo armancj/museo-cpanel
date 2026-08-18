@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CulturalHeritagePropertyWizard } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyWizard';
 import { CulturalHeritagePropertyList } from '@/app/(main)/pages/cultural-property-heritage/CulturalHeritagePropertyList';
 import { Button } from 'primereact/button';
@@ -36,7 +36,7 @@ const CulturalHeritagePropertyPage = () => {
 
     const hookData = useHookCulturalHeritageProperty();
 
-    const processPreselectedHeritageType = (preSelectedHeritageType: string) => {
+    const processPreselectedHeritageType = useCallback((preSelectedHeritageType: string) => {
         const typeExists = heritageTypeOptions.some(option => option.value === preSelectedHeritageType);
 
         if (!typeExists) {
@@ -78,7 +78,7 @@ const CulturalHeritagePropertyPage = () => {
         };
         hookData.setData(newData);
         localStorage.removeItem('preSelectedHeritageType');
-    };
+    }, [heritageTypeOptions, hookData]);
 
 
     useEffect(() => {

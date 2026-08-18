@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -162,7 +161,7 @@ const ForosPage = () => {
     }) => {
         return (
             <div className="flex align-items-center gap-2">
-                <Avatar image={rowData.avatar} shape="circle" size="small" />
+                <Avatar image={rowData.avatar} shape="circle" size="normal" />
                 <span>{rowData.autor}</span>
             </div>
         );

@@ -78,7 +78,7 @@ export const ProducerAuthorForm = ({
                 street: { value: '', modifiedBy: '', comment: '', status: Status.Pending, history: [] }
             }
         });
-    }, [data?.uuid]); // Solo depende del UUID
+    }, [data?.uuid, data, setData]); // Solo depende del UUID
 
     // ✅ Reset cuando cambia el UUID
     useEffect(() => {
@@ -94,7 +94,7 @@ export const ProducerAuthorForm = ({
         if (!data.producerAuthor) return false;
         const requiredValue = data.producerAuthor.producerAuthorNames?.value || '';
         return requiredValue !== null && requiredValue !== undefined && requiredValue !== '';
-    }, [data.producerAuthor?.producerAuthorNames?.value]);
+    }, [data.producerAuthor]);
 
     // ✅ Solo llamar markStepCompleted cuando el estado REALMENTE cambie
     useEffect(() => {

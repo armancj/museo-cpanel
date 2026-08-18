@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
-import Link from 'next/link';
 import { BackToLanding } from '@/app/common/component/BackToLanding';
 
 const DerechosDeAutorPage = () => {

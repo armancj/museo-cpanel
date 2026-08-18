@@ -16,6 +16,7 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
         <React.Fragment>
             {children}
             <AppConfig  />
+
         </React.Fragment>
     );
 }

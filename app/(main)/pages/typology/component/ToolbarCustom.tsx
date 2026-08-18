@@ -11,7 +11,7 @@ interface ToolbarCustomProps {
     openNew: () => void
 }
 
-export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, exportExcel, openNew }: ToolbarCustomProps) {
+export function ToolbarCustom({ selects, confirmDeleteSelected, exportExcel, openNew }: ToolbarCustomProps) {
 
     const handleDelete = () => {
         if (selects.length) {
@@ -33,7 +33,7 @@ export function ToolbarCustom({ selects, setDialog, confirmDeleteSelected, expor
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportExcel} />
+                <Button label="Exportar" icon="pi pi-upload" severity="help" onClick={exportExcel} />
             </React.Fragment>
         );
     };

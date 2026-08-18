@@ -1,7 +1,4 @@
-import React, { ReactElement, Dispatch, SetStateAction, HTMLAttributeAnchorTarget, ReactNode } from 'react';
-import { NextPage } from 'next';
-import { Demo } from './demo';
-import { Toast } from 'primereact/toast';
+import React, { Dispatch, SetStateAction, HTMLAttributeAnchorTarget, ReactNode } from 'react';
 
 /* Breadcrumb Types */
 export interface AppBreadcrumbProps {
@@ -25,6 +22,7 @@ export type LayoutState = {
     overlayMenuActive: boolean;
     profileSidebarVisible: boolean;
     configSidebarVisible: boolean;
+    chatSidebarVisible: boolean;
     staticMenuMobileActive: boolean;
     menuHoverActive: boolean;
 };

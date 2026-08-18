@@ -8,6 +8,12 @@ export const model: AppMenuItem[] = [
         ]
     },
     {
+        label: 'Inteligencia Artificial',
+        items: [
+            { label: 'Modelos de IA', icon: 'pi pi-fw pi-cog', to: '/pages/ai-models' }
+        ]
+    },
+    {
         label: 'Nomencladores',
         items: [
             {

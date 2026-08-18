@@ -8,29 +8,6 @@ export const useQRActions = (title: string) => {
     const qrRef = useRef<HTMLDivElement>(null);
     const { generateQRBlob, downloadRef } = useQRGeneration();
 
-    const downloadQR = useCallback(async () => {
-        setIsDownloading(true);
-        try {
-            const blob = await generateQRBlob();
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-
-            link.href = url;
-            link.download = `qr-${createCleanFilename(title) || 'patrimonio'}.png`;
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error('Error downloading QR:', error);
-            await downloadWithFallback();
-        } finally {
-            setIsDownloading(false);
-        }
-    }, [generateQRBlob, title]);
-
     const downloadWithFallback = useCallback(async () => {
         if (!qrRef.current) return;
 
@@ -59,6 +36,31 @@ export const useQRActions = (title: string) => {
             console.error('Error en método de respaldo:', error);
         }
     }, [title]);
+
+
+    const downloadQR = useCallback(async () => {
+        setIsDownloading(true);
+        try {
+            const blob = await generateQRBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = `qr-${createCleanFilename(title) || 'patrimonio'}.png`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading QR:', error);
+            await downloadWithFallback();
+        } finally {
+            setIsDownloading(false);
+        }
+    }, [downloadWithFallback, generateQRBlob, title]);
+
 
     const shareQR = useCallback(async () => {
         setIsSharing(true);

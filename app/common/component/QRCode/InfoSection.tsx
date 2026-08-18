@@ -17,7 +17,7 @@ export const InfoSection = () => (
         <div className="flex align-items-center justify-content-center gap-2 mt-2">
             <i className="pi pi-share-alt text-green-500"></i>
             <span className="text-xs text-500">
-                Usa "Compartir" para enviar la imagen del QR por WhatsApp, Telegram, etc.
+                Usa Compartir para enviar la imagen del QR por WhatsApp, Telegram, etc.
             </span>
         </div>
     </>

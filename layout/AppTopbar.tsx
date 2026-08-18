@@ -15,7 +15,7 @@ import { Button } from 'primereact/button';
 import { UserService } from '@/app/service/UserService';
 import { FileStorageService } from '@/app/service/FileStorageService';
 import { Toast } from 'primereact/toast';
-import { OverlayPanel } from 'primereact/overlayPanel';
+import { OverlayPanel } from 'primereact/overlaypanel';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar, setLayoutConfig } = useContext(LayoutContext);
