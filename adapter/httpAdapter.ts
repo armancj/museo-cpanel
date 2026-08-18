@@ -166,7 +166,7 @@ const handleApiError = (error: any): ApiError => {
                 return new ApiError(status, originalMessage, 'Los datos enviados no son válidos. Por favor, revisa la información.');
 
             case 401:
-                return new ApiError(status, originalMessage, 'No tienes permisos para realizar esta acción.');
+                return new ApiError(status, originalMessage, 'Tu sesión no es válida o ha caducado. Vuelve a iniciar sesión.');
 
             case 403:
                 return new ApiError(status, originalMessage, 'Acceso denegado. No tienes los permisos necesarios.');
