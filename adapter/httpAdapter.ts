@@ -1,13 +1,19 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 
-const httpAdapter = axios.create({
+const baseConfig = {
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json'
     }
-});
+};
+
+const httpAdapter = axios.create(baseConfig);
+
+// Separate instance on purpose: it must not pick up the auth header nor the
+// 401/403 redirect, which would log the user out on an anonymous call.
+const httpAdapterWithoutAuth = axios.create(baseConfig);
 
 let isRedirecting = false;
 
@@ -114,12 +120,7 @@ export const del = async <T>(url: string, config?: InternalAxiosRequestConfig): 
 
 export const postWithoutAuth = async <T>(url: string, data?: any): Promise<T> => {
     try {
-        const response = await axios.post<T>(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            timeout: 10000
-        });
+        const response = await httpAdapterWithoutAuth.post<T>(url, data);
         return response.data;
     } catch (error) {
         throw handleApiError(error);
