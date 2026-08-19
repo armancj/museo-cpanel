@@ -1,26 +1,27 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 
-const httpAdapter = axios.create({
+const baseConfig = {
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json'
     }
-});
+};
 
-let isRedirecting = false;
+const httpAdapter = axios.create(baseConfig);
 
+// Separate instance on purpose: it must not pick up the auth header nor the
+// 401/403 redirect, which would log the user out on an anonymous call.
+const httpAdapterWithoutAuth = axios.create(baseConfig);
 
 httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
         return response;
     },
     (error: AxiosError) => {
-
         const status = error.response?.status;
         const isAuthError = status === 401 || status === 403;
-        const isValidationError = status === 400 || status === 422;
 
         if (isAuthError) {
             localStorage.removeItem('authUser');
@@ -29,10 +30,6 @@ httpAdapter.interceptors.response.use(
             if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
                 window.location.href = '/auth/login';
             }
-        } else if (isValidationError) {
-            console.log('⚠️ Error de validación - NO redirigir');
-        } else {
-            console.log('❌ Otro tipo de error:', status);
         }
 
         return Promise.reject(error);
@@ -54,16 +51,12 @@ httpAdapter.interceptors.request.use(
                         config.headers.Authorization = `Bearer ${token}`;
                     }
                 }
-            } catch (error) {
-                console.error('❌ Error al parsear token desde localStorage:', error);
+            } catch {
+                // A corrupted authUser entry is dropped so the next login rewrites it.
                 localStorage.removeItem('authUser');
             }
         }
         return config;
-    },
-    (error: AxiosError) => {
-        console.error('❌ Request interceptor error:', error);
-        return Promise.reject(error);
     }
 );
 
@@ -114,12 +107,7 @@ export const del = async <T>(url: string, config?: InternalAxiosRequestConfig): 
 
 export const postWithoutAuth = async <T>(url: string, data?: any): Promise<T> => {
     try {
-        const response = await axios.post<T>(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            timeout: 10000
-        });
+        const response = await httpAdapterWithoutAuth.post<T>(url, data);
         return response.data;
     } catch (error) {
         throw handleApiError(error);
@@ -165,7 +153,7 @@ const handleApiError = (error: any): ApiError => {
                 return new ApiError(status, originalMessage, 'Los datos enviados no son válidos. Por favor, revisa la información.');
 
             case 401:
-                return new ApiError(status, originalMessage, 'No tienes permisos para realizar esta acción.');
+                return new ApiError(status, originalMessage, 'Tu sesión no es válida o ha caducado. Vuelve a iniciar sesión.');
 
             case 403:
                 return new ApiError(status, originalMessage, 'Acceso denegado. No tienes los permisos necesarios.');
@@ -180,7 +168,6 @@ const handleApiError = (error: any): ApiError => {
 
                     if (originalMessage.startsWith('Conflict: ')) {
                         const jsonPart = originalMessage.substring('Conflict: '.length);
-                        console.log('JSON extraído:', jsonPart);
                         conflictData = JSON.parse(jsonPart);
                     } else if (originalMessage.includes('{') && originalMessage.includes('}')) {
                         const startIndex = originalMessage.indexOf('{');

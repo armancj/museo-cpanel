@@ -20,10 +20,14 @@ const AppMenu = () => {
     };
 
     useEffect(() => {
-
-        const authUser = JSON.parse(localStorage.getItem('authUser') as string) as UsersDatum;
-        if (authUser && authUser.roles) {
-            setUserRole(authUser.roles);
+        try {
+            const stored = localStorage.getItem('authUser');
+            const authUser = stored ? (JSON.parse(stored) as UsersDatum) : null;
+            if (authUser && authUser.roles) {
+                setUserRole(authUser.roles);
+            }
+        } catch {
+            // A corrupted authUser entry must not take the whole menu down.
         }
     }, []);
     const getFilteredModel = () => {
