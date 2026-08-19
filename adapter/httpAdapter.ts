@@ -1,13 +1,11 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
+import { baseConfig } from '@/adapter/httpConfig';
+import { WebEnvConst } from '@/app/webEnvConst';
+import { clearSession, readSession, refreshSession } from '@/lib/session';
 
-const baseConfig = {
-    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-    timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-};
+// Set once a request has already been replayed with a renewed token, so a
+// second 401 ends the session instead of looping.
+type RetriableRequest = InternalAxiosRequestConfig & { _retriedAfterRefresh?: boolean };
 
 const httpAdapter = axios.create(baseConfig);
 
@@ -19,13 +17,31 @@ httpAdapter.interceptors.response.use(
     (response: AxiosResponse) => {
         return response;
     },
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
         const status = error.response?.status;
-        const isAuthError = status === 401 || status === 403;
+        const originalRequest = error.config as RetriableRequest | undefined;
 
-        if (isAuthError) {
-            localStorage.removeItem('authUser');
-            localStorage.removeItem('token');
+        // Only a 401 means "this access token is spent". A 403 is a role
+        // decision, and a renewed token carries exactly the same roles.
+        const canRetry =
+            status === 401 &&
+            !!originalRequest &&
+            !originalRequest._retriedAfterRefresh &&
+            originalRequest.url !== WebEnvConst.auth.login;
+
+        if (canRetry) {
+            originalRequest._retriedAfterRefresh = true;
+
+            const session = await refreshSession();
+
+            if (session?.access_token) {
+                originalRequest.headers.Authorization = `Bearer ${session.access_token}`;
+                return httpAdapter(originalRequest);
+            }
+        }
+
+        if (status === 401 || status === 403) {
+            clearSession();
 
             if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
                 window.location.href = '/auth/login';
@@ -39,23 +55,12 @@ httpAdapter.interceptors.response.use(
 httpAdapter.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
 
-        if (typeof window !== 'undefined') {
-            try {
-                const authUser = localStorage.getItem('authUser');
+        const token = readSession()?.access_token;
 
-                if (authUser) {
-                    const parsedAuthUser: AuthResponse = JSON.parse(authUser);
-                    const token = parsedAuthUser.access_token;
-
-                    if (token) {
-                        config.headers.Authorization = `Bearer ${token}`;
-                    }
-                }
-            } catch {
-                // A corrupted authUser entry is dropped so the next login rewrites it.
-                localStorage.removeItem('authUser');
-            }
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
+
         return config;
     }
 );
