@@ -31,7 +31,9 @@ interface DropdownData {
 
 interface CulturalHeritagePropertyWizardProps {
     onBackToList?: () => void;
-    hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    // Required: the fallback used to call the hook conditionally, which breaks
+    // the hook order the first time a caller omits it.
+    hookData: ReturnType<typeof useHookCulturalHeritageProperty>;
     currentUserRole: UserRoles;
     setCurrentUserRole: (role: UserRoles) => void;
     isSuperAdmin: boolean;
@@ -59,8 +61,7 @@ export const CulturalHeritagePropertyWizard = ({ onBackToList, isViewMode = fals
         save,
         submitted,
         toast
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-    } = hookData || useHookCulturalHeritageProperty();
+    } = hookData;
 
     // Check if all steps are completed
     useEffect(() => {

@@ -2,19 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { AuthResponse } from '@/app/(full-page)/auth/login/interface/AuthResponse';
 import { ProgressSpinner } from 'primereact/progressspinner';
-
-interface JwtPayload {
-    roles: string;
-    uuid: string;
-    email: string;
-    name: string;
-    lastName: string;
-    iat: number;
-    exp: number;
-}
+import { clearSession, isTokenExpired, readSession, refreshSession } from '@/lib/session';
 
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): React.FC<P> => {
     const ComponentWithAuth: React.FC<P> = (props: P) => {
@@ -22,53 +11,42 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>): R
         const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
         const [isLoading, setIsLoading] = useState(true);
 
-        const checkAuth = useCallback(() => {
-            try {
-                const authUser = localStorage.getItem('authUser');
+        const resolveAuth = useCallback(async (): Promise<boolean> => {
+            const session = readSession();
 
-                if (!authUser) {
-                    setIsAuthenticated(false);
-                    setIsLoading(false);
-                    router.replace('/auth/login');
-                    return;
-                }
+            if (!session?.access_token) return false;
 
-                const parsedAuthUser: AuthResponse = JSON.parse(authUser);
-
-                if (!parsedAuthUser.access_token) {
-                    setIsAuthenticated(false);
-                    setIsLoading(false);
-                    localStorage.removeItem('authUser');
-                    router.replace('/auth/login');
-                    return;
-                }
-
-                const decodedToken: JwtPayload = jwtDecode<JwtPayload>(parsedAuthUser.access_token);
-
-                if (decodedToken.exp < Date.now() / 1000) {
-                    setIsAuthenticated(false);
-                    setIsLoading(false);
-                    localStorage.removeItem('authUser');
-                    router.replace('/auth/login');
-                    return;
-                }
-
-                setIsAuthenticated(true);
-                setIsLoading(false);
-            } catch (error) {
-                console.error('Error al verificar autenticación:', error);
-                setIsAuthenticated(false);
-                setIsLoading(false);
-                localStorage.removeItem('authUser');
-                router.replace('/auth/login');
+            // An expired access token is not the end of the session: the
+            // refresh token outlives it by weeks, so renew it here rather than
+            // bouncing the user back to the login form.
+            if (isTokenExpired(session.access_token)) {
+                return !!(await refreshSession());
             }
-        }, [router]);
+
+            return true;
+        }, []);
 
         useEffect(() => {
-            if (typeof window !== 'undefined') {
-                checkAuth();
-            }
-        }, [checkAuth]);
+            if (typeof window === 'undefined') return;
+
+            let active = true;
+
+            void resolveAuth().then((authenticated) => {
+                if (!active) return;
+
+                if (!authenticated) {
+                    clearSession();
+                    router.replace('/auth/login');
+                }
+
+                setIsAuthenticated(authenticated);
+                setIsLoading(false);
+            });
+
+            return () => {
+                active = false;
+            };
+        }, [resolveAuth, router]);
 
         // Loading con PrimeReact
         if (isLoading || isAuthenticated === null) {

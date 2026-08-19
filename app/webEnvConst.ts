@@ -1,6 +1,7 @@
 export const WebEnvConst = {
     auth: {
         login: '/auth/login',
+        refresh: '/auth/refresh',
         recover: '/auth/recover',
         verifyCode: '/auth/verify-code',
         changePassword: '/auth/change-password',

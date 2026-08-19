@@ -1,17 +1,13 @@
-/* eslint-disable @next/next/no-img-element */
 import { Suspense } from 'react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppMenuitem from './AppMenuitem';
-import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
-import Link from 'next/link';
 import { UsersDatum } from '@/app/service/UserService';
 import styles from './AppMenu.module.css';
 import { model } from '@/layout/modelAppmenuConst';
 import { WebEnvConst } from '@/app/webEnvConst';
 
 const AppMenu = () => {
-    const { layoutConfig,  } = useContext(LayoutContext);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [userRole, setUserRole] = useState('');
 
@@ -79,12 +75,6 @@ const AppMenu = () => {
                             <AppMenuitem item={item} root={true} index={i} key={item.label} /> :
                             <li className="menu-separator"></li>;
                     })}
-
-                    {(userRole === 'super Administrador') ??
-                        <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                            <img alt="Prime Blocks" className="w-full mt-3"
-                                 src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                        </Link>}
                 </ul>
                             </Suspense>
             </div>
