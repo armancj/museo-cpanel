@@ -2,15 +2,8 @@
 
 ## QR Code Functionality
 
-This project includes a QR code generation feature for cultural heritage properties. To use this feature, you need to install the `qrcode.react` library:
-
-```bash
-# Using npm
-npm install qrcode.react
-
-# Using pnpm
-pnpm add qrcode.react
-```
+This project includes a QR code generation feature for cultural heritage properties. It is built on the
+`react-qr-code` library, already declared in `package.json`, so a plain `pnpm install` is all it needs.
 
 ## How to Use the QR Code Feature
 

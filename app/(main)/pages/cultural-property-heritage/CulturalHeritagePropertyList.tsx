@@ -20,7 +20,9 @@ interface CulturalHeritagePropertyListProps {
     onAddNew: () => void;
     onView?: () => void;
     onEdit?: () => void;
-    hookData?: ReturnType<typeof useHookCulturalHeritageProperty>;
+    // Required: the fallback used to call the hook conditionally, which breaks
+    // the hook order the first time a caller omits it.
+    hookData: ReturnType<typeof useHookCulturalHeritageProperty>;
     heritageTypeOptions: { label: string; value: string }[];
 }
 
@@ -39,8 +41,7 @@ export function CulturalHeritagePropertyList({ onAddNew, hookData, onView, onEdi
         deleteData,
         deleteDialog,
         setDeleteDialog
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-    } = hookData || useHookCulturalHeritageProperty();
+    } = hookData;
 
     const processedDatum = (Array.isArray(datum) ? datum : []).map(item => ({
         ...item,
